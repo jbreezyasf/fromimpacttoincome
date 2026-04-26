@@ -1,49 +1,70 @@
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { AlertCircle, Home } from "lucide-react";
-import { useLocation } from "wouter";
+import Layout from "@/components/Layout";
+import { Link } from "wouter";
+import { ArrowLeft } from "lucide-react";
 
 export default function NotFound() {
-  const [, setLocation] = useLocation();
-
-  const handleGoHome = () => {
-    setLocation("/");
-  };
-
   return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100">
-      <Card className="w-full max-w-lg mx-4 shadow-lg border-0 bg-white/80 backdrop-blur-sm">
-        <CardContent className="pt-8 pb-8 text-center">
-          <div className="flex justify-center mb-6">
-            <div className="relative">
-              <div className="absolute inset-0 bg-red-100 rounded-full animate-pulse" />
-              <AlertCircle className="relative h-16 w-16 text-red-500" />
+    <Layout>
+      <section
+        className="min-h-[70vh] flex items-center"
+        style={{ background: "var(--brand-cream)" }}
+      >
+        <div className="container">
+          <div className="max-w-lg">
+            <div
+              className="font-display font-bold mb-4 leading-none"
+              style={{
+                fontSize: "clamp(5rem, 15vw, 12rem)",
+                color: "oklch(0.90 0.015 85)",
+                letterSpacing: "-0.04em",
+              }}
+            >
+              404
+            </div>
+            <h1
+              className="font-display font-semibold mb-4"
+              style={{ fontSize: "1.8rem", color: "var(--brand-ink)" }}
+            >
+              This page doesn't exist yet.
+            </h1>
+            <p className="text-base mb-8" style={{ color: "var(--brand-ink-muted)" }}>
+              Maybe it's in the works. Maybe it never will be. Either way, the journal is a good place to start.
+            </p>
+            <div className="flex flex-wrap gap-4">
+              <Link href="/">
+                <button
+                  className="flex items-center gap-2 px-5 py-2.5 font-mono-label transition-all duration-200 hover:opacity-90"
+                  style={{
+                    background: "var(--brand-green)",
+                    color: "var(--brand-cream)",
+                    borderRadius: "4px",
+                    fontSize: "0.68rem",
+                    letterSpacing: "0.1em",
+                  }}
+                >
+                  <ArrowLeft size={12} />
+                  Back Home
+                </button>
+              </Link>
+              <Link href="/journal">
+                <button
+                  className="flex items-center gap-2 px-5 py-2.5 font-mono-label transition-all duration-200"
+                  style={{
+                    border: "1.5px solid var(--brand-green)",
+                    color: "var(--brand-green)",
+                    borderRadius: "4px",
+                    fontSize: "0.68rem",
+                    letterSpacing: "0.1em",
+                    background: "transparent",
+                  }}
+                >
+                  Read the Journal
+                </button>
+              </Link>
             </div>
           </div>
-
-          <h1 className="text-4xl font-bold text-slate-900 mb-2">404</h1>
-
-          <h2 className="text-xl font-semibold text-slate-700 mb-4">
-            Page Not Found
-          </h2>
-
-          <p className="text-slate-600 mb-8 leading-relaxed">
-            Sorry, the page you are looking for doesn't exist.
-            <br />
-            It may have been moved or deleted.
-          </p>
-
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <Button
-              onClick={handleGoHome}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg"
-            >
-              <Home className="w-4 h-4 mr-2" />
-              Go Home
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
+        </div>
+      </section>
+    </Layout>
   );
 }
