@@ -5,7 +5,7 @@
 import { Link } from "wouter";
 import { ArrowRight, BookOpen, Mic } from "lucide-react";
 import Layout from "@/components/Layout";
-import { journalPosts } from "@/lib/journal-data";
+import { getMostRecentPost, getSortedPosts } from "@/lib/journal-data";
 import { motion } from "framer-motion";
 
 const HERO_BG = "https://d2xsxph8kpxj0f.cloudfront.net/310419663029871813/NLdW3NYdfwKAqCQQ2BmWFs/hero-bg-W7CrqvEnVR2d9kvpPoTNWj.webp";
@@ -20,8 +20,12 @@ const fadeUp = {
   }),
 };
 
-const featured = journalPosts.find((p) => p.featured) ?? journalPosts[0];
-const recentPosts = journalPosts.filter((p) => !p.featured).slice(0, 3);
+// Always reflects the newest entry — no manual flag needed.
+// When you add a new post with a later dateISO, this updates automatically.
+const featured = getMostRecentPost();
+const recentPosts = getSortedPosts()
+  .filter((p) => p.slug !== featured.slug)
+  .slice(0, 3);
 
 export default function Home() {
   return (

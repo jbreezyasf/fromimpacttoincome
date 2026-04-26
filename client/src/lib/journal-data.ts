@@ -3,6 +3,7 @@ export interface JournalPost {
   title: string;
   subtitle: string;
   date: string;
+  dateISO: string; // YYYY-MM-DD — used for automatic date-based sorting
   readTime: string;
   category: string;
   excerpt: string;
@@ -16,6 +17,7 @@ export const journalPosts: JournalPost[] = [
     title: "Impact and Income Are Not Opposites",
     subtitle: "The false choice that keeps founders stuck — and how to stop making it",
     date: "April 22, 2025",
+    dateISO: "2025-04-22",
     readTime: "6 min read",
     category: "Mindset",
     featured: true,
@@ -52,6 +54,7 @@ That's the work this journal is about.`,
     title: "The Founder Who Builds in Public",
     subtitle: "On transparency, trust, and the courage to show your process",
     date: "April 15, 2025",
+    dateISO: "2025-04-15",
     readTime: "5 min read",
     category: "Strategy",
     excerpt:
@@ -81,6 +84,7 @@ You don't have to share everything. Start with one decision per week: why you ma
     title: "Pricing Your Purpose",
     subtitle: "Why undercharging is the most expensive mistake impact-driven founders make",
     date: "April 8, 2025",
+    dateISO: "2025-04-08",
     readTime: "7 min read",
     category: "Business",
     excerpt:
@@ -112,6 +116,7 @@ You are allowed to charge well for work that matters. In fact, you have an oblig
     title: "AI and the Founder Edge",
     subtitle: "How impact-driven founders can use AI without losing their voice",
     date: "April 1, 2025",
+    dateISO: "2025-04-01",
     readTime: "8 min read",
     category: "AI & Tools",
     excerpt:
@@ -145,4 +150,22 @@ That's the founder edge.`,
 
 export function getPostBySlug(slug: string): JournalPost | undefined {
   return journalPosts.find((p) => p.slug === slug);
+}
+
+/**
+ * Returns posts sorted newest-first by dateISO.
+ * Always use this for any display that should reflect recency.
+ */
+export function getSortedPosts(): JournalPost[] {
+  return [...journalPosts].sort(
+    (a, b) => new Date(b.dateISO).getTime() - new Date(a.dateISO).getTime()
+  );
+}
+
+/**
+ * Returns the single most recent post by date.
+ * Used by the homepage featured section — no manual 'featured' flag needed.
+ */
+export function getMostRecentPost(): JournalPost {
+  return getSortedPosts()[0];
 }
