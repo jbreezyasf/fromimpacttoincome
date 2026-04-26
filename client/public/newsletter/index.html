@@ -1,0 +1,320 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Junk Mail â€” AI Junkies Inner Circle Newsletter</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,600&family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --cream:        #FAF7F2;
+      --ink:          #1E1B18;
+      --ink-card:     #26231F;
+      --orange:       #C4622D;
+      --orange-light: #D4824D;
+      --green:        #1C3A2E;
+      --text-body:    #C2BDB7;
+      --text-muted:   #8A857E;
+      --text-dim:     #5E5A54;
+      --border:       rgba(255,255,255,0.08);
+      --border-hover: rgba(196,98,45,0.4);
+    }
+    body {
+      background: var(--ink);
+      font-family: 'DM Sans', sans-serif;
+      color: var(--text-body);
+      font-size: 15px;
+      line-height: 1.75;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+    .wrap { max-width: 720px; margin: 0 auto; }
+
+    /* HEADER */
+    .site-header {
+      padding: 20px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+    }
+    .site-header a { text-decoration: none; }
+    .header-brand-name {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--cream);
+      display: block;
+      line-height: 1.2;
+    }
+    .header-brand-sub {
+      font-family: 'Fraunces', serif;
+      font-style: italic;
+      font-size: 11px;
+      color: var(--orange);
+      display: block;
+    }
+    .header-lock {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+    .lock-dot { width:6px; height:6px; border-radius:50%; background:var(--text-dim); }
+
+    /* HERO */
+    .hero {
+      padding: 64px 32px 48px;
+    }
+    .tag-pill {
+      display: inline-block;
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      background: var(--orange);
+      color: var(--cream);
+      padding: 4px 10px;
+      border-radius: 2px;
+      margin-bottom: 20px;
+    }
+    .hero h1 {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: clamp(2.4rem, 6vw, 3.8rem);
+      color: var(--cream);
+      letter-spacing: -0.02em;
+      line-height: 1.0;
+      margin-bottom: 16px;
+    }
+    .hero h1 em { font-style: italic; color: var(--orange); }
+    .hero p {
+      font-size: 15px;
+      color: var(--text-muted);
+      max-width: 520px;
+      line-height: 1.7;
+    }
+
+    /* DIVIDER */
+    .rule { height: 1px; background: var(--border); margin: 0 32px; }
+
+    /* ISSUE LIST */
+    .list-header {
+      padding: 32px 32px 16px;
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--orange);
+    }
+    .issue-list {
+      padding: 0 32px 48px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    /* ISSUE ROW */
+    .issue-row {
+      display: grid;
+      grid-template-columns: 56px 1fr 20px;
+      align-items: center;
+      gap: 18px;
+      background: var(--ink-card);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 20px 22px;
+      text-decoration: none;
+      color: inherit;
+      transition: border-color 0.2s, transform 0.15s;
+    }
+    .issue-row:hover {
+      border-color: var(--border-hover);
+      transform: translateX(3px);
+    }
+    .issue-num {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: 2.2rem;
+      color: rgba(255,255,255,0.1);
+      line-height: 1;
+    }
+    .issue-meta {}
+    .issue-date {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 4px;
+    }
+    .issue-title {
+      font-family: 'Fraunces', serif;
+      font-weight: 600;
+      font-size: 1rem;
+      color: var(--cream);
+      line-height: 1.3;
+      margin-bottom: 4px;
+    }
+    .issue-topic {
+      font-size: 12.5px;
+      color: var(--text-muted);
+    }
+    .issue-arrow {
+      color: var(--orange);
+      font-size: 16px;
+      line-height: 1;
+      transition: transform 0.2s;
+    }
+    .issue-row:hover .issue-arrow { transform: translateX(3px); }
+
+    /* COMING SOON */
+    .coming-soon {
+      border: 1px dashed rgba(255,255,255,0.08);
+      border-radius: 3px;
+      padding: 24px;
+      text-align: center;
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+
+    /* FOOTER */
+    .site-footer {
+      padding: 24px 32px 40px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .footer-brand {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--cream);
+    }
+    .footer-note {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+    .footer-back {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      text-decoration: none;
+    }
+    .footer-back:hover { color: var(--cream); }
+
+    @media (max-width: 520px) {
+      .hero, .rule, .list-header, .issue-list, .site-footer,
+      .site-header { padding-left: 20px; padding-right: 20px; }
+      .rule { margin: 0 20px; }
+      .issue-row { grid-template-columns: 44px 1fr; }
+      .issue-arrow { display: none; }
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="site-header">
+    <a href="/">
+      <span class="header-brand-name">From Impact to Income</span>
+      <span class="header-brand-sub">AI Junkies Inner Circle</span>
+    </a>
+    <div class="header-lock">
+      <div class="lock-dot"></div>
+      Members Only
+    </div>
+  </header>
+
+  <section class="hero">
+    <span class="tag-pill">AI Junkies Newsletter</span>
+    <h1>The Inner<br/><em>Circle</em></h1>
+    <p>Deeper thinking. Less noise. Each issue goes further than the feed â€” the specific frameworks, builds, wins, and honest conversations that don't make it to the public.</p>
+  </section>
+
+  <div class="rule"></div>
+
+  <!-- â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+       TO ADD A NEW ISSUE:
+       1. Copy one <a class="issue-row"> block
+       2. Update issue number, title, date, and topic
+       3. Update href to the new file name (issue-003.html etc.)
+       4. Newest issue goes at the TOP of the list
+       â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
+
+  <div class="list-header">All Issues â€” <span id="count">3</span> Published</div>
+
+  <div class="issue-list">
+
+    <!-- ISSUE 003 â€” newest first -->
+    <a class="issue-row" href="/newsletter/issue-003.html">
+      <div class="issue-num">003</div>
+      <div class="issue-meta">
+        <div class="issue-date">April 19â€“25, 2026</div>
+        <div class="issue-title">Claude Code's Three Automation Modes â€” Most People Slept On This</div>
+        <div class="issue-topic">Main Story: Claude Code Routines/Schedules/Loop Â· Apps Shipped Â· Perplexity Billion Dollar Build</div>
+      </div>
+      <div class="issue-arrow">â†’</div>
+    </a>
+
+    <!-- ISSUE 002 â€” newest first -->
+    <a class="issue-row" href="/newsletter/issue-002.html">
+      <div class="issue-num">002</div>
+      <div class="issue-meta">
+        <div class="issue-date">April 12â€“18, 2026</div>
+        <div class="issue-title">Stop Winging It: How Claude MD Files Actually Work</div>
+        <div class="issue-topic">Main Story: Claude MD Files Â· Also: Pre-Demo Audit, AI Political Campaigns</div>
+      </div>
+      <div class="issue-arrow">â†’</div>
+    </a>
+
+    <!-- ISSUE 001 -->
+    <a class="issue-row" href="/newsletter/issue-001.html">
+      <div class="issue-num">001</div>
+      <div class="issue-meta">
+        <div class="issue-date">The Founding Issue Â· Septâ€“Oct 2025</div>
+        <div class="issue-title">The Founding Issue â€” AI Power Launch Bootcamp Recap</div>
+        <div class="issue-topic">Main Story: End-of-Call Reports & Webhooks Â· $7,500 Day 1 Win</div>
+      </div>
+      <div class="issue-arrow">â†’</div>
+    </a>
+
+    <!-- ADD NEW ISSUES ABOVE THIS LINE -->
+
+    <div class="coming-soon">New issues every week â€” check back Monday</div>
+
+  </div>
+
+  <footer class="site-footer">
+    <div>
+      <div class="footer-brand">Junk Mail</div>
+      <div class="footer-note">AI Junkies Weekly Â· Curated by Derrick Harper</div>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
+      <div class="footer-note">For AI Junkies members only Â· Not for public distribution</div>
+      <a class="footer-back" href="/">â† Main site</a>
+    </div>
+  </footer>
+
+</div>
+</body>
+</html>

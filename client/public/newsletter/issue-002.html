@@ -1,0 +1,793 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Junk Mail â€” Issue #002 â€” April 12â€“18 | AI Junkies Inner Circle</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,600&family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* â”€â”€ SIGNAL & NOISE TOKENS â”€â”€ */
+    :root {
+      --cream:        #FAF7F2;
+      --ink:          #1E1B18;
+      --ink-card:     #26231F;
+      --ink-card-2:   #2E2B26;
+      --orange:       #C4622D;
+      --orange-light: #D4824D;
+      --green:        #1C3A2E;
+      --green-light:  #2A5240;
+      --text-body:    #C2BDB7;
+      --text-muted:   #8A857E;
+      --text-dim:     #5E5A54;
+      --border:       rgba(255,255,255,0.08);
+      --border-hover: rgba(196,98,45,0.4);
+    }
+
+    body {
+      background: var(--ink);
+      font-family: 'DM Sans', sans-serif;
+      color: var(--text-body);
+      font-size: 15px;
+      line-height: 1.75;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .wrap {
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    /* â”€â”€ HEADER â”€â”€ */
+    .site-header {
+      padding: 20px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(30,27,24,0.95);
+      backdrop-filter: blur(12px);
+    }
+    .site-header a { text-decoration: none; }
+    .header-brand-name {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--cream);
+      display: block;
+      line-height: 1.2;
+    }
+    .header-brand-sub {
+      font-family: 'Fraunces', serif;
+      font-style: italic;
+      font-size: 11px;
+      color: var(--orange);
+      display: block;
+      line-height: 1.2;
+    }
+    .header-lock {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+    .lock-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--text-dim);
+      flex-shrink: 0;
+    }
+
+    /* â”€â”€ HERO â”€â”€ */
+    .hero {
+      padding: 64px 32px 48px;
+    }
+    .tag-pill {
+      display: inline-block;
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      background: var(--orange);
+      color: var(--cream);
+      padding: 4px 10px;
+      border-radius: 2px;
+      margin-bottom: 20px;
+    }
+    .issue-eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 6px;
+    }
+    .hero-title {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: clamp(2.2rem, 6vw, 3.4rem);
+      color: var(--cream);
+      letter-spacing: -0.02em;
+      line-height: 1.0;
+      margin-bottom: 16px;
+    }
+    .hero-title em {
+      font-style: italic;
+      color: var(--orange);
+    }
+    .hero-meta {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .hero-issue-num {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: 3.5rem;
+      color: rgba(255,255,255,0.08);
+      line-height: 1;
+    }
+    .hero-divider-v {
+      width: 1px;
+      height: 48px;
+      background: var(--border);
+    }
+    .hero-date {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+    .lede {
+      font-size: 15px;
+      line-height: 1.75;
+      color: var(--text-muted);
+      max-width: 560px;
+    }
+    .lede strong { color: var(--cream); font-weight: 600; }
+
+    /* â”€â”€ SECTION RULE â”€â”€ */
+    .section-rule {
+      height: 1px;
+      background: var(--border);
+      margin: 0 32px;
+    }
+
+    /* â”€â”€ SECTION LABEL â”€â”€ */
+    .section-label {
+      padding: 32px 32px 0;
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 2px;
+    }
+
+    /* â”€â”€ STORY CONTENT â”€â”€ */
+    .content {
+      padding: 14px 32px 32px;
+    }
+    .content h2 {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: clamp(1.5rem, 3.5vw, 2rem);
+      color: var(--cream);
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      margin-bottom: 12px;
+    }
+    .content h3 {
+      font-family: 'Fraunces', serif;
+      font-weight: 600;
+      font-size: 1.25rem;
+      color: var(--cream);
+      letter-spacing: -0.01em;
+      line-height: 1.25;
+      margin-bottom: 10px;
+    }
+    .content .deck {
+      font-family: 'Fraunces', serif;
+      font-style: italic;
+      font-size: 1rem;
+      color: var(--text-muted);
+      margin-bottom: 18px;
+      line-height: 1.6;
+    }
+    .content p {
+      color: var(--text-body);
+      margin-bottom: 14px;
+      font-size: 15px;
+    }
+    .content p:last-child { margin-bottom: 0; }
+    .content ul {
+      padding-left: 20px;
+      margin-bottom: 14px;
+    }
+    .content ul li {
+      margin-bottom: 8px;
+      color: var(--text-body);
+    }
+    .content ul li strong { color: var(--cream); }
+    .content a { color: var(--orange-light); text-decoration: underline; text-underline-offset: 3px; }
+    .content pre {
+      background: #141210;
+      border: 1px solid rgba(255,255,255,0.06);
+      padding: 16px;
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      line-height: 1.7;
+      overflow-x: auto;
+      margin-bottom: 14px;
+      border-radius: 3px;
+      color: #C2BDB7;
+    }
+
+    /* â”€â”€ BIZ CALLOUT â”€â”€ */
+    .biz-callout {
+      margin: 0 32px 28px;
+      border-left: 3px solid var(--orange);
+      background: rgba(196,98,45,0.08);
+      padding: 16px 20px;
+      border-radius: 0 3px 3px 0;
+    }
+    .biz-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--orange);
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+    .biz-callout p {
+      font-size: 14px;
+      line-height: 1.7;
+      color: var(--text-body);
+    }
+
+    /* â”€â”€ HOT TOPIC â”€â”€ */
+    .hot-topic {
+      margin: 0 32px 32px;
+      background: var(--ink-card);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 24px;
+    }
+    .hot-topic-eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 10px;
+    }
+    .hot-topic h3 {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: 1.4rem;
+      color: var(--cream);
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      margin-bottom: 12px;
+    }
+    .hot-topic p {
+      font-size: 14px;
+      line-height: 1.75;
+      color: var(--text-body);
+      margin-bottom: 12px;
+    }
+    .voices {
+      margin-top: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .voice-item {
+      background: rgba(255,255,255,0.04);
+      border-left: 2px solid var(--orange);
+      padding: 10px 14px;
+      border-radius: 0 2px 2px 0;
+      font-size: 13.5px;
+      line-height: 1.6;
+      color: var(--text-body);
+      font-style: italic;
+    }
+    .voice-name {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 5px;
+      font-style: normal;
+    }
+
+    /* â”€â”€ QUICK HITS GRID â”€â”€ */
+    .tips-grid {
+      padding: 14px 32px 32px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .tip-card {
+      background: var(--ink-card);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 18px;
+      transition: border-color 0.2s;
+    }
+    .tip-card:hover { border-color: var(--border-hover); }
+    .tip-number {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: 2.2rem;
+      color: rgba(255,255,255,0.07);
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    .tip-card strong {
+      display: block;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--cream);
+      margin-bottom: 6px;
+      line-height: 1.3;
+    }
+    .tip-card p {
+      font-size: 13px;
+      line-height: 1.65;
+      color: var(--text-muted);
+    }
+
+    /* â”€â”€ MEMBER SPOTLIGHT â”€â”€ */
+    .member-grid {
+      padding: 14px 32px 32px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    .member-card {
+      background: var(--ink-card);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+    .member-card:hover { border-color: var(--border-hover); }
+    .member-card-accent {
+      height: 3px;
+      background: var(--green);
+    }
+    .member-card-accent.orange { background: var(--orange); }
+    .member-card-body { padding: 14px; }
+    .member-name {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--cream);
+      margin-bottom: 2px;
+      line-height: 1.2;
+    }
+    .member-handle {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.08em;
+      color: var(--text-dim);
+      margin-bottom: 8px;
+    }
+    .member-card-body p {
+      font-size: 12.5px;
+      line-height: 1.6;
+      color: var(--text-muted);
+    }
+    .member-card-body em { color: var(--text-body); font-style: italic; }
+
+    /* â”€â”€ WINS â”€â”€ */
+    .wins-list {
+      padding: 14px 32px 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .win-item {
+      background: var(--ink-card);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 16px 18px;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 14px;
+      align-items: start;
+      transition: border-color 0.2s;
+    }
+    .win-item:hover { border-color: var(--border-hover); }
+    .win-emoji {
+      font-size: 18px;
+      line-height: 1;
+      margin-top: 2px;
+    }
+    .win-tag {
+      display: inline-block;
+      font-family: 'DM Mono', monospace;
+      font-size: 8.5px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 2px 7px;
+      border-radius: 2px;
+      margin-bottom: 5px;
+      border: 1px solid currentColor;
+    }
+    .win-tag.client   { color: var(--orange-light); }
+    .win-tag.build    { color: var(--green-light); }
+    .win-tag.speaking { color: #6BAE8C; }
+    .win-tag.other    { color: var(--text-dim); }
+    .win-title {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--cream);
+      margin-bottom: 3px;
+      display: block;
+    }
+    .win-item p {
+      font-size: 13px;
+      line-height: 1.65;
+      color: var(--text-muted);
+    }
+    .win-item a { color: var(--orange-light); text-decoration: underline; text-underline-offset: 2px; }
+
+    /* â”€â”€ FOOTER â”€â”€ */
+    .site-footer {
+      padding: 32px 32px 40px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .footer-brand {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--cream);
+      display: block;
+      margin-bottom: 4px;
+    }
+    .footer-sub {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      line-height: 1.8;
+    }
+    .footer-right {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      text-align: right;
+      line-height: 1.9;
+    }
+
+    @media (max-width: 520px) {
+      .tips-grid    { grid-template-columns: 1fr; }
+      .member-grid  { grid-template-columns: 1fr 1fr; }
+      .site-footer  { flex-direction: column; }
+      .footer-right { text-align: left; }
+      .hero, .content, .section-label, .biz-callout,
+      .hot-topic, .tips-grid, .member-grid, .wins-list,
+      .section-rule, .site-footer { padding-left: 20px; padding-right: 20px; }
+      .section-rule { margin: 0 20px; }
+      .hot-topic, .biz-callout { margin-left: 20px; margin-right: 20px; }
+      .site-header { padding: 16px 20px; }
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- HEADER -->
+  <header class="site-header">
+    <a href="/">
+      <span class="header-brand-name">From Impact to Income</span>
+      <span class="header-brand-sub">AI Junkies Inner Circle</span>
+    </a>
+    <div class="header-lock">
+      <div class="lock-dot"></div>
+      Members Only
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <span class="tag-pill">AI Junkies Newsletter</span>
+    <div class="hero-meta">
+      <div class="hero-issue-num">002</div>
+      <div class="hero-divider-v"></div>
+      <div>
+        <div class="hero-date">April 12â€“18, 2026</div>
+      </div>
+    </div>
+    <h1 class="hero-title">Junk <em>Mail</em></h1>
+    <p class="lede">
+      <strong>Hey Junkies ðŸ‘‹</strong> â€” This week the group was everywhere. Tire shops. Brunches. Political campaigns. Demo calls that turned into contracts before anybody even asked for the sale.
+    </p>
+    <p class="lede" style="margin-top:12px;">Claude 4.7 dropped and reset everybody's limits early. Canva went fire at their Create event. Rodney is considering moving his agents off Railway entirely. Anthony is building themes Derrick personally called out. And somebody walked into a tire shop, played their voice agent live, and walked out with a new client. That's this week.</p>
+    <p class="lede" style="margin-top:12px;">No fluff. Just the real stuff. Let's get into it. ðŸ”¥</p>
+  </section>
+
+
+  <div class="section-rule"></div>
+  <div class="section-label">â‘  Main Story</div>
+  <div class="content">
+    <h2>Stop Winging It: How Claude MD Files Actually Work</h2>
+    <p class="deck">Most people are either skipping Claude MD files entirely or using one file for everything â€” and both are costing them time on every single project.</p>
+    <p>If you've been using Claude for projects, you've probably run into the Claude MD file â€” or heard it mentioned and nodded like you knew what it was. Plain version: a Claude MD file is a set of written instructions that lives inside your Claude project. It tells Claude who you are, what the project is, how you want it to behave, and what rules to follow. Think of it as the briefing document you hand a new hire before they touch anything.</p>
+    <p>Here's where most people get it wrong â€” they either skip the MD file entirely and re-explain everything every session, or they have one global file they never touch and expect it to handle every project. Cheryl put it plainly: the global MD is your baseline â€” your name, your work style, how you like Claude to communicate. It stays put. Your project MD is the specific job brief â€” the client details, the tech stack, the constraints, the output format. They serve different purposes and both need to exist separately.</p>
+    <p>The mistake that kills consistency: cramming everything into one file. When brand voice, project specs, technical constraints, and output format all live in the same place, Claude doesn't know what's a standing rule and what's project-specific. Separate them and your outputs get dramatically more consistent â€” because Claude finally knows what's permanent and what's contextual.</p>
+    <ul>
+      <li><strong>Global MD = standing rules.</strong> Your name, your role, communication preferences, things always true no matter the project. Set it once, rarely touch it.</li>
+      <li><strong>Project MD = job brief.</strong> The specific build â€” client info, tech stack, constraints, audience, output format. Update it as the project evolves.</li>
+      <li><strong>Let Claude update its own MD.</strong> Mid-project, just say "add this to my project Claude MD." Claude suggests the update, you paste it in. Keeps the file current without a full rewrite every week.</li>
+    </ul>
+  </div>
+  <div class="biz-callout">
+    <div class="biz-label">ðŸ’¼ How does this apply to your business?</div>
+    <p>Every client build you do should have its own project MD. That file holds the client's business details, voice agent rules, CRM setup, pain points, pricing â€” everything Claude needs without you re-explaining every session. When the client calls with a change, you update the MD and every subsequent conversation already knows. That's the difference between consulting at $500/month and retaining at $2,500/month.</p>
+  </div>
+
+  <div class="section-rule"></div>
+  <div class="section-label">â‘¡ Also This Week</div>
+  <div class="content">
+    <h3>Big Steele's Pre-Demo Audit: Don't Go Live Without This</h3>
+    <p>One of the most valuable things shared in the group this week didn't get nearly enough attention. Big Steele dropped a detailed prompt framework for running a QA audit on your app or agent <em style="color:var(--cream)">before</em> you demo it to an investor, client, or prospect. The framing was sharp: assume your reviewer is smart, skeptical, and actively looking for reasons to pass. They'll click things in the wrong order. They'll use a stale session. They'll find the one broken thing in the first 15 minutes.</p>
+    <p>The audit runs through four buckets: demo killers (what would visibly embarrass you on screen), credibility leaks (things that don't break the demo but signal an amateur build), the golden path (what the reviewer needs to see to say yes), and failure modes under conditions you can't control â€” hotel wifi, projector color, one-handed phone use. Run your build through all four before every live demo.</p>
+    <p>The core rule embedded in the prompt: if a bucket is empty, the audit isn't done â€” it means you haven't looked hard enough yet. That's the standard that wins investor meetings and closes clients on demo calls.</p>
+  </div>
+
+  <div class="section-rule"></div>
+  <div class="section-label">â‘¢ Worth Knowing</div>
+  <div class="content">
+    <h3>AI Political Campaigns: Dave R Is Actually Building This Live</h3>
+    <p>Dave R came to the group this week with something worth paying attention to â€” not just as a project, but as a category. He's building a full digital campaign platform for Angela McGinister-Windham, a real congressional candidate. The stack includes a high-converting website, AI-powered chat and voice engagement for voter interaction, and community impact tracking. He called it a campaign operating system, not just a website.</p>
+    <p>Why this matters to the rest of the group: AI-powered campaign infrastructure is a category almost nobody is in yet, demand is about to spike with every election cycle, and the skills being built right here â€” voice agents, CRM integration, automated follow-up, form capture â€” map directly to what campaigns need. The group loved it. Dave's build is proof of concept for an entire vertical most people aren't seeing yet. Watch this one.</p>
+  </div>
+
+  <div class="section-rule"></div>
+  <div class="section-label">â‘£ Hot Topic</div>
+  <div class="hot-topic">
+    <div class="hot-topic-eyebrow">ðŸ”¥ From the Group Chat</div>
+    <h3>What Do We Actually Call What We're Building?</h3>
+    <p>A branding conversation broke out this week that got more interesting as it went. Big Steele started thinking out loud about how to name the identity of people who build, test, break, and rebuild AI systems â€” not just the group name, but the work itself. Anthony Sr jumped in with a whole list of directions that sparked a real debate.</p>
+    <p>The underlying question is one every person in this group will eventually have to answer: when someone asks "so what do you do?" â€” how do you describe this work in a way that lands? The names people use shape how they're perceived and what they get paid.</p>
+    <div class="voices">
+      <div class="voice-item">
+        <div class="voice-name">Anthony Sr</div>
+        "Bug season â€” like film season, grind season. We're in bug season. Chase the break â€” hunting bugs before users find them. Ship scars â€” battle-tested, earned your stripes. Pressure check â€” clean, versatile."
+      </div>
+      <div class="voice-item">
+        <div class="voice-name">Big Steele</div>
+        "Dang I like bug season, but we're always looking so it's a never ending season. Pressure check and Run the Reps is good because it's putting in the work."
+      </div>
+      <div class="voice-item">
+        <div class="voice-name">Big Steele</div>
+        "Bug season makes me think of hot girl summer â€” we could have an anthem behind it. Just thinking of branding for the AI Junkies so everything we promote leads back to the family."
+      </div>
+    </div>
+  </div>
+
+  <div class="section-rule"></div>
+  <div class="section-label">â‘¤ Quick Hits</div>
+  <div class="tips-grid">
+    <div class="tip-card">
+      <div class="tip-number">01</div>
+      <strong>Claude 4.7 Reset Early â€” Don't Panic</strong>
+      <p>Big Steele and Cheryl both noticed usage limits reset ahead of schedule this week. It wasn't something you did â€” Anthropic pushed an update. Rodney is now testing Claude Agents as a potential full architecture shift away from Railway. Worth watching closely.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-number">02</div>
+      <strong>Canva Create: Go Watch the Replay</strong>
+      <p>Cheryl caught the Canva Create event replay and called it flat-out fire. The new AI additions are significant for client visuals, social content, and presentations. Several features map directly to what this group produces. Go find the replay this week.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-number">03</div>
+      <strong>Suno AI: Don't Use the Workarounds</strong>
+      <p>Members are exploring Suno for AI music â€” theme songs, content audio, background tracks. Clear warning from the group: don't try to bypass Suno's platform limits. They will ban you, fast. Use it the right way. A proper Suno course is reportedly coming once Shakira finishes her app.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-number">04</div>
+      <strong>Claude Design Is Cutting Real Time</strong>
+      <p>HotRod P cut his design workflow time by more than half using Claude Design. What was taking days of tweaking happened in one session. If you haven't tested Claude for UI mockups, landing pages, or visual layouts â€” this week is a good time to start.</p>
+    </div>
+  </div>
+
+  <div data-optional-section="members">
+  <div class="section-rule"></div>
+  <div class="section-label">â‘¥ Member Spotlight</div>
+  <div class="member-grid" data-content-container>
+    <div class="member-card" data-content-item>
+      <div class="member-card-accent orange"></div>
+      <div class="member-card-body">
+        <div class="member-name">Britt</div>
+        <div class="member-handle">AI Junkies Member</div>
+        <p>Walked into a tire shop. Played her voice agent live for the owner. Owner's response: <em>"Give your phone number â€” I need a system."</em> No pitch. No deck. Just the demo. That's the whole playbook right there.</p>
+      </div>
+    </div>
+    <div class="member-card" data-content-item>
+      <div class="member-card-accent"></div>
+      <div class="member-card-body">
+        <div class="member-name">Dave R</div>
+        <div class="member-handle">AI Junkies Member</div>
+        <p>Currently building: <strong style="color:var(--cream)">AI Political Campaign Platform</strong> â€” real candidate, real election, full stack. Voice + chat voter engagement, community tracking, and a campaign operating system. A category play.</p>
+      </div>
+    </div>
+    <div class="member-card" data-content-item>
+      <div class="member-card-accent"></div>
+      <div class="member-card-body">
+        <div class="member-name">Anthony Sr</div>
+        <div class="member-handle">AI Junkies Member</div>
+        <p>Building AI-powered themes that add credibility and create upsell opportunities across niches. Derrick called it out directly in the chat â€” his prompting for writing is on another level. Keep going.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-rule"></div>
+  <div class="section-label">â‘¦ Wins This Week</div>
+  <div class="wins-list">
+
+    <div class="win-item" data-content-item>
+      <div class="win-emoji">ðŸ¤</div>
+      <div>
+        <span class="win-tag client">Walk-In Close</span>
+        <span class="win-title">Britt â€” Tire Shop Demo</span>
+        <p>No appointment, no pitch deck. Walked in, played the voice agent live, and the owner asked for her number on the spot. The agent did the selling. That's the point of building this.</p>
+      </div>
+    </div>
+
+    <div class="win-item" data-content-item>
+      <div class="win-emoji">ðŸ¤</div>
+      <div>
+        <span class="win-tag client">Brunch â†’ Clients</span>
+        <span class="win-title">Nathan â€” Live Demo at Brunch</span>
+        <p>Had people call his voice agent live at the table. Some signed up on the spot. The restaurant owner asked him to handle their inquiries. Nathan didn't chase anyone â€” the demo closed everything.</p>
+      </div>
+    </div>
+
+    <div class="win-item" data-content-item>
+      <div class="win-emoji">ðŸ—ï¸</div>
+      <div>
+        <span class="win-tag build">Workflow Win</span>
+        <span class="win-title">HotRod P â€” Claude Design</span>
+        <p>Cut his design workflow by more than half using Claude Design. What took days of tweaking happened in one session. His words: "It's extortion." In the best possible way. ðŸ”¥</p>
+      </div>
+    </div>
+
+    <div class="win-item" data-content-item>
+      <div class="win-emoji">ðŸ—ï¸</div>
+      <div>
+        <span class="win-tag build">Knowledge Base</span>
+        <span class="win-title">Crystal B â€” Bot Knowledge Base Complete</span>
+        <p>Put everything she knows into a structured knowledge base for her bots â€” and is making it available to the group once testing is done. Build for yourself, share with the family.</p>
+      </div>
+    </div>
+
+    <div class="win-item" data-content-item>
+      <div class="win-emoji">ðŸš€</div>
+      <div>
+        <span class="win-tag other">Architecture Move</span>
+        <span class="win-title">Rodney Williams â€” Testing Claude Agents Migration</span>
+        <p>Actively testing Claude Agents and seriously considering moving his entire agent stack off Railway to this new architecture. One of the more technically ambitious moves in the group this week.</p>
+      </div>
+    </div>
+
+    <div class="win-item" data-content-item>
+      <div class="win-emoji">ðŸŽ¤</div>
+      <div>
+        <span class="win-tag speaking">Speaking</span>
+        <span class="win-title">Cheryl Tibbs â€” AI Week Atlanta</span>
+        <p>Speaking panel is Wednesday at 3:40 at Join AI Week in Atlanta. Would love to see some of you there â€” details at <a href="https://www.joinaiweek.com/atlanta">joinaiweek.com/atlanta</a>.</p>
+      </div>
+    </div>
+
+  </div>
+
+
+    <div class="win-item" data-content-item>
+      <div class="win-emoji">ðŸ—ï¸</div>
+      <div>
+        <span class="win-tag build">Build Out</span>
+        <span class="win-title">[Member] â€” [Project]</span>
+        <p>[1â€“2 sentences. Deployment, agent live, system finally working?]</p>
+      </div>
+    </div>
+
+    <div class="win-item" data-content-item>
+      <div class="win-emoji">ðŸŽ¤</div>
+      <div>
+        <span class="win-tag speaking">Speaking</span>
+        <span class="win-title">[Member] â€” [Event or Platform]</span>
+        <p>[1â€“2 sentences. Speaking gig, podcast, panel, demo day.]</p>
+      </div>
+    </div>
+
+    <!-- Copy/paste extras as needed â€” delete unused -->
+    <div class="win-item" data-content-item>
+      <div class="win-emoji">ðŸ’°</div>
+      <div>
+        <span class="win-tag client">Paid</span>
+        <span class="win-title">[Member] â€” [Project or Business]</span>
+        <p>[1â€“2 sentences.]</p>
+      </div>
+    </div>
+
+    <div class="win-item" data-content-item>
+      <div class="win-emoji">ðŸš€</div>
+      <div>
+        <span class="win-tag other">Milestone</span>
+        <span class="win-title">[Member] â€” [Achievement]</span>
+        <p>[1â€“2 sentences.]</p>
+      </div>
+    </div>
+
+    <div class="win-item" data-content-item>
+      <div class="win-emoji">ðŸ†</div>
+      <div>
+        <span class="win-tag other">Other</span>
+        <span class="win-title">[Member] â€” [Achievement]</span>
+        <p>[1â€“2 sentences.]</p>
+      </div>
+    </div>
+
+  </div>
+  </div><!-- /section-wins -->
+
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div>
+      <span class="footer-brand">Junk Mail</span>
+      <div class="footer-sub">
+        AI Junkies Weekly Â· Inner Circle Edition<br/>
+        Curated by Derrick Harper
+      </div>
+    </div>
+    <div class="footer-right">
+      Issue #[NUMBER] Â· April 12â€“18, 2026<br/>
+      For AI Junkies members only<br/>
+      Not for public distribution
+    </div>
+  </footer>
+
+</div>
+
+  <script>
+    // Auto-hide optional sections (Member Spotlight + Wins) if they have no content cards
+    document.querySelectorAll('[data-optional-section]').forEach(function(section) {
+      var container = section.querySelector('[data-content-container]');
+      if (!container) return;
+      var items = container.querySelectorAll('[data-content-item]');
+      if (items.length === 0) {
+        section.style.display = 'none';
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,799 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Junk Mail â€” Issue #003 â€” April 19â€“25 | AI Junkies Inner Circle</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,600&family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* â”€â”€ SIGNAL & NOISE TOKENS â”€â”€ */
+    :root {
+      --cream:        #FAF7F2;
+      --ink:          #1E1B18;
+      --ink-card:     #26231F;
+      --ink-card-2:   #2E2B26;
+      --orange:       #C4622D;
+      --orange-light: #D4824D;
+      --green:        #1C3A2E;
+      --green-light:  #2A5240;
+      --text-body:    #C2BDB7;
+      --text-muted:   #8A857E;
+      --text-dim:     #5E5A54;
+      --border:       rgba(255,255,255,0.08);
+      --border-hover: rgba(196,98,45,0.4);
+    }
+
+    body {
+      background: var(--ink);
+      font-family: 'DM Sans', sans-serif;
+      color: var(--text-body);
+      font-size: 15px;
+      line-height: 1.75;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .wrap {
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    /* â”€â”€ HEADER â”€â”€ */
+    .site-header {
+      padding: 20px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(30,27,24,0.95);
+      backdrop-filter: blur(12px);
+    }
+    .site-header a { text-decoration: none; }
+    .header-brand-name {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--cream);
+      display: block;
+      line-height: 1.2;
+    }
+    .header-brand-sub {
+      font-family: 'Fraunces', serif;
+      font-style: italic;
+      font-size: 11px;
+      color: var(--orange);
+      display: block;
+      line-height: 1.2;
+    }
+    .header-lock {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+    .lock-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--text-dim);
+      flex-shrink: 0;
+    }
+
+    /* â”€â”€ HERO â”€â”€ */
+    .hero {
+      padding: 64px 32px 48px;
+    }
+    .tag-pill {
+      display: inline-block;
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      background: var(--orange);
+      color: var(--cream);
+      padding: 4px 10px;
+      border-radius: 2px;
+      margin-bottom: 20px;
+    }
+    .issue-eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 6px;
+    }
+    .hero-title {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: clamp(2.2rem, 6vw, 3.4rem);
+      color: var(--cream);
+      letter-spacing: -0.02em;
+      line-height: 1.0;
+      margin-bottom: 16px;
+    }
+    .hero-title em {
+      font-style: italic;
+      color: var(--orange);
+    }
+    .hero-meta {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .hero-issue-num {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: 3.5rem;
+      color: rgba(255,255,255,0.08);
+      line-height: 1;
+    }
+    .hero-divider-v {
+      width: 1px;
+      height: 48px;
+      background: var(--border);
+    }
+    .hero-date {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+    .lede {
+      font-size: 15px;
+      line-height: 1.75;
+      color: var(--text-muted);
+      max-width: 560px;
+    }
+    .lede strong { color: var(--cream); font-weight: 600; }
+
+    /* â”€â”€ SECTION RULE â”€â”€ */
+    .section-rule {
+      height: 1px;
+      background: var(--border);
+      margin: 0 32px;
+    }
+
+    /* â”€â”€ SECTION LABEL â”€â”€ */
+    .section-label {
+      padding: 32px 32px 0;
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 2px;
+    }
+
+    /* â”€â”€ STORY CONTENT â”€â”€ */
+    .content {
+      padding: 14px 32px 32px;
+    }
+    .content h2 {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: clamp(1.5rem, 3.5vw, 2rem);
+      color: var(--cream);
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      margin-bottom: 12px;
+    }
+    .content h3 {
+      font-family: 'Fraunces', serif;
+      font-weight: 600;
+      font-size: 1.25rem;
+      color: var(--cream);
+      letter-spacing: -0.01em;
+      line-height: 1.25;
+      margin-bottom: 10px;
+    }
+    .content .deck {
+      font-family: 'Fraunces', serif;
+      font-style: italic;
+      font-size: 1rem;
+      color: var(--text-muted);
+      margin-bottom: 18px;
+      line-height: 1.6;
+    }
+    .content p {
+      color: var(--text-body);
+      margin-bottom: 14px;
+      font-size: 15px;
+    }
+    .content p:last-child { margin-bottom: 0; }
+    .content ul {
+      padding-left: 20px;
+      margin-bottom: 14px;
+    }
+    .content ul li {
+      margin-bottom: 8px;
+      color: var(--text-body);
+    }
+    .content ul li strong { color: var(--cream); }
+    .content a { color: var(--orange-light); text-decoration: underline; text-underline-offset: 3px; }
+    .content pre {
+      background: #141210;
+      border: 1px solid rgba(255,255,255,0.06);
+      padding: 16px;
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      line-height: 1.7;
+      overflow-x: auto;
+      margin-bottom: 14px;
+      border-radius: 3px;
+      color: #C2BDB7;
+    }
+
+    /* â”€â”€ BIZ CALLOUT â”€â”€ */
+    .biz-callout {
+      margin: 0 32px 28px;
+      border-left: 3px solid var(--orange);
+      background: rgba(196,98,45,0.08);
+      padding: 16px 20px;
+      border-radius: 0 3px 3px 0;
+    }
+    .biz-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--orange);
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+    .biz-callout p {
+      font-size: 14px;
+      line-height: 1.7;
+      color: var(--text-body);
+    }
+
+    /* â”€â”€ HOT TOPIC â”€â”€ */
+    .hot-topic {
+      margin: 0 32px 32px;
+      background: var(--ink-card);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 24px;
+    }
+    .hot-topic-eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 10px;
+    }
+    .hot-topic h3 {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: 1.4rem;
+      color: var(--cream);
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      margin-bottom: 12px;
+    }
+    .hot-topic p {
+      font-size: 14px;
+      line-height: 1.75;
+      color: var(--text-body);
+      margin-bottom: 12px;
+    }
+    .voices {
+      margin-top: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .voice-item {
+      background: rgba(255,255,255,0.04);
+      border-left: 2px solid var(--orange);
+      padding: 10px 14px;
+      border-radius: 0 2px 2px 0;
+      font-size: 13.5px;
+      line-height: 1.6;
+      color: var(--text-body);
+      font-style: italic;
+    }
+    .voice-name {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 5px;
+      font-style: normal;
+    }
+
+    /* â”€â”€ QUICK HITS GRID â”€â”€ */
+    .tips-grid {
+      padding: 14px 32px 32px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .tip-card {
+      background: var(--ink-card);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 18px;
+      transition: border-color 0.2s;
+    }
+    .tip-card:hover { border-color: var(--border-hover); }
+    .tip-number {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: 2.2rem;
+      color: rgba(255,255,255,0.07);
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    .tip-card strong {
+      display: block;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--cream);
+      margin-bottom: 6px;
+      line-height: 1.3;
+    }
+    .tip-card p {
+      font-size: 13px;
+      line-height: 1.65;
+      color: var(--text-muted);
+    }
+
+    /* â”€â”€ MEMBER SPOTLIGHT â”€â”€ */
+    .member-grid {
+      padding: 14px 32px 32px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    .member-card {
+      background: var(--ink-card);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+    .member-card:hover { border-color: var(--border-hover); }
+    .member-card-accent {
+      height: 3px;
+      background: var(--green);
+    }
+    .member-card-accent.orange { background: var(--orange); }
+    .member-card-body { padding: 14px; }
+    .member-name {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--cream);
+      margin-bottom: 2px;
+      line-height: 1.2;
+    }
+    .member-handle {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.08em;
+      color: var(--text-dim);
+      margin-bottom: 8px;
+    }
+    .member-card-body p {
+      font-size: 12.5px;
+      line-height: 1.6;
+      color: var(--text-muted);
+    }
+    .member-card-body em { color: var(--text-body); font-style: italic; }
+
+    /* â”€â”€ WINS â”€â”€ */
+    .wins-list {
+      padding: 14px 32px 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .win-item {
+      background: var(--ink-card);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 16px 18px;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 14px;
+      align-items: start;
+      transition: border-color 0.2s;
+    }
+    .win-item:hover { border-color: var(--border-hover); }
+    .win-emoji {
+      font-size: 18px;
+      line-height: 1;
+      margin-top: 2px;
+    }
+    .win-tag {
+      display: inline-block;
+      font-family: 'DM Mono', monospace;
+      font-size: 8.5px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 2px 7px;
+      border-radius: 2px;
+      margin-bottom: 5px;
+      border: 1px solid currentColor;
+    }
+    .win-tag.client   { color: var(--orange-light); }
+    .win-tag.build    { color: var(--green-light); }
+    .win-tag.speaking { color: #6BAE8C; }
+    .win-tag.other    { color: var(--text-dim); }
+    .win-title {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--cream);
+      margin-bottom: 3px;
+      display: block;
+    }
+    .win-item p {
+      font-size: 13px;
+      line-height: 1.65;
+      color: var(--text-muted);
+    }
+    .win-item a { color: var(--orange-light); text-decoration: underline; text-underline-offset: 2px; }
+
+    /* â”€â”€ FOOTER â”€â”€ */
+    .site-footer {
+      padding: 32px 32px 40px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .footer-brand {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--cream);
+      display: block;
+      margin-bottom: 4px;
+    }
+    .footer-sub {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      line-height: 1.8;
+    }
+    .footer-right {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      text-align: right;
+      line-height: 1.9;
+    }
+
+    @media (max-width: 520px) {
+      .tips-grid    { grid-template-columns: 1fr; }
+      .member-grid  { grid-template-columns: 1fr 1fr; }
+      .site-footer  { flex-direction: column; }
+      .footer-right { text-align: left; }
+      .hero, .content, .section-label, .biz-callout,
+      .hot-topic, .tips-grid, .member-grid, .wins-list,
+      .section-rule, .site-footer { padding-left: 20px; padding-right: 20px; }
+      .section-rule { margin: 0 20px; }
+      .hot-topic, .biz-callout { margin-left: 20px; margin-right: 20px; }
+      .site-header { padding: 16px 20px; }
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- HEADER -->
+  <header class="site-header">
+    <a href="/">
+      <span class="header-brand-name">From Impact to Income</span>
+      <span class="header-brand-sub">AI Junkies Inner Circle</span>
+    </a>
+    <div class="header-lock">
+      <div class="lock-dot"></div>
+      Members Only
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <span class="tag-pill">AI Junkies Newsletter</span>
+    <div class="hero-meta">
+      <div class="hero-issue-num">003</div>
+      <div class="hero-divider-v"></div>
+      <div>
+        <div class="hero-date">April 19â€“25, 2026</div>
+      </div>
+    </div>
+    <h1 class="hero-title">Junk <em>Mail</em></h1>
+    <p class="lede">
+      <strong>Hey Junkies ðŸ‘‹</strong> â€” This week somebody shipped a full AI fitness app. Somebody else built a group travel planning platform. Big Steele cracked open the OpenClaw methodology and shared the whole thing. And Omeika landed her first client in the AI space.
+    </p>
+    <p class="lede" style="margin-top:12px;">Meanwhile Claude Code quietly dropped three automation modes that most people missed, Opus 4.7 started showing up in rumors, and Perplexity announced a billion-dollar build competition that the group immediately started talking about entering as a team. A lot happened. Let's break it all down.</p>
+    <p class="lede" style="margin-top:12px;">No fluff. Just the real stuff. Let's get into it. ðŸ”¥</p>
+  </section>
+
+
+  <div class="section-rule"></div>
+  <div class="section-label">â‘  Main Story</div>
+  <div class="content">
+    <h2>Claude Code Just Got Three Automation Modes â€” Most People Slept On This</h2>
+    <p class="deck">Big Steele dropped an infographic this week that stopped the chat cold. Claude Code can now run automated work three completely different ways, and they are not the same thing.</p>
+
+    <p>If you've been using Claude Code as a one-and-done tool â€” ask it something, get an answer, move on â€” you're leaving the most powerful part on the table. Claude Code now has three distinct ways to run automated, ongoing work without you sitting there manually triggering it. Each one operates differently and is built for a different scenario. Understanding which one to reach for is the difference between a workflow that runs once and one that runs forever.</p>
+
+    <p><strong style="color:var(--cream)">Routines</strong> â€” runs on Anthropic's cloud infrastructure. Your laptop can be off. Triggers via GitHub events. This is agentic engineering for real. Think of it as your agent that lives in the cloud and wakes up when something happens â€” a push, a PR, a webhook. No machine required on your end.</p>
+
+    <p><strong style="color:var(--cream)">Desktop Schedules</strong> â€” runs on your local machine, on your files, on minimum 1-minute intervals. Your computer has to be on. This is the mode for automating things that touch your local environment â€” files, local tools, anything that can't live in the cloud. Granular, immediate, and fully in your control.</p>
+
+    <p><strong style="color:var(--cream)">/loop</strong> â€” live session polling. Temporary. Instant. No setup. This is for right now â€” you want something to keep checking, keep running, keep iterating during an active session. Not persistent, but incredibly fast to deploy.</p>
+
+    <ul>
+      <li><strong>Match the mode to the trigger.</strong> Cloud event? Routines. Local file? Desktop Schedules. Active session? /loop. Using the wrong one wastes either your compute or your time.</li>
+      <li><strong>Routines is the one to master first.</strong> It's the only mode that keeps running when you step away. Once it's set up, it runs whether you're working or sleeping.</li>
+      <li><strong>This is not the same as n8n or Zapier.</strong> These modes run inside Claude Code's context â€” which means your agent has full access to your codebase, your files, and your instructions while it works. That's a different kind of power.</li>
+    </ul>
+  </div>
+  <div class="biz-callout">
+    <div class="biz-label">ðŸ’¼ How does this apply to your business?</div>
+    <p>If you're building voice agents or automations for clients, Desktop Schedules lets you run local quality checks, file syncs, and data processing on a regular interval without touching Zapier or n8n. Routines lets you deploy cloud-triggered agents that react to events automatically â€” no babysitting. Stack these with your existing Vapi and webhook setup and you have a genuinely autonomous backend running for your clients around the clock.</p>
+  </div>
+
+  <div class="section-rule"></div>
+  <div class="section-label">â‘¡ Also This Week</div>
+  <div class="content">
+    <h3>Big Steele Broke Down the OpenClaw Methodology â€” And It's Worth Studying</h3>
+    <p>One of the most technically dense and genuinely useful posts of the week came from Big Steele, who took the OpenClaw system â€” the multi-agent AI receptionist platform â€” and pulled it completely apart to explain what makes it actually reliable. The short version: he took the methodology from OpenClaw and broke it into a custom portal with no hallucinations, no subscription to someone else's vision, and no middleware. Built on his own infrastructure with his business context baked into every layer.</p>
+    <p>What's running: 7 command channels covering CCC deals, AI Marvels, OfferStack, Content Suite, Opportunities, and a Morning Brief. 9 live integrations hitting GoHighLevel, Gmail, Google Calendar, LinkedIn, n8n, Supabase, Calendly, Gemini, and NotebookLM-style research. Two AI brains â€” Claude Sonnet 4 for conversation and decisions, Gemini Pro for deep research. Persistent memory via Supabase. Automated 5AM morning brief. One interface. Full control.</p>
+    <p>The point he kept making: this isn't middleware. No subscription. No dependence on someone else's software that you don't own. His infrastructure handles the orchestration, keeps things running solid without babysitting a server. You can build yours too. Shakira's response in the chat said it plainly: "Oh my god, we need a class on this one."</p>
+  </div>
+
+  <div class="section-rule"></div>
+  <div class="section-label">â‘¢ Worth Knowing</div>
+  <div class="content">
+    <h3>Perplexity Is Looking for the First Computer-Native Unicorn â€” And AI Junkies Should Be in the Conversation</h3>
+    <p>Perplexity announced the Billion Dollar Build this week: an 8-week competition where teams use Perplexity Computer to build a company with a path to $1B. Finalists get up to $1M in investment from the Perplexity Fund and up to $1M in compute credits. Big Steele dropped it in the chat immediately: "Who's gonna enter?" Steve Allison followed up with the obvious next question â€” "What about the AI Junkies as a team?"</p>
+    <p>This isn't a pie-in-the-sky idea. The skills in this group â€” voice agents, automated pipelines, CRM systems, AI-powered products already in market â€” are exactly what a competition like this is designed for. The group is already building things most people at those pitch tables have never seen live. If you're interested in being part of an AI Junkies team entry, now is the time to say something. Details at <a href="https://www.msn.com/en-in/money/topstories/perplexity-s-billion-dollar-build-to-find-ai-unicorns-has-a-catch/ar-AA20zrgK" target="_blank">the Perplexity announcement</a>.</p>
+  </div>
+
+  <div class="section-rule"></div>
+  <div class="section-label">â‘£ Hot Topic</div>
+  <div class="hot-topic">
+    <div class="hot-topic-eyebrow">ðŸ”¥ From the Group Chat</div>
+    <h3>What Does It Actually Cost to Run These Agents?</h3>
+    <p>Derrick asked it directly this week and the chat got real fast. The question of what it costs to run voice agents and AI systems for clients â€” LLM tokens, Vapi minutes, CRM seats, storage, Zapier tasks â€” is something most people are either guessing at or discovering the hard way on their first invoice.</p>
+    <p>The honest answer from the group: it depends on how you structure the deal. Derrick's framing cut through the noise â€” the right question isn't "what does it cost" but "what are you running it for?" Price based on value delivered to the client, not your infrastructure bill. The members who are thriving have clients paying $500â€“$2,500/month while their actual stack costs stay under $100/month. That spread is the business model.</p>
+    <div class="voices">
+      <div class="voice-item">
+        <div class="voice-name">Derrick Harper Sr</div>
+        "Expensive is subjective. The real question is always: what's the most efficient? Because I do not mind spending."
+      </div>
+      <div class="voice-item">
+        <div class="voice-name">Jay</div>
+        "What would you guys say is the most expensive part of running these bots? Those who have them up and running."
+      </div>
+      <div class="voice-item">
+        <div class="voice-name">Derrick Harper Sr</div>
+        "I have a client who runs agents to coach their $2,500/month clients. You would want to use the best with those clients than a coach who runs them to manage $49/month clients for accountability."
+      </div>
+    </div>
+  </div>
+
+  <div class="section-rule"></div>
+  <div class="section-label">â‘¤ Quick Hits</div>
+  <div class="tips-grid">
+    <div class="tip-card">
+      <div class="tip-number">01</div>
+      <strong>Claude Opus 4.7 Is Coming â€” Probably This Week</strong>
+      <p>Rumors hit the group mid-week and Big Steele shared a full feature comparison sheet. Opus 4.7 is expected to drop with a new prompt-based design tool for websites and presentations, and Claude Mythios is already being tested for cybersecurity. Lovable confirmed Opus 4.7 support too â€” it completes tasks in 40% fewer turns. Watch your feeds.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-number">02</div>
+      <strong>Manus vs Claude/Lovable â€” Here's the Real Difference</strong>
+      <p>The group had an honest back-and-forth on this. Manus gives shorter, sweeter prompts for Lovable. Claude gives more detailed control. The consensus: use Manus when you want fast scaffolding, Claude when you need precision or complex multi-step logic. They're not competing â€” they're different tools for different moments in the build.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-number">03</div>
+      <strong>Canva Just Bought an AI Agent Platform</strong>
+      <p>Canva acquired an AI agent platform this week and the group noticed. Combined with Cloudflare upgrading their infrastructure to scale AI agents with OpenClaw-style workflows, the tools around this group's work are consolidating fast. The platforms are moving toward the builders â€” not the other way around.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-number">04</div>
+      <strong>Essential AI Glossary Dropped â€” Grab It</strong>
+      <p>Big Steele shared "The Essential AI Glossary" doc in the chat â€” a 24.7KB reference file covering the terms, tools, and frameworks that come up constantly in this space. If you're newer or you want a document to share with clients who ask basic questions, go back and download that file. 10 hearts in the chat for a reason.</p>
+    </div>
+  </div>
+
+  <div data-optional-section="members">
+  <div class="section-rule"></div>
+  <div class="section-label">â‘¥ Member Spotlight</div>
+  <div class="member-grid" data-content-container>
+    <div class="member-card" data-content-item>
+      <div class="member-card-accent orange"></div>
+      <div class="member-card-body">
+        <div class="member-name">Mrs. Evans K</div>
+        <div class="member-handle">AI Junkies Member</div>
+        <p>Currently building: <strong style="color:var(--cream)">Kivolra</strong> â€” a fully published AI fitness app with workout planning, nutrition logging, live workout tracking, form analysis, exercise guide, and travel/hotel workout modes. Built in partnership with her husband. Live at <a href="https://kivolra.com" style="color:var(--orange-light)">kivolra.com</a>. This is not a demo. This is shipped.</p>
+      </div>
+    </div>
+    <div class="member-card" data-content-item>
+      <div class="member-card-accent"></div>
+      <div class="member-card-body">
+        <div class="member-name">Michelle R</div>
+        <div class="member-handle">AI Junkies Member</div>
+        <p>Currently building: <strong style="color:var(--cream)">Wandervote</strong> â€” an AI group travel planning app that acts like a personal travel assistant for your whole crew. Smart destination matching, group voting with live results, active itineraries for every destination. She's finishing it this week.</p>
+      </div>
+    </div>
+    <div class="member-card" data-content-item>
+      <div class="member-card-accent"></div>
+      <div class="member-card-body">
+        <div class="member-name">Omeika Westry</div>
+        <div class="member-handle">AI Junkies Member</div>
+        <p>Landed her first client in the AI space this week and the whole chat erupted. Her message was simple: "I couldn't wait to share with you all that I landed my first client in the AI space!!! I could not have done this without the knowledge in this amazing community." That's what this is all about.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-rule"></div>
+  <div class="section-label">â‘¦ Wins This Week</div>
+  <div class="wins-list">
+
+    <div class="win-item" data-content-item>
+      <div class="win-emoji">ðŸ¤</div>
+      <div>
+        <span class="win-tag client">First Client</span>
+        <span class="win-title">Omeika Westry â€” First AI Client Landed</span>
+        <p>Came to the group to share the news and couldn't contain herself. The reaction from the chat matched the energy â€” wall-to-wall congratulations. First of many.</p>
+      </div>
+    </div>
+
+    <div class="win-item" data-content-item>
+      <div class="win-emoji">ðŸ—ï¸</div>
+      <div>
+        <span class="win-tag build">App Launched</span>
+        <span class="win-title">Mrs. Evans K â€” Kivolra AI Fitness App Live</span>
+        <p>Built it in partnership with her husband, got his input on features, shipped it. AI Workout Planning, Nutrition, Live Logging, Form Analysis, Travel Mode. All of it. Live at kivolra.com right now.</p>
+      </div>
+    </div>
+
+    <div class="win-item" data-content-item>
+      <div class="win-emoji">ðŸ’°</div>
+      <div>
+        <span class="win-tag client">Revenue</span>
+        <span class="win-title">Cheryl Tibbs â€” $65,000+ Day</span>
+        <p>Shared a screenshot in the chat. The number was real. The group went appropriately crazy. Derrick's response: "Now you know I gotta market this." That's the kind of win that changes the room's temperature.</p>
+      </div>
+    </div>
+
+    <div class="win-item" data-content-item>
+      <div class="win-emoji">ðŸ—ï¸</div>
+      <div>
+        <span class="win-tag build">Build Out</span>
+        <span class="win-title">Britt â€” AI Animated Video Assets</span>
+        <p>Built and published animated AI video assets for her site using Replit. The chat called it fire. Derrick said "You killed it." Rodney Williams said "This is Dope!!!" Multiple members asked to join the zoom to learn how she did it.</p>
+      </div>
+    </div>
+
+    <div class="win-item" data-content-item>
+      <div class="win-emoji">ðŸ—ï¸</div>
+      <div>
+        <span class="win-tag build">Methodology Drop</span>
+        <span class="win-title">Big Steele â€” OpenClaw Custom Portal</span>
+        <p>Took the entire OpenClaw multi-agent system and rebuilt it as his own custom portal â€” no middleware, no subscription, his infrastructure, his context baked in. 7 channels, 9 integrations, 2 AI brains. Shakira said the group needs a class on it. She's right.</p>
+      </div>
+    </div>
+
+    <div class="win-item" data-content-item>
+      <div class="win-emoji">ðŸŽ¤</div>
+      <div>
+        <span class="win-tag speaking">Tribute</span>
+        <span class="win-title">Juan Clawdbot 3 â€” Remembered</span>
+        <p>The group paused this week to honor Juan Clawdbot 3, who passed peacefully from relevance on April 14, 2026 at version 3. Derrick shared a tribute: three versions of dedication, all attached. Now we've paid our respects â€” let me introduce you to what replaced him. ðŸ«¡</p>
+      </div>
+    </div>
+
+  </div>
+
+
+    <div class="win-item" data-content-item>
+      <div class="win-emoji">ðŸ—ï¸</div>
+      <div>
+        <span class="win-tag build">Build Out</span>
+        <span class="win-title">[Member] â€” [Project]</span>
+        <p>[1â€“2 sentences. Deployment, agent live, system finally working?]</p>
+      </div>
+    </div>
+
+    <div class="win-item" data-content-item>
+      <div class="win-emoji">ðŸŽ¤</div>
+      <div>
+        <span class="win-tag speaking">Speaking</span>
+        <span class="win-title">[Member] â€” [Event or Platform]</span>
+        <p>[1â€“2 sentences. Speaking gig, podcast, panel, demo day.]</p>
+      </div>
+    </div>
+
+    <!-- Copy/paste extras as needed â€” delete unused -->
+    <div class="win-item" data-content-item>
+      <div class="win-emoji">ðŸ’°</div>
+      <div>
+        <span class="win-tag client">Paid</span>
+        <span class="win-title">[Member] â€” [Project or Business]</span>
+        <p>[1â€“2 sentences.]</p>
+      </div>
+    </div>
+
+    <div class="win-item" data-content-item>
+      <div class="win-emoji">ðŸš€</div>
+      <div>
+        <span class="win-tag other">Milestone</span>
+        <span class="win-title">[Member] â€” [Achievement]</span>
+        <p>[1â€“2 sentences.]</p>
+      </div>
+    </div>
+
+    <div class="win-item" data-content-item>
+      <div class="win-emoji">ðŸ†</div>
+      <div>
+        <span class="win-tag other">Other</span>
+        <span class="win-title">[Member] â€” [Achievement]</span>
+        <p>[1â€“2 sentences.]</p>
+      </div>
+    </div>
+
+  </div>
+  </div><!-- /section-wins -->
+
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div>
+      <span class="footer-brand">Junk Mail</span>
+      <div class="footer-sub">
+        AI Junkies Weekly Â· Inner Circle Edition<br/>
+        Curated by Derrick Harper
+      </div>
+    </div>
+    <div class="footer-right">
+      Issue #[NUMBER] Â· April 19â€“25, 2026<br/>
+      For AI Junkies members only<br/>
+      Not for public distribution
+    </div>
+  </footer>
+
+</div>
+
+  <script>
+    // Auto-hide optional sections (Member Spotlight + Wins) if they have no content cards
+    document.querySelectorAll('[data-optional-section]').forEach(function(section) {
+      var container = section.querySelector('[data-content-container]');
+      if (!container) return;
+      var items = container.querySelectorAll('[data-content-item]');
+      if (items.length === 0) {
+        section.style.display = 'none';
+      }
+    });
+  </script>
+</body>
+</html>
