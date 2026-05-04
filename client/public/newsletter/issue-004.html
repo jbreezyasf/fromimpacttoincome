@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Junk Mail — Issue #004 — April 26 – May 2 | AI Junkies Inner Circle</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,600&family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ── SIGNAL & NOISE TOKENS ── */
+    :root {
+      --cream:        #FAF7F2;
+      --ink:          #1E1B18;
+      --ink-card:     #26231F;
+      --ink-card-2:   #2E2B26;
+      --orange:       #C4622D;
+      --orange-light: #D4824D;
+      --green:        #1C3A2E;
+      --green-light:  #2A5240;
+      --text-body:    #C2BDB7;
+      --text-muted:   #8A857E;
+      --text-dim:     #5E5A54;
+      --border:       rgba(255,255,255,0.08);
+      --border-hover: rgba(196,98,45,0.4);
+    }
+
+    body {
+      background: var(--ink);
+      font-family: 'DM Sans', sans-serif;
+      color: var(--text-body);
+      font-size: 15px;
+      line-height: 1.75;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .wrap {
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    /* ── HEADER ── */
+    .site-header {
+      padding: 20px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(30,27,24,0.95);
+      backdrop-filter: blur(12px);
+    }
+    .site-header a { text-decoration: none; }
+    .header-brand-name {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--cream);
+      display: block;
+      line-height: 1.2;
+    }
+    .header-brand-sub {
+      font-family: 'Fraunces', serif;
+      font-style: italic;
+      font-size: 11px;
+      color: var(--orange);
+      display: block;
+      line-height: 1.2;
+    }
+    .header-lock {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+    .lock-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--text-dim);
+      flex-shrink: 0;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      padding: 64px 32px 48px;
+    }
+    .tag-pill {
+      display: inline-block;
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      background: var(--orange);
+      color: var(--cream);
+      padding: 4px 10px;
+      border-radius: 2px;
+      margin-bottom: 20px;
+    }
+    .issue-eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 6px;
+    }
+    .hero-title {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: clamp(2.2rem, 6vw, 3.4rem);
+      color: var(--cream);
+      letter-spacing: -0.02em;
+      line-height: 1.0;
+      margin-bottom: 16px;
+    }
+    .hero-title em {
+      font-style: italic;
+      color: var(--orange);
+    }
+    .hero-meta {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .hero-issue-num {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: 3.5rem;
+      color: rgba(255,255,255,0.08);
+      line-height: 1;
+    }
+    .hero-divider-v {
+      width: 1px;
+      height: 48px;
+      background: var(--border);
+    }
+    .hero-date {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+    .lede {
+      font-size: 15px;
+      line-height: 1.75;
+      color: var(--text-muted);
+      max-width: 560px;
+    }
+    .lede strong { color: var(--cream); font-weight: 600; }
+
+    /* ── SECTION RULE ── */
+    .section-rule {
+      height: 1px;
+      background: var(--border);
+      margin: 0 32px;
+    }
+
+    /* ── SECTION LABEL ── */
+    .section-label {
+      padding: 32px 32px 0;
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 2px;
+    }
+
+    /* ── STORY CONTENT ── */
+    .content {
+      padding: 14px 32px 32px;
+    }
+    .content h2 {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: clamp(1.5rem, 3.5vw, 2rem);
+      color: var(--cream);
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      margin-bottom: 12px;
+    }
+    .content h3 {
+      font-family: 'Fraunces', serif;
+      font-weight: 600;
+      font-size: 1.25rem;
+      color: var(--cream);
+      letter-spacing: -0.01em;
+      line-height: 1.25;
+      margin-bottom: 10px;
+    }
+    .content .deck {
+      font-family: 'Fraunces', serif;
+      font-style: italic;
+      font-size: 1rem;
+      color: var(--text-muted);
+      margin-bottom: 18px;
+      line-height: 1.6;
+    }
+    .content p {
+      color: var(--text-body);
+      margin-bottom: 14px;
+      font-size: 15px;
+    }
+    .content p:last-child { margin-bottom: 0; }
+    .content ul {
+      padding-left: 20px;
+      margin-bottom: 14px;
+    }
+    .content ul li {
+      margin-bottom: 8px;
+      color: var(--text-body);
+    }
+    .content ul li strong { color: var(--cream); }
+    .content a { color: var(--orange-light); text-decoration: underline; text-underline-offset: 3px; }
+    .content pre {
+      background: #141210;
+      border: 1px solid rgba(255,255,255,0.06);
+      padding: 16px;
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      line-height: 1.7;
+      overflow-x: auto;
+      margin-bottom: 14px;
+      border-radius: 3px;
+      color: #C2BDB7;
+    }
+
+    /* ── BIZ CALLOUT ── */
+    .biz-callout {
+      margin: 0 32px 28px;
+      border-left: 3px solid var(--orange);
+      background: rgba(196,98,45,0.08);
+      padding: 16px 20px;
+      border-radius: 0 3px 3px 0;
+    }
+    .biz-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--orange);
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+    .biz-callout p {
+      font-size: 14px;
+      line-height: 1.7;
+      color: var(--text-body);
+    }
+
+    /* ── HOT TOPIC ── */
+    .hot-topic {
+      margin: 0 32px 32px;
+      background: var(--ink-card);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 24px;
+    }
+    .hot-topic-eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 10px;
+    }
+    .hot-topic h3 {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: 1.4rem;
+      color: var(--cream);
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      margin-bottom: 12px;
+    }
+    .hot-topic p {
+      font-size: 14px;
+      line-height: 1.75;
+      color: var(--text-body);
+      margin-bottom: 12px;
+    }
+    .voices {
+      margin-top: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .voice-item {
+      background: rgba(255,255,255,0.04);
+      border-left: 2px solid var(--orange);
+      padding: 10px 14px;
+      border-radius: 0 2px 2px 0;
+      font-size: 13.5px;
+      line-height: 1.6;
+      color: var(--text-body);
+      font-style: italic;
+    }
+    .voice-name {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 5px;
+      font-style: normal;
+    }
+
+    /* ── QUICK HITS GRID ── */
+    .tips-grid {
+      padding: 14px 32px 32px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .tip-card {
+      background: var(--ink-card);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 18px;
+      transition: border-color 0.2s;
+    }
+    .tip-card:hover { border-color: var(--border-hover); }
+    .tip-number {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: 2.2rem;
+      color: rgba(255,255,255,0.07);
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    .tip-card strong {
+      display: block;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--cream);
+      margin-bottom: 6px;
+      line-height: 1.3;
+    }
+    .tip-card p {
+      font-size: 13px;
+      line-height: 1.65;
+      color: var(--text-muted);
+    }
+
+    /* ── MEMBER SPOTLIGHT ── */
+    .member-grid {
+      padding: 14px 32px 32px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    .member-card {
+      background: var(--ink-card);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+    .member-card:hover { border-color: var(--border-hover); }
+    .member-card-accent {
+      height: 3px;
+      background: var(--green);
+    }
+    .member-card-accent.orange { background: var(--orange); }
+    .member-card-body { padding: 14px; }
+    .member-name {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--cream);
+      margin-bottom: 2px;
+      line-height: 1.2;
+    }
+    .member-handle {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.08em;
+      color: var(--text-dim);
+      margin-bottom: 8px;
+    }
+    .member-card-body p {
+      font-size: 12.5px;
+      line-height: 1.6;
+      color: var(--text-muted);
+    }
+    .member-card-body em { color: var(--text-body); font-style: italic; }
+
+    /* ── WINS ── */
+    .wins-list {
+      padding: 14px 32px 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .win-item {
+      background: var(--ink-card);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 16px 18px;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 14px;
+      align-items: start;
+      transition: border-color 0.2s;
+    }
+    .win-item:hover { border-color: var(--border-hover); }
+    .win-emoji {
+      font-size: 18px;
+      line-height: 1;
+      margin-top: 2px;
+    }
+    .win-tag {
+      display: inline-block;
+      font-family: 'DM Mono', monospace;
+      font-size: 8.5px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 2px 7px;
+      border-radius: 2px;
+      margin-bottom: 5px;
+      border: 1px solid currentColor;
+    }
+    .win-tag.client   { color: var(--orange-light); }
+    .win-tag.build    { color: var(--green-light); }
+    .win-tag.speaking { color: #6BAE8C; }
+    .win-tag.other    { color: var(--text-dim); }
+    .win-title {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--cream);
+      margin-bottom: 3px;
+      display: block;
+    }
+    .win-item p {
+      font-size: 13px;
+      line-height: 1.65;
+      color: var(--text-muted);
+    }
+    .win-item a { color: var(--orange-light); text-decoration: underline; text-underline-offset: 2px; }
+
+    /* ── FOOTER ── */
+    .site-footer {
+      padding: 32px 32px 40px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .footer-brand {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--cream);
+      display: block;
+      margin-bottom: 4px;
+    }
+    .footer-sub {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      line-height: 1.8;
+    }
+    .footer-right {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      text-align: right;
+      line-height: 1.9;
+    }
+
+    @media (max-width: 520px) {
+      .tips-grid    { grid-template-columns: 1fr; }
+      .member-grid  { grid-template-columns: 1fr 1fr; }
+      .site-footer  { flex-direction: column; }
+      .footer-right { text-align: left; }
+      .hero, .content, .section-label, .biz-callout,
+      .hot-topic, .tips-grid, .member-grid, .wins-list,
+      .section-rule, .site-footer { padding-left: 20px; padding-right: 20px; }
+      .section-rule { margin: 0 20px; }
+      .hot-topic, .biz-callout { margin-left: 20px; margin-right: 20px; }
+      .site-header { padding: 16px 20px; }
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- HEADER -->
+  <header class="site-header">
+    <a href="/">
+      <span class="header-brand-name">From Impact to Income</span>
+      <span class="header-brand-sub">AI Junkies Inner Circle</span>
+    </a>
+    <div class="header-lock">
+      <div class="lock-dot"></div>
+      Members Only
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <span class="tag-pill">AI Junkies Newsletter</span>
+    <div class="hero-meta">
+      <div class="hero-issue-num">004</div>
+      <div class="hero-divider-v"></div>
+      <div>
+        <div class="hero-date">April 26 – May 2, 2026</div>
+      </div>
+    </div>
+    <h1 class="hero-title">Junk <em>Mail</em></h1>
+    <p class="lede">
+      <strong>Hey Junkies 👋</strong> — Anthropic quietly shipped something massive this week and barely said a word about it. AI Junkies University is officially live as of May 1st. Britt closed her first paid AI career pivot client. And Michelle R's 13-year-old son walked into her room at midnight to suggest app features — because he'd already built his own trucking app with Claude. That's the week.
+    </p>
+    <p class="lede" style="margin-top:12px;">The pace is not slowing down. The tools are getting more powerful, the community is getting more visible, and people are closing actual business. If you've been watching from the sidelines this is your reminder: the people winning right now started uncomfortable. Let's get into it.</p>
+    <p class="lede" style="margin-top:12px;">No fluff. Just the real stuff. Let's get into it. 🔥</p>
+  </section>
+
+
+  <div class="section-rule"></div>
+  <div class="section-label">① Main Story</div>
+  <div class="content">
+    <h2>Anthropic Quietly Shipped Something Nobody Was Talking About</h2>
+    <p class="deck">You can now run Claude Code and Claude Cowork against any model — GPT-5, Grok, Gemini, or your own local models. No announcement. No blog post. Just shipped.</p>
+
+    <p>This landed in the group chat without fanfare and it deserves a full explanation because most people read right past it. Anthropic added a configuration option inside Claude Desktop that lets you point the entire Claude Code and Cowork infrastructure at any model you want via OpenRouter as a gateway — or directly at a local model running on your own machine through Ollama. That means Claude's full agent harness — skills, MCP servers, file management, sub-agents — can now run against DeepSeek, Gemini, GPT-5, or whatever you have loaded locally. Nothing hitting an API. Nothing leaving your machine.</p>
+
+    <p>Here's how to set it up: In Claude Desktop, go to <strong style="color:var(--cream)">Menu → Developer → Configure Third-Party Inference</strong>. Set Connection to Gateway, then fill in: Gateway base URL as <code style="background:rgba(255,255,255,0.08);padding:2px 6px;border-radius:2px;font-family:'DM Mono',monospace;font-size:12px">https://openrouter.ai/api</code>, your OpenRouter API key, and auth scheme as <code style="background:rgba(255,255,255,0.08);padding:2px 6px;border-radius:2px;font-family:'DM Mono',monospace;font-size:12px">x-api-key</code>. OpenRouter has free models available right now — no $100-200/month subscription required to get started.</p>
+
+    <p>The bigger implication: if you're building for clients with sensitive data — healthcare, legal, finance — this changes the conversation entirely. You can now run the full Claude agent infrastructure locally with zero data leaving the building. That's not a workaround. That's a selling point worth real money.</p>
+
+    <ul>
+      <li><strong>OpenRouter = free starting point.</strong> Point Claude Desktop at OpenRouter and access multiple models without paying for each individually. Good for testing and comparison before committing to a deployment model.</li>
+      <li><strong>Local inference = the privacy play.</strong> Running Ollama on your Mac with DeepSeek or another open model loaded means full Claude agent capability with complete data isolation. Perfect for sensitive client work.</li>
+      <li><strong>This is not a workaround.</strong> It's a documented setting inside Claude Desktop. Anthropic built this. Use it.</li>
+    </ul>
+  </div>
+  <div class="biz-callout">
+    <div class="biz-label">💼 How does this apply to your business?</div>
+    <p>Any client in healthcare, legal, financial services, or government who pushed back on AI because of data privacy concerns just lost their main objection. You can now walk into those meetings and say the agent runs entirely on their infrastructure, nothing leaves their environment, and it still has the full capability of Claude's agent ecosystem. That's a different category of conversation — and a different price point.</p>
+  </div>
+
+  <div class="section-rule"></div>
+  <div class="section-label">② Also This Week</div>
+  <div class="content">
+    <h3>AI Junkies University Is Live — And It's Unlike Anything You've Seen</h3>
+    <p>May 1st happened. AI Junkies University officially opened its doors to the world, and the people who've been inside building it all week made sure you felt the weight of what that means. Big Steele spent 7.38 hours in a single Zoom call with the team finalizing it. Anthony Sr's response when it launched: "I cannot wait until y'all see the university up and running. It is unlike the rest. If you love this community — May 1st!!!!!"</p>
+    <p>This isn't just a course platform. It's the formalization of everything this group has been doing — AI skills and tools, real-world business applications, agent mindset, community and support. The tagline says it plainly: "AI isn't here to replace you. Agents who use AI in their business will succeed." Laura Covile coordinated a 3-video promo push in the days leading up to launch — one video per day across every platform. The buzz started before the doors opened. Anthony Sr dropped a dedicated random drops course at <a href="https://www.aijunkiesuniversity.com/room/builtbyunc/courses/random-drops" style="color:var(--orange-light)">aijunkiesuniversity.com</a>. If you haven't been in yet — go.</p>
+  </div>
+
+  <div class="section-rule"></div>
+  <div class="section-label">③ Worth Knowing</div>
+  <div class="content">
+    <h3>The Human-in-the-Loop Business Model Is Already Working at Scale — Somewhere Else</h3>
+    <p>Cheryl shared a story from AI Week Atlanta this week that the group needed to hear. A guy from London runs three businesses — a coaching company, a cleaning service in Atlanta (while he and his family live in Dubai), and about 200 short-term rental units in London. All three are run by Claude AI agents. Each business has a human VA that oversees the agents. He manages everything remotely. Derrick's response: "You're absolutely in the vein with the human in the loop. The human can actually manage the agents, and with the guys and gals here in the cohort knowing what they know about agents, this would be easy money."</p>
+    <p>This is the business model in its clearest form. You're not the operator of the agents — you're the architect. You build the system, you train the VA, you collect the retainer. The agent runs the business. The VA watches the agent. You watch the numbers. The people in this group already have the skills to build exactly this. The only question is whether you see it.</p>
+  </div>
+
+  <div class="section-rule"></div>
+  <div class="section-label">④ Hot Topic</div>
+  <div class="hot-topic">
+    <div class="hot-topic-eyebrow">🔥 From the Group Chat</div>
+    <h3>Protect Your Stack: Cloudflare's AI Labyrinth and the Bot Problem Nobody Talks About</h3>
+    <p>HotRod P dropped a Cloudflare AI Labyrinth setup guide this week and it got 17 fire emojis — which tells you something. If you have forms, Vapi agents, or chat bots on your pages that cost you money per interaction, you have a bot exposure problem you may not know about yet.</p>
+    <p>The Cloudflare AI Labyrinth is a free tool that traps bots violating your crawl rules by routing them into an infinite maze of fake pages — wasting their resources and compute while protecting yours. For anyone running voice agents where every call costs money, or forms connected to paid automations, this is not optional. HotRod built a setup guide and shared the full doc in the chat. Go back and find it.</p>
+    <div class="voices">
+      <div class="voice-item">
+        <div class="voice-name">HotRod P</div>
+        "I put together this guide for this tool I added to my site. Cloudflare built a free tool that traps bots that don't follow the rules. It takes them through a maze of fake pages and wastes their resources while protecting your content. This is important if you have forms, Vapi, or chat bots on your page that cost you money."
+      </div>
+      <div class="voice-item">
+        <div class="voice-name">Steve Allison</div>
+        "Hi Guys, I don't know how many of you use Plaud to record your meetings, Zoom, Google Meets, or just normal conversations like brain dumps. Attached is a SOP to pull every recording into Google Drive — it runs every night at 2 to pull new files."
+      </div>
+      <div class="voice-item">
+        <div class="voice-name">Cheryl Tibbs</div>
+        "Thanks Steve! I use Plaud — the way my ADHD is set up I don't know how I ever got along without one!"
+      </div>
+    </div>
+  </div>
+
+  <div class="section-rule"></div>
+  <div class="section-label">⑤ Quick Hits</div>
+  <div class="tips-grid">
+    <div class="tip-card">
+      <div class="tip-number">01</div>
+      <strong>Claude + Creative Suite: Adobe, Ableton, Blender &amp; More</strong>
+      <p>Claude dropped connectors for Adobe Creative Cloud, Ableton, Splice, Canva Affinity, SketchUp, and Resolume this week. Also joined the Blender Development Fund. Big Steele's take: "Whole creative suite dropped today for Adobe and 3D. Music is on the way as well." The integrations keep coming.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-number">02</div>
+      <strong>Lovable Mobile App Is Live</strong>
+      <p>Lovable launched their mobile app this week — which means you can now build and iterate on your projects from your phone. Omeika spotted it first and shared the screenshot. Derrick's reaction: he'd been looking for it that same morning and the email arrived the same day. Now you can do no-code builds right from your phone.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-number">03</div>
+      <strong>MeiGen — Free AI Prompt Gallery</strong>
+      <p>Cheryl shared MeiGen this week — a free prompt gallery for AI images and videos. Browse visual examples, open the prompt, copy it, and remix for your own idea. If you're struggling to prompt for visuals or want to see what's possible before spending credits, this is the reference library you didn't know you needed.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-number">04</div>
+      <strong>Big Steele Built an Entire AI Artist Label Over the Weekend</strong>
+      <p>Using Suno. Going the EDM route for the artist persona. Already has verses and a hook open and wants to drop an AI Junkies EP. Tequila Michelle has 3 songs published. Kre has a whole arsenal waiting. Anthony Sr's album drops April 30th. The group is not just building apps — they're building catalogs.</p>
+    </div>
+  </div>
+
+  <div data-optional-section="members">
+  <div class="section-rule"></div>
+  <div class="section-label">⑥ Member Spotlight</div>
+  <div class="member-grid" data-content-container>
+    <div class="member-card" data-content-item>
+      <div class="member-card-accent orange"></div>
+      <div class="member-card-body">
+        <div class="member-name">HotRod P</div>
+        <div class="member-handle">AI Junkies Member</div>
+        <p>Building: <strong style="color:var(--cream)">Protocol</strong> — a peptide tracking app with AI coaching built in. Tracks protocols, food, workouts, serum levels, blood work, sugar alcohol math, cross-correlating signals, race and age adjustments, and drug interactions. Almost ready for beta testing. And this week he also walked into his first business mixer and came out with real connections.</p>
+      </div>
+    </div>
+    <div class="member-card" data-content-item>
+      <div class="member-card-accent"></div>
+      <div class="member-card-body">
+        <div class="member-name">Michelle R</div>
+        <div class="member-handle">AI Junkies Member</div>
+        <p>Launched: <strong style="color:var(--cream)">clockoutcashin.com</strong> — an automated backend system for small business owners who still work a 9-5, so their business doesn't stop because they're on the clock. Finished her funnel, user portal, and admin portal in the same week. Also: her 13-year-old son built his own trucking app using Claude. #proudmommamoment</p>
+      </div>
+    </div>
+    <div class="member-card" data-content-item>
+      <div class="member-card-accent"></div>
+      <div class="member-card-body">
+        <div class="member-name">Britt</div>
+        <div class="member-handle">AI Junkies Member</div>
+        <p>Closed her first paid AI career pivot client this week — 28 fire emojis in the chat. Not a voice agent client. Not a build-out. A career pivot client. That means someone paid her to help them make the same transition she made. The skills compound. The offering expands. Keep going.</p>
+      </div>
+    </div>
+  </div>
+  </div><!-- /section-members -->
+
+  <div data-optional-section="wins">
+  <div class="section-rule"></div>
+  <div class="section-label">⑦ Wins This Week</div>
+  <div class="wins-list" data-content-container>
+
+    <div class="win-item" data-content-item>
+      <div class="win-emoji">🤝</div>
+      <div>
+        <span class="win-tag client">First Pivot Client</span>
+        <span class="win-title">Britt — First Paid AI Career Pivot Client</span>
+        <p>The chat got 28 fire emojis and half the group jumping in with congratulations. She also announced she was simultaneously finishing building a CRM system for her aunt. Two things at once. That's the standard.</p>
+      </div>
+    </div>
+
+    <div class="win-item" data-content-item>
+      <div class="win-emoji">🏗️</div>
+      <div>
+        <span class="win-tag build">Site Launched</span>
+        <span class="win-title">Michelle R — clockoutcashin.com Live</span>
+        <p>Funnel, user portal, and admin portal all done in the same week. Off maybe half an hour of sleep. Her message to the group: "I am so excited about my offer and I CAN'T wait to present it."</p>
+      </div>
+    </div>
+
+    <div class="win-item" data-content-item>
+      <div class="win-emoji">💰</div>
+      <div>
+        <span class="win-tag client">Client Call</span>
+        <span class="win-title">Cheryl Tibbs — $13K Client Phase A + College President</span>
+        <p>Two hour-long client calls on Wednesday. Walked a $13K client through Phase A completion. A college president client and board member are creating an IT spec sheet — and it's a go.</p>
+      </div>
+    </div>
+
+    <div class="win-item" data-content-item>
+      <div class="win-emoji">🎤</div>
+      <div>
+        <span class="win-tag speaking">Business Mixer</span>
+        <span class="win-title">HotRod P — First Business Mixer, First Connections</span>
+        <p>Canceled his trucking loads for the day. Walked in. Got 60 seconds to speak. Connected with multiple local businesses afterward, including a pest control owner who wants to move fast. His neighbor who he's already building a portal for vouched for him publicly. The room already knew.</p>
+      </div>
+    </div>
+
+    <div class="win-item" data-content-item>
+      <div class="win-emoji">🏗️</div>
+      <div>
+        <span class="win-tag build">Site Launched</span>
+        <span class="win-title">Tracy Stull — Voyswell.com Live</span>
+        <p>Voice agents for service businesses. Live at voyswell.com. Instagram and Facebook pages up. Dropped it in the chat and asked for feedback. This is what shipping looks like — not waiting for perfect, just getting it in front of people.</p>
+      </div>
+    </div>
+
+    <div class="win-item" data-content-item>
+      <div class="win-emoji">🚀</div>
+      <div>
+        <span class="win-tag other">Next Gen Win</span>
+        <span class="win-title">Michelle R's 13-Year-Old Son — Built a Trucking App with Claude</span>
+        <p>Michelle thought he was asleep. He walked in at midnight asking if she'd considered features to add to her trucking app. Phone in hand — had already built his own version using Claude. Fourteen hearts in the chat. The next generation is not waiting.</p>
+      </div>
+    </div>
+
+  </div>
+  </div><!-- /section-wins -->
+
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div>
+      <span class="footer-brand">Junk Mail</span>
+      <div class="footer-sub">
+        AI Junkies Weekly · Inner Circle Edition<br/>
+        Curated by Derrick Harper
+      </div>
+    </div>
+    <div class="footer-right">
+      Issue #004 · April 26 – May 2, 2026<br/>
+      For AI Junkies members only<br/>
+      Not for public distribution
+    </div>
+  </footer>
+
+</div>
+
+  <script>
+    // Auto-hide optional sections (Member Spotlight + Wins) if they have no content cards
+    document.querySelectorAll('[data-optional-section]').forEach(function(section) {
+      var container = section.querySelector('[data-content-container]');
+      if (!container) return;
+      var items = container.querySelectorAll('[data-content-item]');
+      if (items.length === 0) {
+        section.style.display = 'none';
+      }
+    });
+  </script>
+</body>
+</html>
