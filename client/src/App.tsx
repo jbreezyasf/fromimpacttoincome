@@ -9,6 +9,8 @@ import About from "./pages/About";
 import Journal from "./pages/Journal";
 import JournalPost from "./pages/JournalPost";
 import Podcast from "./pages/Podcast";
+import Newsletter from "./pages/Newsletter";
+import NewsletterIssue from "./pages/NewsletterIssue";
 
 function Router() {
   return (
@@ -18,7 +20,8 @@ function Router() {
       <Route path="/journal" component={Journal} />
       <Route path="/journal/:slug" component={JournalPost} />
       <Route path="/podcast" component={Podcast} />
-      {/* Newsletter is served as static HTML from /public/newsletter — no SPA route */}
+      <Route path="/newsletter" component={Newsletter} />
+      <Route path="/newsletter/:slug" component={NewsletterIssue} />
       <Route path="/404" component={NotFound} />
       <Route component={NotFound} />
     </Switch>
