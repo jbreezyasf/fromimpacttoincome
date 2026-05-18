@@ -77,7 +77,9 @@ You need a table that holds the raw messages the newsletter is generated from. T
 | reaction_count | INT         | Number of reactions (optional)  |
 | reply_to_text  | TEXT        | Text being replied to (optional)|
 
-Adapt the table name and column names in `generate_newsletter.py` → `fetch_messages()` if your source is different (Discord, Slack export, etc.).
+Adapt the table name and column names in `generate_newsletter.py` → `fetch_messages()` if your source is different.
+
+For pulling messages from other community platforms (Skool, GoHighLevel, Facebook Groups, Discord, Slack), see the separate **[COMMUNITY_CONNECTORS.md](COMMUNITY_CONNECTORS.md)** addendum.
 
 ---
 
@@ -234,7 +236,8 @@ client/newsletter-cron/
 ├── requirements.txt          # Python dependencies
 ├── Profile                   # Railway Procfile
 ├── railway.toml              # Cron schedule
-└── SETUP_GUIDE.md            # This file
+├── SETUP_GUIDE.md            # This file
+└── COMMUNITY_CONNECTORS.md   # Addendum: Skool, GHL, Facebook, Discord, Slack connectors
 
 client/public/newsletter/
 ├── index.html                # Issue listing page (auto-updated)
