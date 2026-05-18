@@ -18,10 +18,15 @@ RAILWAY ENV VARS (set in your Railway service):
   SUPABASE_SERVICE_KEY
   ANTHROPIC_API_KEY
   GITHUB_TOKEN              (fine-grained, repo read/write)
-  GITHUB_REPO               (jbreezyasf/fromimpacttoincome)
+  GITHUB_REPO               (owner/repo)
   VERCEL_DEPLOY_HOOK_URL    (from Vercel project settings → Git → Deploy Hooks)
-  OPENCLAW_WEBHOOK_URL      (your OpenClaw agent webhook endpoint)
-  NEWSLETTER_BASE_URL       (https://fromimpacttoincome.com/newsletter)
+  NEWSLETTER_BASE_URL       (https://yoursite.com/newsletter)
+
+  NOTIFICATIONS (set one or more):
+  TELEGRAM_BOT_TOKEN        (from @BotFather)
+  TELEGRAM_CHAT_ID          (group or user chat ID)
+  SLACK_WEBHOOK_URL         (from Slack Incoming Webhooks app)
+  OPENCLAW_WEBHOOK_URL      (generic webhook — any agent or automation)
 """
 
 import base64
@@ -596,37 +601,87 @@ def trigger_vercel_deploy() -> None:
 
 
 # ═════════════════════════════════════════════════════════════════════════════
-# STEP 6 — Notify OpenClaw social agent
+# STEP 6 — Notify (Telegram, Slack, or generic webhook)
 # ═════════════════════════════════════════════════════════════════════════════
 
-def notify_openclaw(issue_number: int, slug: str, content: dict) -> None:
-    if not OPENCLAW_WEBHOOK:
-        log.warning("OPENCLAW_WEBHOOK_URL not set — skipping social post")
+TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", "")
+TELEGRAM_CHAT_ID   = os.environ.get("TELEGRAM_CHAT_ID", "")
+SLACK_WEBHOOK_URL  = os.environ.get("SLACK_WEBHOOK_URL", "")
+
+
+def _build_notify_message(issue_number: int, slug: str, content: dict) -> str:
+    """Build the notification message used across all channels."""
+    issue_url = f"{NEWSLETTER_BASE}/{slug}"
+    headline = content.get("main_story", {}).get("headline", "")
+    wins = content.get("wins", [])
+    win_lines = "\n".join(f"  - {w.get('title', '')}" for w in wins[:3])
+    msg = (
+        f"🗞️ Newsletter Issue #{issue_number:03d} is live!\n\n"
+        f"This week: {headline}\n"
+    )
+    if win_lines:
+        msg += f"\nTop wins:\n{win_lines}\n"
+    msg += f"\nRead it → {issue_url}"
+    return msg
+
+
+def notify_telegram(issue_number: int, slug: str, content: dict) -> None:
+    if not TELEGRAM_BOT_TOKEN or not TELEGRAM_CHAT_ID:
+        log.info("Telegram not configured — skipping")
         return
+    msg = _build_notify_message(issue_number, slug, content)
+    url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
+    resp = requests.post(url, json={
+        "chat_id": TELEGRAM_CHAT_ID,
+        "text": msg,
+        "parse_mode": "HTML",
+        "disable_web_page_preview": False,
+    }, timeout=10)
+    if resp.ok:
+        log.info("Telegram notification sent ✓")
+    else:
+        log.error(f"Telegram notify failed: {resp.status_code} {resp.text}")
 
-    issue_url  = f"{NEWSLETTER_BASE}/{slug}"
-    main_headline = content.get("main_story", {}).get("headline", "")
-    wins       = content.get("wins", [])
-    top_wins   = [w.get("title", "") for w in wins[:3]]
 
+def notify_slack(issue_number: int, slug: str, content: dict) -> None:
+    if not SLACK_WEBHOOK_URL:
+        log.info("Slack not configured — skipping")
+        return
+    msg = _build_notify_message(issue_number, slug, content)
+    resp = requests.post(SLACK_WEBHOOK_URL, json={"text": msg}, timeout=10)
+    if resp.ok:
+        log.info("Slack notification sent ✓")
+    else:
+        log.error(f"Slack notify failed: {resp.status_code} {resp.text}")
+
+
+def notify_webhook(issue_number: int, slug: str, content: dict) -> None:
+    if not OPENCLAW_WEBHOOK:
+        log.info("Generic webhook not configured — skipping")
+        return
+    issue_url = f"{NEWSLETTER_BASE}/{slug}"
+    headline = content.get("main_story", {}).get("headline", "")
+    wins = content.get("wins", [])
     payload = {
         "event":        "newsletter_published",
         "issue_number": issue_number,
         "issue_url":    issue_url,
-        "main_headline": main_headline,
-        "top_wins":     top_wins,
-        "message": (
-            f"🗞️ Junk Mail Issue #{issue_number:03d} is live!\n\n"
-            f"This week: {main_headline}\n\n"
-            f"Read it here: {issue_url}"
-        ),
+        "main_headline": headline,
+        "top_wins":     [w.get("title", "") for w in wins[:3]],
+        "message":      _build_notify_message(issue_number, slug, content),
     }
-
     resp = requests.post(OPENCLAW_WEBHOOK, json=payload, timeout=10)
     if resp.ok:
-        log.info("OpenClaw social agent notified ✓")
+        log.info("Webhook notification sent ✓")
     else:
-        log.error(f"OpenClaw notify failed: {resp.status_code} {resp.text}")
+        log.error(f"Webhook notify failed: {resp.status_code} {resp.text}")
+
+
+def send_notifications(issue_number: int, slug: str, content: dict) -> None:
+    """Send notifications to all configured channels."""
+    notify_telegram(issue_number, slug, content)
+    notify_slack(issue_number, slug, content)
+    notify_webhook(issue_number, slug, content)
 
 
 # ═════════════════════════════════════════════════════════════════════════════
@@ -677,8 +732,8 @@ def run():
     time.sleep(30)
     mark_published(issue_number)
 
-    # Notify OpenClaw
-    notify_openclaw(issue_number, slug, content)
+    # Notify all configured channels (Telegram, Slack, webhook)
+    send_notifications(issue_number, slug, content)
 
     log.info("═" * 60)
     log.info(f"Issue #{issue_number} complete — {NEWSLETTER_BASE}/{slug}")
