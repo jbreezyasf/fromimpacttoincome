@@ -9,8 +9,9 @@ Workflow:
   2. Send to Claude API → get structured JSON (all 7 sections)
   3. Store JSON in newsletter_issues table in Supabase
   4. Increment edition counter
-  5. POST to Vercel deploy webhook → site rebuilds with new issue
-  6. POST to OpenClaw social agent → posts announcement
+  5. Render JSON → static HTML and commit to GitHub
+  6. POST to Vercel deploy webhook → site rebuilds with new issue
+  7. POST to OpenClaw social agent → posts announcement
 
 RAILWAY ENV VARS (set in your Railway service):
   SUPABASE_URL
@@ -23,9 +24,12 @@ RAILWAY ENV VARS (set in your Railway service):
   NEWSLETTER_BASE_URL       (https://fromimpacttoincome.com/newsletter)
 """
 
+import base64
+import html as html_mod
 import json
 import logging
 import os
+import re
 import sys
 from datetime import date, datetime, timedelta, timezone
 
@@ -52,6 +56,9 @@ claude = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
 VERCEL_HOOK        = os.environ.get("VERCEL_DEPLOY_HOOK_URL", "")
 OPENCLAW_WEBHOOK   = os.environ.get("OPENCLAW_WEBHOOK_URL", "")
 NEWSLETTER_BASE    = os.environ.get("NEWSLETTER_BASE_URL", "https://fromimpacttoincome.com/newsletter")
+GITHUB_TOKEN       = os.environ.get("GITHUB_TOKEN", "")
+GITHUB_REPO        = os.environ.get("GITHUB_REPO", "jbreezyasf/fromimpacttoincome")
+GITHUB_API         = "https://api.github.com"
 MIN_MESSAGES       = 20   # abort if fewer messages than this (likely a bad week)
 
 
@@ -296,7 +303,285 @@ def mark_published(issue_number: int) -> None:
 
 
 # ═════════════════════════════════════════════════════════════════════════════
-# STEP 4 — Trigger Vercel deploy
+# STEP 4 — Render HTML and commit to GitHub
+# ═════════════════════════════════════════════════════════════════════════════
+
+def _gh_headers() -> dict:
+    return {
+        "Authorization": f"token {GITHUB_TOKEN}",
+        "Accept": "application/vnd.github.v3+json",
+    }
+
+
+def _gh_get_file(path: str) -> tuple[str, str]:
+    """Fetch a file from GitHub. Returns (content, sha)."""
+    url = f"{GITHUB_API}/repos/{GITHUB_REPO}/contents/{path}"
+    resp = requests.get(url, headers=_gh_headers(), timeout=15)
+    resp.raise_for_status()
+    data = resp.json()
+    content = base64.b64decode(data["content"]).decode("utf-8")
+    return content, data["sha"]
+
+
+def _gh_put_file(path: str, content: str, message: str, sha: str | None = None) -> None:
+    """Create or update a file on GitHub."""
+    url = f"{GITHUB_API}/repos/{GITHUB_REPO}/contents/{path}"
+    payload = {
+        "message": message,
+        "content": base64.b64encode(content.encode("utf-8")).decode("ascii"),
+    }
+    if sha:
+        payload["sha"] = sha
+    resp = requests.put(url, headers=_gh_headers(), json=payload, timeout=15)
+    resp.raise_for_status()
+
+
+def _e(s: str | None) -> str:
+    """HTML-escape a string."""
+    return html_mod.escape(str(s)) if s else ""
+
+
+def render_issue_html(
+    content: dict,
+    issue_number: int,
+    week_start: date,
+    week_end: date,
+) -> str:
+    """Render newsletter JSON into full HTML using the template from GitHub."""
+    template, _ = _gh_get_file("client/public/newsletter/junk-mail-TEMPLATE.html")
+
+    num = f"{issue_number:03d}"
+    date_range = f"{week_start.strftime('%b %-d')}–{week_end.strftime('%-d, %Y')}"
+    h = template
+
+    # Meta
+    h = h.replace(
+        "<title>Junk Mail — Issue #[NUMBER] | AI Junkies Inner Circle</title>",
+        f"<title>Junk Mail — Issue #{num} — {date_range} | AI Junkies Inner Circle</title>",
+    )
+    h = h.replace("[#]", num)
+    h = h.replace("[NUMBER]", num)
+    h = h.replace("[DATE RANGE]", date_range)
+
+    # Lede
+    lede = content.get("lede", {})
+    h = h.replace(
+        "<strong>Hey Junkies 👋</strong> — [Opening. Reference something real from the week — a moment, a quote, a vibe from the chat.]",
+        f'<strong>Hey Junkies 👋</strong> — {_e(lede.get("opening", ""))}',
+    )
+    h = h.replace(
+        "[What's the energy? What should members be locked in on this week? Keep it direct, peer-to-peer.]",
+        _e(lede.get("body", "")),
+    )
+
+    # Main story
+    ms = content.get("main_story", {})
+    h = h.replace("[HEADLINE — punchy, specific, not generic]", _e(ms.get("headline", "")))
+    h = h.replace("[One sentence: what is this and why does it matter right now?]", _e(ms.get("deck", "")))
+
+    paras = ms.get("paragraphs", ["", "", ""])
+    h = h.replace("[Para 1 — Plain explanation. No jargon without a quick definition. Write for the person who's heard the term but doesn't fully get it.]", _e(paras[0] if len(paras) > 0 else ""))
+    h = h.replace("[Para 2 — One level deeper. How does it actually work in practice? What did Derrick or the group say or do?]", _e(paras[1] if len(paras) > 1 else ""))
+    h = h.replace("[Para 3 — The real talk. What's the mistake? Where do people get stuck?]", _e(paras[2] if len(paras) > 2 else ""))
+
+    for i, kp in enumerate(ms.get("key_points", [])[:3]):
+        h = h.replace(
+            f'Key point {i+1}:</strong> [Short punchy takeaway]',
+            f'{_e(kp["title"])}:</strong> {_e(kp["body"])}',
+        )
+
+    h = h.replace(
+        "[2–3 sentences. Name the scenario. Concrete enough that someone thinks \"that's me.\"]",
+        _e(ms.get("biz_callout", "")),
+    )
+
+    # Second story
+    ss = content.get("second_story", {})
+    ss_paras = ss.get("paragraphs", ["", "", ""])
+    h = h.replace("[SECOND STORY HEADLINE]", _e(ss.get("headline", "")))
+    h = h.replace("[Para 1 — What happened or was discussed? Set it up plainly.]", _e(ss_paras[0] if len(ss_paras) > 0 else ""))
+    h = h.replace("[Para 2 — The insight or takeaway. What should the reader do with this?]", _e(ss_paras[1] if len(ss_paras) > 1 else ""))
+    h = h.replace("[Para 3 — Optional. Quote from the group, specific example, or edge case.]", _e(ss_paras[2] if len(ss_paras) > 2 else ""))
+
+    # Third story
+    ts = content.get("third_story", {})
+    ts_paras = ts.get("paragraphs", ["", ""])
+    h = h.replace("[THIRD STORY HEADLINE]", _e(ts.get("headline", "")))
+    h = h.replace("[Para 1 — Keep this tight. 2–3 paragraphs max.]", _e(ts_paras[0] if len(ts_paras) > 0 else ""))
+    h = h.replace("[Para 2 — Practical angle. How does it connect to what the group is building?]", _e(ts_paras[1] if len(ts_paras) > 1 else ""))
+
+    # Hot topic
+    ht = content.get("hot_topic", {})
+    h = h.replace("[THE DEBATE OR QUESTION HEADLINE]", _e(ht.get("headline", "")))
+    h = h.replace("[1–2 sentences framing the conversation. What was the debate or moment that got people talking?]", _e(ht.get("intro", "")))
+    h = h.replace("[The broader point — why does this matter beyond just this week?]", _e(ht.get("broader_point", "")))
+
+    voices_html = ""
+    for v in ht.get("voices", []):
+        voices_html += (
+            f'      <div class="voice-item">\n'
+            f'        <div class="voice-name">{_e(v["name"])}</div>\n'
+            f'        "{_e(v["quote"])}"\n'
+            f"      </div>\n"
+        )
+    h = re.sub(
+        r'<div class="voices">.*?</div>\s*</div>',
+        f'<div class="voices">\n{voices_html}    </div>',
+        h,
+        flags=re.DOTALL,
+    )
+
+    # Quick hits
+    tips_html = ""
+    for qh in content.get("quick_hits", []):
+        tips_html += (
+            f'    <div class="tip-card">\n'
+            f'      <div class="tip-number">{_e(qh["number"])}</div>\n'
+            f'      <strong>{_e(qh["title"])}</strong>\n'
+            f'      <p>{_e(qh["body"])}</p>\n'
+            f"    </div>\n"
+        )
+    h = re.sub(
+        r'<div class="tips-grid">.*?</div>\s*</div>',
+        f'<div class="tips-grid">\n{tips_html}  </div>',
+        h,
+        flags=re.DOTALL,
+    )
+
+    # Member spotlight
+    members_html = ""
+    for m in content.get("member_spotlight", []):
+        accent = "orange" if m.get("is_new_member") else ""
+        handle_text = _e(m.get("handle", ""))
+        if m.get("is_new_member"):
+            handle_text += " · New Member 🎉"
+        members_html += (
+            f'    <div class="member-card" data-content-item>\n'
+            f'      <div class="member-card-accent {accent}"></div>\n'
+            f'      <div class="member-card-body">\n'
+            f'        <div class="member-name">{_e(m["name"])}</div>\n'
+            f'        <div class="member-handle">{handle_text}</div>\n'
+            f'        <p>{_e(m["body"])}</p>\n'
+            f"      </div>\n"
+            f"    </div>\n"
+        )
+    h = re.sub(
+        r'<div class="member-grid" data-content-container>.*?</div>\s*</div>\s*</div>',
+        f'<div class="member-grid" data-content-container>\n{members_html}  </div>',
+        h,
+        flags=re.DOTALL,
+    )
+
+    # Wins
+    wins_html = ""
+    for w in content.get("wins", []):
+        tag = _e(w.get("tag", "other"))
+        wins_html += (
+            f'    <div class="win-item" data-content-item>\n'
+            f'      <div class="win-emoji">{w.get("emoji", "🏆")}</div>\n'
+            f"      <div>\n"
+            f'        <span class="win-tag {tag}">{_e(w.get("tag_label", "Win"))}</span>\n'
+            f'        <span class="win-title">{_e(w["title"])}</span>\n'
+            f'        <p>{_e(w["body"])}</p>\n'
+            f"      </div>\n"
+            f"    </div>\n"
+        )
+    h = re.sub(
+        r'<div class="wins-list" data-content-container>.*?</div>\s*</div>\s*</div>',
+        f'<div class="wins-list" data-content-container>\n{wins_html}  </div>',
+        h,
+        flags=re.DOTALL,
+    )
+
+    return h
+
+
+def update_index_html(
+    issue_number: int,
+    week_start: date,
+    week_end: date,
+    content: dict,
+) -> None:
+    """Add the new issue row to the newsletter index and update the count."""
+    index_path = "client/public/newsletter/index.html"
+    index_html, index_sha = _gh_get_file(index_path)
+
+    num = f"{issue_number:03d}"
+    date_range = f"{week_start.strftime('%b %-d')}–{week_end.strftime('%-d, %Y')}"
+    headline = _e(content.get("main_story", {}).get("headline", ""))
+
+    # Build topic line from stories
+    main_topic = content.get("main_story", {}).get("headline", "")
+    second_topic = content.get("second_story", {}).get("headline", "")
+    third_topic = content.get("third_story", {}).get("headline", "")
+    topic_line = f"Main Story: {_e(main_topic)} · {_e(second_topic)} · {_e(third_topic)}"
+
+    new_row = (
+        f'\n    <!-- ISSUE {num} — newest first -->\n'
+        f'    <a class="issue-row" href="/newsletter/issue-{num}.html">\n'
+        f'      <div class="issue-num">{num}</div>\n'
+        f'      <div class="issue-meta">\n'
+        f'        <div class="issue-date">{date_range}</div>\n'
+        f'        <div class="issue-title">{headline}</div>\n'
+        f'        <div class="issue-topic">{topic_line}</div>\n'
+        f"      </div>\n"
+        f'      <div class="issue-arrow">→</div>\n'
+        f"    </a>\n"
+    )
+
+    # Insert after <div class="issue-list">
+    index_html = index_html.replace(
+        '<div class="issue-list">',
+        f'<div class="issue-list">{new_row}',
+        1,
+    )
+
+    # Update count
+    old_count = re.search(r'<span id="count">(\d+)</span>', index_html)
+    if old_count:
+        index_html = index_html.replace(
+            old_count.group(0),
+            f'<span id="count">{issue_number}</span>',
+        )
+
+    _gh_put_file(
+        index_path,
+        index_html,
+        f"Update newsletter index for Issue #{num}",
+        sha=index_sha,
+    )
+    log.info(f"Updated index.html with Issue #{num}")
+
+
+def publish_html_to_github(
+    content: dict,
+    issue_number: int,
+    week_start: date,
+    week_end: date,
+) -> None:
+    """Render issue HTML and commit both files to GitHub."""
+    if not GITHUB_TOKEN:
+        log.warning("GITHUB_TOKEN not set — skipping HTML publish to GitHub")
+        return
+
+    num = f"{issue_number:03d}"
+    issue_path = f"client/public/newsletter/issue-{num}.html"
+
+    # Render and commit the issue HTML
+    issue_html = render_issue_html(content, issue_number, week_start, week_end)
+    _gh_put_file(
+        issue_path,
+        issue_html,
+        f"Add Junk Mail Issue #{num} — {week_start.strftime('%b %-d')}–{week_end.strftime('%-d, %Y')}",
+    )
+    log.info(f"Committed {issue_path} to GitHub")
+
+    # Update the index
+    update_index_html(issue_number, week_start, week_end, content)
+
+
+# ═════════════════════════════════════════════════════════════════════════════
+# STEP 5 — Trigger Vercel deploy (rebuilds from new GitHub commit)
 # ═════════════════════════════════════════════════════════════════════════════
 
 def trigger_vercel_deploy() -> None:
@@ -311,7 +596,7 @@ def trigger_vercel_deploy() -> None:
 
 
 # ═════════════════════════════════════════════════════════════════════════════
-# STEP 5 — Notify OpenClaw social agent
+# STEP 6 — Notify OpenClaw social agent
 # ═════════════════════════════════════════════════════════════════════════════
 
 def notify_openclaw(issue_number: int, slug: str, content: dict) -> None:
@@ -381,7 +666,10 @@ def run():
     # Increment counter
     increment_counter(issue_number)
 
-    # Deploy
+    # Render HTML and commit to GitHub
+    publish_html_to_github(content, issue_number, week_start, week_end)
+
+    # Deploy (Vercel rebuilds from the new commit)
     trigger_vercel_deploy()
 
     # Wait a bit for Vercel to finish, then mark published
