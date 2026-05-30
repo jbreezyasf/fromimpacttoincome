@@ -441,9 +441,15 @@ if __name__ == "__main__":
 
 ## Telegram (Default)
 
-Already built into the main newsletter script. Messages are typically ingested in real-time via a Telegram bot using webhooks or long-polling that writes directly to the messages table.
+Already built in. See [SETUP_GUIDE.md](SETUP_GUIDE.md) for the full Telegram path — it's the recommended default.
 
-If you're starting fresh with Telegram, set up a bot via [@BotFather](https://t.me/BotFather), add it to your group, and use a small listener script (or Supabase Edge Function) to capture incoming messages.
+The pipeline ships with `scrape_telegram.py`, a Telethon (MTProto) scraper that logs in as a real Telegram user (NOT a bot) and pulls historical messages from a group. The orchestrator `run_weekly.py` runs the scraper and the generator in sequence every Sunday, so there's nothing for you to wire up beyond the env vars.
+
+Why user-account MTProto and not a bot:
+- Bots can't read message history they didn't witness live. A user account in the group has full read access to backfill any range.
+- The one-time `python scrape_telegram.py auth` flow produces a session string that lives as an env var, so Railway runs unattended afterwards.
+
+If you'd still rather use a bot (e.g., you want real-time ingestion via webhook instead of weekly batch), set up a bot via [@BotFather](https://t.me/BotFather), add it to the group, and point Telegram's webhook at a Supabase Edge Function that inserts into `telegram_messages` (or `community_messages` if multi-platform).
 
 ---
 
