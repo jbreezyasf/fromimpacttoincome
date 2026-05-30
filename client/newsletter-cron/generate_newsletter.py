@@ -29,6 +29,7 @@ RAILWAY ENV VARS (set in your Railway service):
   OPENCLAW_WEBHOOK_URL      (generic webhook — any agent or automation)
 """
 
+import argparse
 import base64
 import html as html_mod
 import json
@@ -42,6 +43,18 @@ import anthropic
 import requests
 from supabase import create_client, Client
 
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass
+
+try:
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+except (AttributeError, OSError):
+    pass
+
 # ── Logging ───────────────────────────────────────────────────────────────────
 logging.basicConfig(
     level=logging.INFO,
@@ -49,6 +62,25 @@ logging.basicConfig(
     handlers=[logging.StreamHandler(sys.stdout)],
 )
 log = logging.getLogger(__name__)
+
+
+def _fmt_long(d: date) -> str:
+    """Portable 'June 5' / 'June 5, 2026' — works on Windows too (no %-d)."""
+    return f"{d.strftime('%B')} {d.day}"
+
+
+def _fmt_long_year(d: date) -> str:
+    return f"{d.strftime('%B')} {d.day}, {d.year}"
+
+
+def _fmt_short(d: date) -> str:
+    """Portable 'Jun 5'."""
+    return f"{d.strftime('%b')} {d.day}"
+
+
+def _fmt_short_year(d: date) -> str:
+    """Portable '5, 2026' (day, year) — used for the trailing half of date ranges."""
+    return f"{d.day}, {d.year}"
 
 # ── Clients ───────────────────────────────────────────────────────────────────
 supabase: Client = create_client(
@@ -234,7 +266,7 @@ def generate_newsletter(
     log.info(f"Calling Claude API for Issue #{issue_number}...")
 
     user_prompt = f"""
-Issue #{issue_number:03d} | {week_start.strftime('%B %-d')} – {week_end.strftime('%B %-d, %Y')}
+Issue #{issue_number:03d} | {_fmt_long(week_start)} – {_fmt_long_year(week_end)}
 
 Here are this week's AI Junkies Telegram messages:
 
@@ -356,7 +388,7 @@ def render_issue_html(
     template, _ = _gh_get_file("client/public/newsletter/junk-mail-TEMPLATE.html")
 
     num = f"{issue_number:03d}"
-    date_range = f"{week_start.strftime('%b %-d')}–{week_end.strftime('%-d, %Y')}"
+    date_range = f"{_fmt_short(week_start)}–{_fmt_short_year(week_end)}"
     h = template
 
     # Meta
@@ -512,7 +544,7 @@ def update_index_html(
     index_html, index_sha = _gh_get_file(index_path)
 
     num = f"{issue_number:03d}"
-    date_range = f"{week_start.strftime('%b %-d')}–{week_end.strftime('%-d, %Y')}"
+    date_range = f"{_fmt_short(week_start)}–{_fmt_short_year(week_end)}"
     headline = _e(content.get("main_story", {}).get("headline", ""))
 
     # Build topic line from stories
@@ -577,7 +609,7 @@ def publish_html_to_github(
     _gh_put_file(
         issue_path,
         issue_html,
-        f"Add Junk Mail Issue #{num} — {week_start.strftime('%b %-d')}–{week_end.strftime('%-d, %Y')}",
+        f"Add Junk Mail Issue #{num} — {_fmt_short(week_start)}–{_fmt_short_year(week_end)}",
     )
     log.info(f"Committed {issue_path} to GitHub")
 
@@ -688,57 +720,101 @@ def send_notifications(issue_number: int, slug: str, content: dict) -> None:
 # MAIN
 # ═════════════════════════════════════════════════════════════════════════════
 
-def run():
+def run(
+    issue_number: int | None = None,
+    week_start: date | None = None,
+    week_end: date | None = None,
+    auto_increment: bool = True,
+    skip_notify: bool = False,
+    dry_run: bool = False,
+):
     log.info("═" * 60)
     log.info("JUNK MAIL — Weekly Newsletter Generator")
     log.info("═" * 60)
 
-    # Get current issue number
-    config = supabase.table("newsletter_config").select("*").eq("id", 1).single().execute()
-    issue_number = config.data["current_issue"]
+    if issue_number is None:
+        config = supabase.table("newsletter_config").select("*").eq("id", 1).single().execute()
+        issue_number = config.data["current_issue"]
     log.info(f"Generating Issue #{issue_number}")
 
-    # Date range for this issue
-    week_start, week_end = get_week_range()
+    if week_start is None:
+        week_start, week_end = get_week_range()
+    elif week_end is None:
+        week_end = week_start + timedelta(days=6)
     log.info(f"Week: {week_start} → {week_end}")
 
-    # Fetch messages
     messages = fetch_messages(week_start, week_end)
     if len(messages) < MIN_MESSAGES:
         log.warning(f"Only {len(messages)} messages found (min: {MIN_MESSAGES}). Aborting.")
         sys.exit(0)
 
-    # Format for Claude
     messages_text = format_messages_for_claude(messages)
     log.info(f"Formatted {len(messages)} messages ({len(messages_text)} chars) for Claude")
 
-    # Generate content
     content = generate_newsletter(messages_text, issue_number, week_start, week_end)
 
-    # Save to Supabase
+    if dry_run:
+        log.info("DRY RUN — printing generated JSON and exiting (no DB writes, no commit, no deploy).")
+        print(json.dumps(content, indent=2))
+        return
+
     slug = save_issue(issue_number, week_start, week_end, content)
 
-    # Increment counter
-    increment_counter(issue_number)
+    if auto_increment:
+        increment_counter(issue_number)
+    else:
+        log.info("auto_increment=False — leaving newsletter_config.current_issue alone")
 
-    # Render HTML and commit to GitHub
     publish_html_to_github(content, issue_number, week_start, week_end)
 
-    # Deploy (Vercel rebuilds from the new commit)
     trigger_vercel_deploy()
 
-    # Wait a bit for Vercel to finish, then mark published
     import time
     time.sleep(30)
     mark_published(issue_number)
 
-    # Notify all configured channels (Telegram, Slack, webhook)
-    send_notifications(issue_number, slug, content)
+    if not skip_notify:
+        send_notifications(issue_number, slug, content)
+    else:
+        log.info("skip_notify=True — not sending Telegram/Slack/webhook notifications")
 
     log.info("═" * 60)
     log.info(f"Issue #{issue_number} complete — {NEWSLETTER_BASE}/{slug}")
     log.info("═" * 60)
 
 
+def _cli() -> None:
+    p = argparse.ArgumentParser(prog="generate_newsletter")
+    p.add_argument("--issue-number", type=int, default=None,
+                   help="Force issue number (skips reading newsletter_config.current_issue).")
+    p.add_argument("--week-start", type=str, default=None,
+                   help="Force week start (YYYY-MM-DD). End defaults to start+6 unless --week-end given.")
+    p.add_argument("--week-end", type=str, default=None,
+                   help="Force week end (YYYY-MM-DD). Inclusive.")
+    p.add_argument("--no-increment", action="store_true",
+                   help="Skip incrementing newsletter_config.current_issue (use for backfill runs).")
+    p.add_argument("--no-notify", action="store_true",
+                   help="Skip Telegram/Slack/webhook notifications (use for silent backfills).")
+    p.add_argument("--dry-run", action="store_true",
+                   help="Generate content and print JSON; skip Supabase writes, GitHub commit, Vercel deploy.")
+    args = p.parse_args()
+
+    ws = date.fromisoformat(args.week_start) if args.week_start else None
+    we = date.fromisoformat(args.week_end) if args.week_end else None
+
+    auto_inc = not args.no_increment
+    if args.issue_number is not None and not args.no_increment:
+        log.info("Forced --issue-number without --no-increment; the counter will still be bumped.")
+
+    run(
+        issue_number=args.issue_number,
+        week_start=ws,
+        week_end=we,
+        auto_increment=auto_inc,
+        skip_notify=args.no_notify,
+        dry_run=args.dry_run,
+    )
+
+
 if __name__ == "__main__":
-    run()
+    _cli()

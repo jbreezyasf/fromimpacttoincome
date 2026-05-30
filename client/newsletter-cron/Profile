@@ -1,1 +1,1 @@
-worker: python generate_newsletter.py
+worker: python run_weekly.py

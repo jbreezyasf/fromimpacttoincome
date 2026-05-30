@@ -137,15 +137,19 @@ The JSON schema the prompt returns must match what `render_issue_html()` expects
 
 Add these in the Railway service **Variables** tab:
 
-| Variable                | Required | Description                                      |
-|-------------------------|----------|--------------------------------------------------|
-| `SUPABASE_URL`          | Yes      | Your Supabase project URL                        |
-| `SUPABASE_SERVICE_KEY`  | Yes      | Supabase service role key (not anon)             |
-| `ANTHROPIC_API_KEY`     | Yes      | Claude API key from console.anthropic.com        |
-| `GITHUB_TOKEN`          | Yes      | Fine-grained PAT with repo read/write            |
-| `GITHUB_REPO`           | Yes      | `owner/repo` (e.g. `jbreezyasf/mysite`)          |
-| `VERCEL_DEPLOY_HOOK_URL`| Yes      | From Vercel → Project Settings → Git → Deploy Hooks |
-| `NEWSLETTER_BASE_URL`   | Yes      | e.g. `https://yoursite.com/newsletter`            |
+| Variable                  | Required | Description                                      |
+|---------------------------|----------|--------------------------------------------------|
+| `SUPABASE_URL`            | Yes      | Your Supabase project URL                        |
+| `SUPABASE_SERVICE_KEY`    | Yes      | Supabase service role key (not anon)             |
+| `ANTHROPIC_API_KEY`       | Yes      | Claude API key from console.anthropic.com        |
+| `GITHUB_TOKEN`            | Yes      | Fine-grained PAT with repo read/write            |
+| `GITHUB_REPO`             | Yes      | `owner/repo` (e.g. `jbreezyasf/mysite`)          |
+| `VERCEL_DEPLOY_HOOK_URL`  | Yes      | From Vercel → Project Settings → Git → Deploy Hooks |
+| `NEWSLETTER_BASE_URL`     | Yes      | e.g. `https://yoursite.com/newsletter`            |
+| `TELEGRAM_API_ID`         | Yes      | From my.telegram.org/apps (user account)         |
+| `TELEGRAM_API_HASH`       | Yes      | From my.telegram.org/apps (user account)         |
+| `TELEGRAM_SESSION_STRING` | Yes      | Output of `python scrape_telegram.py auth` (run locally once) |
+| `TELEGRAM_GROUP`          | Yes      | Numeric chat id, `@username`, or exact group title |
 
 ### 4c. Cron Schedule
 

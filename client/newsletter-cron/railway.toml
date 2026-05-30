@@ -1,2 +1,4 @@
 [deploy]
+# Sunday 14:00 UTC = 9:00 AM CT (CDT). Runs scrape → generate → publish.
 cronSchedule = "0 14 * * 0"
+startCommand = "python run_weekly.py"
