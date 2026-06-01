@@ -43,16 +43,13 @@ No human in the loop until something breaks.
 
 ---
 
-## Step 1 — Clone the Pipeline Code
+## Step 1 — Get the Pipeline Code
+
+Copy or fork the `newsletter-cron/` directory (containing this guide and the scripts) into your client's repository. All the runtime scripts live there. You'll customize the HTML template and the Claude prompt — the rest of the code stays as-is.
 
 ```bash
-git clone https://github.com/jbreezyasf/fromimpacttoincome.git
-cd fromimpacttoincome/client/newsletter-cron
+cd <your-repo>/newsletter-cron
 ```
-
-All the scripts live in this directory. You'll customize the HTML template and the Claude prompt — the rest of the code can stay as-is.
-
-If you're building for a new client, fork the repo or copy the `client/newsletter-cron/` directory into your client's repo and adjust paths.
 
 ---
 
@@ -125,7 +122,7 @@ The scraper uses **MTProto** via Telethon, which logs in as a real user (not a b
 
 You also need to identify the source group:
 - Open Telegram in a desktop client, go to the group, click the title.
-- Note the `@username` if it has one, OR get the numeric chat id from the URL (`https://web.telegram.org/k/#-1003120599051` → `-1003120599051`).
+- Note the `@username` if it has one, OR get the numeric chat id from the URL (`https://web.telegram.org/k/#-1001234567890` → `-1001234567890`). Group ids always start with `-100`.
 - Either form works as `TELEGRAM_GROUP`.
 
 ---
@@ -145,7 +142,7 @@ The generator commits the rendered HTML and updated index page directly to GitHu
 
 ## Step 5 — Vercel Project + Deploy Hook
 
-1. Create a Vercel project pointed at the GitHub repo. Standard static-site or Next.js setup is fine — Vercel just needs to serve the rendered HTML files in `client/public/newsletter/`.
+1. Create a Vercel project pointed at the GitHub repo. Standard static-site or Next.js setup is fine — Vercel just needs to serve the rendered HTML files in `public/newsletter/`.
 2. Project Settings → Git → **Deploy Hooks** → Create Hook.
 3. Hook name: `newsletter-cron`, branch: `main`.
 4. Copy the URL. You'll paste it into `VERCEL_DEPLOY_HOOK_URL`.
@@ -157,10 +154,10 @@ The generator commits the rendered HTML and updated index page directly to GitHu
 The generator renders a JSON newsletter into HTML by string-replacing placeholders in a template file. The template lives at:
 
 ```
-client/public/newsletter/junk-mail-TEMPLATE.html
+public/newsletter/junk-mail-TEMPLATE.html
 ```
 
-It uses placeholders like `[#]`, `[DATE RANGE]`, `[HEADLINE — punchy, specific, not generic]`, `[Para 1 — ...]` that get swapped out at render time. There's also a `client/public/newsletter/index.html` listing page that gets a new `<a class="issue-row">` block prepended for each new issue.
+It uses placeholders like `[#]`, `[DATE RANGE]`, `[HEADLINE — punchy, specific, not generic]`, `[Para 1 — ...]` that get swapped out at render time. There's also a `public/newsletter/index.html` listing page that gets a new `<a class="issue-row">` block prepended for each new issue.
 
 **To customize for your client:**
 
@@ -176,7 +173,7 @@ This is where you do the Telegram auth dance and prove the pipeline works end-to
 
 ### 7a. Install Python dependencies
 
-From `client/newsletter-cron/`:
+From `newsletter-cron/`:
 
 ```bash
 pip install -r requirements.txt
@@ -259,7 +256,7 @@ When the JSON looks good, drop `--dry-run` to publish for real:
 python generate_newsletter.py --week-start 2026-MM-DD --issue-number 1
 ```
 
-Successful output ends with `Issue #1 complete — https://<site>/newsletter/issue-001`. Check the rendered HTML in your browser. Compare to a working reference: https://fromimpacttoincome.com/newsletter/issue-007.html
+Successful output ends with `Issue #1 complete — https://<site>/newsletter/issue-001`. Open the rendered HTML in a browser and confirm every section has real content (no `[BRACKET]` placeholders left over).
 
 ---
 
@@ -269,8 +266,8 @@ Open `generate_newsletter.py` and find the `SYSTEM_PROMPT` constant. This is whe
 
 Things you'll typically edit:
 
-- **Voice/tone** — replace the "AI Junkies" peer-to-peer style with whatever fits the client.
-- **Brand references** — "Junk Mail", "Derrick Harper", "AI Junkies" → your client's equivalents.
+- **Voice/tone** — replace the example peer-to-peer community style with whatever fits the client (corporate, casual, technical, etc.).
+- **Brand references** — the example newsletter name, host name, and community name → your client's equivalents.
 - **JSON schema** — add or remove sections (e.g., add a "Tool of the Week" section). If you change the schema, also add a render block in `render_issue_html()` so the new section makes it into HTML.
 - **Rules** — minimums/maximums on wins, spotlight members, quick hits.
 
@@ -283,7 +280,7 @@ The schema in the prompt and the placeholders in the HTML template are coupled. 
 ### 9a. Create a service
 
 1. railway.app → New Project → **Deploy from GitHub repo** → select your repo.
-2. Once the service exists: Service → Settings → Source → **Root Directory**: `client/newsletter-cron`.
+2. Once the service exists: Service → Settings → Source → **Root Directory**: `newsletter-cron`.
 3. Service → Settings → look for a **Cron Schedule** field. The provided `railway.toml` declares:
 
    ```toml
@@ -378,7 +375,7 @@ Set `OPENCLAW_WEBHOOK_URL` to any endpoint that accepts a POST. The payload is:
 
 When setting this up for a new client, the punch list is:
 
-- [ ] Fork or copy the `client/newsletter-cron/` directory + HTML templates into the client's repo
+- [ ] Fork or copy the `newsletter-cron/` directory + HTML templates into the client's repo
 - [ ] Create Supabase tables (Step 2)
 - [ ] Customize `junk-mail-TEMPLATE.html` with the client's brand
 - [ ] Customize `SYSTEM_PROMPT` in `generate_newsletter.py` for the client's voice
@@ -395,7 +392,7 @@ When setting this up for a new client, the punch list is:
 
 ## Troubleshooting
 
-These are the issues we've hit and fixed (or know how to fix). Check these first.
+The most common issues you'll encounter when standing up the pipeline. Check these first.
 
 | Symptom                                                            | Fix                                                                                                                                            |
 |--------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -409,28 +406,28 @@ These are the issues we've hit and fixed (or know how to fix). Check these first
 | HTML doesn't appear on the site                                    | Confirm `GITHUB_TOKEN` has Contents: Read+Write on the right repo. Confirm `VERCEL_DEPLOY_HOOK_URL` is for the `main` branch.                |
 | Telegram notification fails                                        | Bot must be a member of the target group, and `TELEGRAM_CHAT_ID` must include the `-100` prefix for groups.                                   |
 | Claude returns invalid JSON                                        | Check Railway logs. The script strips markdown fences, but unusual formatting may need handling. Usually a one-week blip.                     |
-| Cron didn't fire                                                   | Confirm `railway.toml` is in the service root dir (i.e., Railway "Root Directory" = `client/newsletter-cron`) and the cron expression is valid. |
+| Cron didn't fire                                                   | Confirm `railway.toml` is in the service root dir (i.e., Railway "Root Directory" = `newsletter-cron`) and the cron expression is valid. |
 
 ### Re-running a missed week manually
 
-If a Sunday cron fails and you want to publish from your laptop:
+If a Sunday cron fails and you need to publish from a local machine:
 
 ```bash
 # Backfill the missed week first (idempotent — safe if already scraped)
-python scrape_telegram.py backfill --start 2026-MM-DD --end 2026-MM-DD
+python scrape_telegram.py backfill --start YYYY-MM-DD --end YYYY-MM-DD
 
 # Then publish, forcing the week and issue number
-python generate_newsletter.py --week-start 2026-MM-DD --issue-number N
+python generate_newsletter.py --week-start YYYY-MM-DD --issue-number N
 ```
 
-If you don't want the manual run to bump `newsletter_config.current_issue` (because the next Railway run will do it), add `--no-increment`.
+Add `--no-increment` if the next Railway run should still bump `newsletter_config.current_issue` itself.
 
 ---
 
 ## File Structure
 
 ```
-client/newsletter-cron/
+newsletter-cron/
 ├── scrape_telegram.py        # Telethon scraper (auth / backfill / default modes)
 ├── generate_newsletter.py    # Claude → JSON → HTML → GitHub → Vercel
 ├── run_weekly.py             # Railway cron entrypoint: scrape → generate
@@ -443,7 +440,7 @@ client/newsletter-cron/
 ├── SETUP_GUIDE.md            # This file
 └── COMMUNITY_CONNECTORS.md   # Addendum: Skool, Discord, Slack, GHL, Facebook
 
-client/public/newsletter/
+public/newsletter/
 ├── index.html                # Listing page (auto-updated by generator)
 ├── junk-mail-TEMPLATE.html   # Template the generator renders into
 ├── issue-001.html            # Published issues
@@ -470,10 +467,10 @@ client/public/newsletter/
 
 ## Manual Run From Local Machine
 
-When you need to fire the whole pipeline by hand (debugging, re-running, building a new client):
+For debugging, re-running a missed week, or standing up a new client:
 
 ```bash
-cd client/newsletter-cron
+cd newsletter-cron
 pip install -r requirements.txt
 # Make sure .env is filled in
 python run_weekly.py
@@ -482,8 +479,8 @@ python run_weekly.py
 Or run just one piece:
 
 ```bash
-python scrape_telegram.py                                     # default: last full Sun-Sat
-python scrape_telegram.py backfill --start 2026-05-17 --end 2026-05-23
-python generate_newsletter.py --week-start 2026-05-17 --issue-number 7 --dry-run
-python generate_newsletter.py --week-start 2026-05-17 --issue-number 7
+python scrape_telegram.py                                          # default: last full Sun-Sat
+python scrape_telegram.py backfill --start YYYY-MM-DD --end YYYY-MM-DD
+python generate_newsletter.py --week-start YYYY-MM-DD --issue-number N --dry-run
+python generate_newsletter.py --week-start YYYY-MM-DD --issue-number N
 ```
