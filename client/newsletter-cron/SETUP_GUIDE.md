@@ -2,19 +2,22 @@
 
 A step-by-step guide for spinning up a fully automated weekly community newsletter for any client. The pipeline scrapes a community chat, summarizes it with Claude, publishes a static HTML page, and pings the team — every Sunday morning, with zero manual editing.
 
-The default flow assumes **Telegram** as the source platform. For Skool, Discord, Slack, GHL, Facebook, etc., see [COMMUNITY_CONNECTORS.md](COMMUNITY_CONNECTORS.md) — the rest of this guide still applies, you just swap out which scraper feeds the messages table.
+The default flow assumes **Telegram** as the source platform. For Skool, Discord, Slack, GHL, Facebook, etc., see the companion *Community Connectors* guide — the rest of this document still applies, you just swap out which scraper feeds the messages table.
 
 ---
 
 ## What This Builds
 
+```mermaid
+flowchart LR
+    A[Telegram<br/>group chat] -->|scrape_telegram.py| B[Supabase<br/>messages table]
+    B -->|generate_newsletter.py| C[Claude<br/>structured JSON]
+    C --> D[GitHub<br/>commit rendered HTML]
+    D --> E[Vercel<br/>deploy live site]
+    E --> F[Notifications<br/>Telegram / Slack / webhook]
 ```
-┌──────────────┐    ┌──────────────┐    ┌────────────┐    ┌────────┐    ┌────────┐
-│  Telegram    │ →  │  Supabase    │ →  │  Claude    │ →  │ GitHub │ →  │ Vercel │
-│  group chat  │    │  messages    │    │  generator │    │ commit │    │ deploy │
-└──────────────┘    └──────────────┘    └────────────┘    └────────┘    └────────┘
-   scrape_telegram.py            generate_newsletter.py            run_weekly.py orchestrates both
-```
+
+*`run_weekly.py` orchestrates the scrape → generate → publish flow on a Railway cron.*
 
 Every Sunday morning, a Railway cron job runs `run_weekly.py` which:
 
@@ -106,7 +109,7 @@ CREATE INDEX telegram_messages_timestamp_idx ON telegram_messages(timestamp);
 
 > **Why `message_id UNIQUE`?** The scraper upserts on this column. Without the unique constraint, repeated runs would create duplicate rows. The provided `setup_scraper_schema.sql` file is a no-op when these constraints already exist, so it's safe to run against any pre-existing schema.
 
-Different platform than Telegram? Use the `community_messages` schema in [COMMUNITY_CONNECTORS.md](COMMUNITY_CONNECTORS.md) and update `fetch_messages()` in `generate_newsletter.py` to query that table instead.
+Different platform than Telegram? Use the `community_messages` schema described in the *Community Connectors* guide and update `fetch_messages()` in `generate_newsletter.py` to query that table instead.
 
 ---
 

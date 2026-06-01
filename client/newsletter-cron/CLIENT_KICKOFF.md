@@ -1,12 +1,12 @@
 # Client Kickoff — Newsletter Pipeline
 
-One-page punch list for standing up the automated newsletter for a new client. Full detail in [SETUP_GUIDE.md](SETUP_GUIDE.md). **Target time end-to-end: ~3 hours** (mostly waiting on Vercel builds and DNS).
+One-page checklist for standing up the automated newsletter for a new client. Full technical detail in the companion *Setup Guide*. **Target time end-to-end: ~3 hours** (mostly waiting on Vercel builds and DNS).
 
 ---
 
 ## 1. Pre-Kickoff — Info to collect from the client
 
-- [ ] **Source platform** (Telegram default — Skool/Discord/Slack/GHL/Facebook → see [COMMUNITY_CONNECTORS.md](COMMUNITY_CONNECTORS.md))
+- [ ] **Source platform** (Telegram is the default; Skool / Discord / Slack / GHL / Facebook are covered in the *Community Connectors* guide)
 - [ ] **Group/channel name + invite** — you need to be in it as a user (not a bot) to scrape
 - [ ] **Publish cadence** — default Sun 9 AM client-local
 - [ ] **Newsletter name + tagline** (the masthead and one-line positioning)

@@ -1,6 +1,6 @@
 # Community Connectors — Source Platform Addendum
 
-This addendum to [SETUP_GUIDE.md](SETUP_GUIDE.md) covers how to pull community messages from different platforms into Supabase so the newsletter pipeline can use them.
+This guide accompanies the main *Setup Guide* and covers how to pull community messages from different platforms into Supabase so the newsletter pipeline can use them.
 
 The newsletter script reads from a single messages table. Your job is to get messages **into** that table from whatever platform your community lives on. Pick the connector(s) that match your client's setup.
 
@@ -441,7 +441,7 @@ if __name__ == "__main__":
 
 ## Telegram (Default)
 
-Already built in. See [SETUP_GUIDE.md](SETUP_GUIDE.md) for the full Telegram path — it's the recommended default.
+Already built in. See the main *Setup Guide* for the full Telegram path — it's the recommended default.
 
 The pipeline ships with `scrape_telegram.py`, a Telethon (MTProto) scraper that logs in as a real Telegram user (NOT a bot) and pulls historical messages from a group. The orchestrator `run_weekly.py` runs the scraper and the generator in sequence every Sunday, so there's nothing for you to wire up beyond the env vars.
 
