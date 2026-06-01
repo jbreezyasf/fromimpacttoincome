@@ -92,11 +92,17 @@ claude = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
 # ── Config ────────────────────────────────────────────────────────────────────
 VERCEL_HOOK        = os.environ.get("VERCEL_DEPLOY_HOOK_URL", "")
 OPENCLAW_WEBHOOK   = os.environ.get("OPENCLAW_WEBHOOK_URL", "")
-NEWSLETTER_BASE    = os.environ.get("NEWSLETTER_BASE_URL", "https://fromimpacttoincome.com/newsletter")
+NEWSLETTER_BASE    = os.environ.get("NEWSLETTER_BASE_URL", "")
 GITHUB_TOKEN       = os.environ.get("GITHUB_TOKEN", "")
-GITHUB_REPO        = os.environ.get("GITHUB_REPO", "jbreezyasf/fromimpacttoincome")
+GITHUB_REPO        = os.environ.get("GITHUB_REPO", "")
 GITHUB_API         = "https://api.github.com"
 MIN_MESSAGES       = 20   # abort if fewer messages than this (likely a bad week)
+
+# Repo-relative output paths. Override via env if your repo lays things out differently.
+NEWSLETTER_OUTPUT_DIR  = os.environ.get("NEWSLETTER_OUTPUT_DIR", "public/newsletter").rstrip("/")
+NEWSLETTER_TEMPLATE_FILE = os.environ.get("NEWSLETTER_TEMPLATE_FILE", "newsletter-TEMPLATE.html")
+TEMPLATE_PATH      = f"{NEWSLETTER_OUTPUT_DIR}/{NEWSLETTER_TEMPLATE_FILE}"
+INDEX_PATH         = f"{NEWSLETTER_OUTPUT_DIR}/index.html"
 
 
 # ═════════════════════════════════════════════════════════════════════════════
@@ -385,7 +391,7 @@ def render_issue_html(
     week_end: date,
 ) -> str:
     """Render newsletter JSON into full HTML using the template from GitHub."""
-    template, _ = _gh_get_file("client/public/newsletter/junk-mail-TEMPLATE.html")
+    template, _ = _gh_get_file(TEMPLATE_PATH)
 
     num = f"{issue_number:03d}"
     date_range = f"{_fmt_short(week_start)}–{_fmt_short_year(week_end)}"
@@ -540,7 +546,7 @@ def update_index_html(
     content: dict,
 ) -> None:
     """Add the new issue row to the newsletter index and update the count."""
-    index_path = "client/public/newsletter/index.html"
+    index_path = INDEX_PATH
     index_html, index_sha = _gh_get_file(index_path)
 
     num = f"{issue_number:03d}"
@@ -602,7 +608,7 @@ def publish_html_to_github(
         return
 
     num = f"{issue_number:03d}"
-    issue_path = f"client/public/newsletter/issue-{num}.html"
+    issue_path = f"{NEWSLETTER_OUTPUT_DIR}/issue-{num}.html"
 
     # Render and commit the issue HTML
     issue_html = render_issue_html(content, issue_number, week_start, week_end)
