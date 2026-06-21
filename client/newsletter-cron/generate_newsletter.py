@@ -105,6 +105,20 @@ TEMPLATE_PATH      = f"{NEWSLETTER_OUTPUT_DIR}/{NEWSLETTER_TEMPLATE_FILE}"
 INDEX_PATH         = f"{NEWSLETTER_OUTPUT_DIR}/index.html"
 
 
+def issue_href(n: int) -> str:
+    """
+    Return the href for an issue. Relative by default so deployments don't
+    depend on a specific domain; absolute only if NEWSLETTER_BASE_URL is set
+    in the environment (read into NEWSLETTER_BASE above).
+    """
+    base = NEWSLETTER_BASE.rstrip("/")
+    return (
+        f"{base}/issue-{n:03d}.html"
+        if base
+        else f"/newsletter/issue-{n:03d}.html"
+    )
+
+
 # ═════════════════════════════════════════════════════════════════════════════
 # STEP 1 — Pull messages from Supabase
 # ═════════════════════════════════════════════════════════════════════════════
@@ -561,7 +575,7 @@ def update_index_html(
 
     new_row = (
         f'\n    <!-- ISSUE {num} — newest first -->\n'
-        f'    <a class="issue-row" href="/newsletter/issue-{num}.html">\n'
+        f'    <a class="issue-row" href="{issue_href(issue_number)}">\n'
         f'      <div class="issue-num">{num}</div>\n'
         f'      <div class="issue-meta">\n'
         f'        <div class="issue-date">{date_range}</div>\n'
