@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Junk Mail — Issue #014 — Jul 5–11, 2026 | AI Junkies Inner Circle</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,600&family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ── SIGNAL & NOISE TOKENS ── */
+    :root {
+      --cream:        #FAF7F2;
+      --ink:          #1E1B18;
+      --ink-card:     #26231F;
+      --ink-card-2:   #2E2B26;
+      --orange:       #C4622D;
+      --orange-light: #D4824D;
+      --green:        #1C3A2E;
+      --green-light:  #2A5240;
+      --text-body:    #C2BDB7;
+      --text-muted:   #8A857E;
+      --text-dim:     #5E5A54;
+      --border:       rgba(255,255,255,0.08);
+      --border-hover: rgba(196,98,45,0.4);
+    }
+
+    body {
+      background: var(--ink);
+      font-family: 'DM Sans', sans-serif;
+      color: var(--text-body);
+      font-size: 15px;
+      line-height: 1.75;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .wrap {
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    /* ── HEADER ── */
+    .site-header {
+      padding: 20px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(30,27,24,0.95);
+      backdrop-filter: blur(12px);
+    }
+    .site-header a { text-decoration: none; }
+    .header-brand-name {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--cream);
+      display: block;
+      line-height: 1.2;
+    }
+    .header-brand-sub {
+      font-family: 'Fraunces', serif;
+      font-style: italic;
+      font-size: 11px;
+      color: var(--orange);
+      display: block;
+      line-height: 1.2;
+    }
+    .header-lock {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+    .lock-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--text-dim);
+      flex-shrink: 0;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      padding: 64px 32px 48px;
+    }
+    .tag-pill {
+      display: inline-block;
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      background: var(--orange);
+      color: var(--cream);
+      padding: 4px 10px;
+      border-radius: 2px;
+      margin-bottom: 20px;
+    }
+    .issue-eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 6px;
+    }
+    .hero-title {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: clamp(2.2rem, 6vw, 3.4rem);
+      color: var(--cream);
+      letter-spacing: -0.02em;
+      line-height: 1.0;
+      margin-bottom: 16px;
+    }
+    .hero-title em {
+      font-style: italic;
+      color: var(--orange);
+    }
+    .hero-meta {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .hero-issue-num {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: 3.5rem;
+      color: rgba(255,255,255,0.08);
+      line-height: 1;
+    }
+    .hero-divider-v {
+      width: 1px;
+      height: 48px;
+      background: var(--border);
+    }
+    .hero-date {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+    .lede {
+      font-size: 15px;
+      line-height: 1.75;
+      color: var(--text-muted);
+      max-width: 560px;
+    }
+    .lede strong { color: var(--cream); font-weight: 600; }
+
+    /* ── SECTION RULE ── */
+    .section-rule {
+      height: 1px;
+      background: var(--border);
+      margin: 0 32px;
+    }
+
+    /* ── SECTION LABEL ── */
+    .section-label {
+      padding: 32px 32px 0;
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 2px;
+    }
+
+    /* ── STORY CONTENT ── */
+    .content {
+      padding: 14px 32px 32px;
+    }
+    .content h2 {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: clamp(1.5rem, 3.5vw, 2rem);
+      color: var(--cream);
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      margin-bottom: 12px;
+    }
+    .content h3 {
+      font-family: 'Fraunces', serif;
+      font-weight: 600;
+      font-size: 1.25rem;
+      color: var(--cream);
+      letter-spacing: -0.01em;
+      line-height: 1.25;
+      margin-bottom: 10px;
+    }
+    .content .deck {
+      font-family: 'Fraunces', serif;
+      font-style: italic;
+      font-size: 1rem;
+      color: var(--text-muted);
+      margin-bottom: 18px;
+      line-height: 1.6;
+    }
+    .content p {
+      color: var(--text-body);
+      margin-bottom: 14px;
+      font-size: 15px;
+    }
+    .content p:last-child { margin-bottom: 0; }
+    .content ul {
+      padding-left: 20px;
+      margin-bottom: 14px;
+    }
+    .content ul li {
+      margin-bottom: 8px;
+      color: var(--text-body);
+    }
+    .content ul li strong { color: var(--cream); }
+    .content a { color: var(--orange-light); text-decoration: underline; text-underline-offset: 3px; }
+    .content pre {
+      background: #141210;
+      border: 1px solid rgba(255,255,255,0.06);
+      padding: 16px;
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      line-height: 1.7;
+      overflow-x: auto;
+      margin-bottom: 14px;
+      border-radius: 3px;
+      color: #C2BDB7;
+    }
+
+    /* ── BIZ CALLOUT ── */
+    .biz-callout {
+      margin: 0 32px 28px;
+      border-left: 3px solid var(--orange);
+      background: rgba(196,98,45,0.08);
+      padding: 16px 20px;
+      border-radius: 0 3px 3px 0;
+    }
+    .biz-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--orange);
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+    .biz-callout p {
+      font-size: 14px;
+      line-height: 1.7;
+      color: var(--text-body);
+    }
+
+    /* ── HOT TOPIC ── */
+    .hot-topic {
+      margin: 0 32px 32px;
+      background: var(--ink-card);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 24px;
+    }
+    .hot-topic-eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 10px;
+    }
+    .hot-topic h3 {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: 1.4rem;
+      color: var(--cream);
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      margin-bottom: 12px;
+    }
+    .hot-topic p {
+      font-size: 14px;
+      line-height: 1.75;
+      color: var(--text-body);
+      margin-bottom: 12px;
+    }
+    .voices {
+      margin-top: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .voice-item {
+      background: rgba(255,255,255,0.04);
+      border-left: 2px solid var(--orange);
+      padding: 10px 14px;
+      border-radius: 0 2px 2px 0;
+      font-size: 13.5px;
+      line-height: 1.6;
+      color: var(--text-body);
+      font-style: italic;
+    }
+    .voice-name {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 5px;
+      font-style: normal;
+    }
+
+    /* ── QUICK HITS GRID ── */
+    .tips-grid {
+      padding: 14px 32px 32px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .tip-card {
+      background: var(--ink-card);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 18px;
+      transition: border-color 0.2s;
+    }
+    .tip-card:hover { border-color: var(--border-hover); }
+    .tip-number {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: 2.2rem;
+      color: rgba(255,255,255,0.07);
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    .tip-card strong {
+      display: block;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--cream);
+      margin-bottom: 6px;
+      line-height: 1.3;
+    }
+    .tip-card p {
+      font-size: 13px;
+      line-height: 1.65;
+      color: var(--text-muted);
+    }
+
+    /* ── MEMBER SPOTLIGHT ── */
+    .member-grid {
+      padding: 14px 32px 32px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    .member-card {
+      background: var(--ink-card);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+    .member-card:hover { border-color: var(--border-hover); }
+    .member-card-accent {
+      height: 3px;
+      background: var(--green);
+    }
+    .member-card-accent.orange { background: var(--orange); }
+    .member-card-body { padding: 14px; }
+    .member-name {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--cream);
+      margin-bottom: 2px;
+      line-height: 1.2;
+    }
+    .member-handle {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.08em;
+      color: var(--text-dim);
+      margin-bottom: 8px;
+    }
+    .member-card-body p {
+      font-size: 12.5px;
+      line-height: 1.6;
+      color: var(--text-muted);
+    }
+    .member-card-body em { color: var(--text-body); font-style: italic; }
+
+    /* ── WINS ── */
+    .wins-list {
+      padding: 14px 32px 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .win-item {
+      background: var(--ink-card);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 16px 18px;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 14px;
+      align-items: start;
+      transition: border-color 0.2s;
+    }
+    .win-item:hover { border-color: var(--border-hover); }
+    .win-emoji {
+      font-size: 18px;
+      line-height: 1;
+      margin-top: 2px;
+    }
+    .win-tag {
+      display: inline-block;
+      font-family: 'DM Mono', monospace;
+      font-size: 8.5px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 2px 7px;
+      border-radius: 2px;
+      margin-bottom: 5px;
+      border: 1px solid currentColor;
+    }
+    .win-tag.client   { color: var(--orange-light); }
+    .win-tag.build    { color: var(--green-light); }
+    .win-tag.speaking { color: #6BAE8C; }
+    .win-tag.other    { color: var(--text-dim); }
+    .win-title {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--cream);
+      margin-bottom: 3px;
+      display: block;
+    }
+    .win-item p {
+      font-size: 13px;
+      line-height: 1.65;
+      color: var(--text-muted);
+    }
+    .win-item a { color: var(--orange-light); text-decoration: underline; text-underline-offset: 2px; }
+
+    /* ── FOOTER ── */
+    .site-footer {
+      padding: 32px 32px 40px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .footer-brand {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--cream);
+      display: block;
+      margin-bottom: 4px;
+    }
+    .footer-sub {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      line-height: 1.8;
+    }
+    .footer-right {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      text-align: right;
+      line-height: 1.9;
+    }
+
+    @media (max-width: 520px) {
+      .tips-grid    { grid-template-columns: 1fr; }
+      .member-grid  { grid-template-columns: 1fr 1fr; }
+      .site-footer  { flex-direction: column; }
+      .footer-right { text-align: left; }
+      .hero, .content, .section-label, .biz-callout,
+      .hot-topic, .tips-grid, .member-grid, .wins-list,
+      .section-rule, .site-footer { padding-left: 20px; padding-right: 20px; }
+      .section-rule { margin: 0 20px; }
+      .hot-topic, .biz-callout { margin-left: 20px; margin-right: 20px; }
+      .site-header { padding: 16px 20px; }
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- HEADER -->
+  <header class="site-header">
+    <a href="/">
+      <span class="header-brand-name">From Impact to Income</span>
+      <span class="header-brand-sub">AI Junkies Inner Circle</span>
+    </a>
+    <div class="header-lock">
+      <div class="lock-dot"></div>
+      Members Only
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <span class="tag-pill">AI Junkies Newsletter</span>
+    <div class="hero-meta">
+      <div class="hero-issue-num">014</div>
+      <div class="hero-divider-v"></div>
+      <div>
+        <div class="hero-date">Jul 5–11, 2026</div>
+      </div>
+    </div>
+    <h1 class="hero-title">Junk <em>Mail</em></h1>
+    <p class="lede">
+      <strong>Hey Junkies 👋</strong> — Rodney popped the question and she said yes. Natasha and Tearra are somewhere on Junkanoo Beach in the Bahamas. Jay walked into a DoD meeting hoping for feedback on one product and walked out with validation for two. This week had range.
+    </p>
+    <p class="lede" style="margin-top:12px;">While some of us were building, some were celebrating, and a few were doing both at the same time. Issue 014 covers the real conversations that happened this week — from Jay&#x27;s government breakthrough to Big Steele feeling like Dr. Frankenstein over a knowledge graph that&#x27;s actually alive, to the question Derrick asked Thursday night that nobody should ignore.</p>
+    <p class="lede" style="margin-top:12px;">No fluff. Just the real stuff. Let's get into it. 🔥</p>
+  </section>
+
+
+  <!-- ══════════════════════════════ -->
+  <!-- ① MAIN STORY                  -->
+  <!-- ══════════════════════════════ -->
+  <div class="section-rule"></div>
+  <div class="section-label">① Main Story</div>
+  <div class="content">
+    <h2>Jay Walked Into a DoD Meeting With One Product and Left With a Contract Path for Two</h2>
+    <p class="deck">A GovCon accountability tool built inside AI Junkies just got validated by a Director at a Department of Defense Small Business office — and the government asked for more.</p>
+    <p>Jay built a product focused on GovCon accountability — helping government contractors stay on track and answerable to their commitments. He set up a meeting with a Director from a DoD Small Business office expecting honest feedback. What he got instead was excitement. The government loved what he built. Then things got even better.</p>
+    <p>During that same meeting, the Director said their office could use a similar tool on their end — to track contractor performance from the government side. Jay came in with one product pitch and left with validation for two separate tools, one for contractors and one for the agencies overseeing them. The group lit up when he posted about it. Britt immediately handed him a full production stack: HeyGen or Google Veo for animation, ChatGPT to clean up product images, CapCut for editing. Big Steele pointed him to Loom for the 2-3 minute demo video the DoD requested. Tequila reminded him HeyGen has a built-in product demo feature.</p>
+    <p>Here&#x27;s where people get it wrong with government work: they think the barrier is the tech. It is not. Jay&#x27;s barrier was getting in the room. He got in the room because he built something real that solved a real problem. The demo video they asked for is not the hard part — that is just execution. The hard part was showing up with something worth asking for a demo of. He already cleared the hard part.</p>
+    <ul>
+      <li><strong>Build the real thing first:</strong> Jay did not pitch a concept or a deck. He built an actual product around GovCon accountability. That is what got the meeting and that is what got the second ask.</li>
+      <li><strong>The demo video is just documentation:</strong> When the government asks for a 2-3 minute demo, that is not a creative challenge — it is a documentation task. Loom, HeyGen, CapCut. The group had Jay covered in under ten minutes.</li>
+      <li><strong>One product validated can open the door to a second contract:</strong> The DoD did not just approve what Jay built — they saw a version of it they wanted for themselves. Pay attention. That is how government relationships scale.</li>
+    </ul>
+  </div>
+  <!-- BIZ CALLOUT — periodic, not every issue. Delete block to skip. -->
+  <div class="biz-callout">
+    <div class="biz-label">💼 How does this apply to your business?</div>
+    <p>If you are sitting on a niche tool you built for one side of an industry, ask yourself who else in that same transaction needs the same visibility. Jay built for contractors. The agency regulating them wanted the same thing. That is not a coincidence — that is product-market fit hiding in plain sight.</p>
+  </div>
+
+
+  <!-- ══════════════════════════════ -->
+  <!-- ② SECOND STORY                -->
+  <!-- ══════════════════════════════ -->
+  <div class="section-rule"></div>
+  <div class="section-label">② Also This Week</div>
+  <div class="content">
+    <h3>Big Steele Canceled Class Because He Was Too Deep in the Lab</h3>
+    <p>Big Steele canceled his Tuesday session with a message that told you everything you needed to know: he was building something he wanted to give the group next week and he was not going to stop mid-flow to run a class. What sparked it was a leaked knowledge graph of Claude that started circulating on Instagram Monday. Real or not, Big Steele said it was close enough to his understanding of how LLMs work that it inspired him to go back and rebuild his own knowledge graphs — and this time he added something different.</p>
+    <p>He added a live feed. Now he can watch the LLM move across the graph in real time, node by node, as clients interact with the system. He described it like a traffic map, or like watching an electrical signal fire across neurons. Postgrad.io went up as a proof of concept. It lights up when there is activity. His words Thursday night were: I feel like Dr. Frankenstein over here. Anthony responded immediately: It&#x27;s ALIVE. That energy is what you want in a build session.</p>
+    <p>Big Steele&#x27;s follow-up in the chat: Never underestimate version 1. Seven reactions. That one deserved more.</p>
+  </div>
+
+
+  <!-- ══════════════════════════════ -->
+  <!-- ③ THIRD STORY                 -->
+  <!-- ══════════════════════════════ -->
+  <div class="section-rule"></div>
+  <div class="section-label">③ Worth Knowing</div>
+  <div class="content">
+    <h3>Sherry and Jayla Both Set Launch Dates on the Same Night</h3>
+    <p>After Thursday&#x27;s live session with Derrick, two members publicly committed to launch dates in the same thread within about 30 minutes of each other. Sherry Carter set September 21st as her go-live date. Jayla Nicole set September 25th, then immediately added — Time to figure out security. That parenthetical was honest and the group respected it. Juanita also dropped her timeline: founding members testing by August 1st, full go-live October 1st, with September 1st as the stretch goal. Three people with real public commitments in one night is not an accident — that is what happens when the right call happens.</p>
+    <p>Public accountability is underrated as a build tool. Saying the date out loud in a group chat where people know your name does something a private Notion page cannot. If you have been sitting on a launch window, this is your nudge.</p>
+  </div>
+
+
+  <!-- ══════════════════════════════ -->
+  <!-- ④ HOT TOPIC                   -->
+  <!-- ══════════════════════════════ -->
+  <div class="section-rule"></div>
+  <div class="section-label">④ Hot Topic</div>
+  <div class="hot-topic">
+    <div class="hot-topic-eyebrow">🔥 From the Group Chat</div>
+    <h3>Derrick Asked If the Thursday Night Calls Still Matter — And the Chat Had Thoughts</h3>
+    <p>After Thursday&#x27;s live session, Derrick posted something honest: he noticed only about nine people consistently show up to the calls after 60 days and wanted to know if there was still a need for them. The responses came fast.</p>
+    <p>This is the real tension inside every cohort that grows past a certain size. Attendance is not the same as value. The people who show up every week are getting something the full group is not, and that gap compounds over time. The question is not whether the calls matter — it is whether the people missing them know what they are leaving on the table. Big Steele said the game Derrick dropped that night solved so many gaps for him. That is not a small thing to miss.</p>
+    <div class="voices">
+      <div class="voice-item">
+        <div class="voice-name">Mr Barksdale</div>
+        "Yes sir it is!"
+      </div>
+      <div class="voice-item">
+        <div class="voice-name">Natasha Brown</div>
+        "Yes, please keep them...on the water and this signal is not the greatest...we need come up with a plan to make the signal from the satellites better for these cruise ships."
+      </div>
+      <div class="voice-item">
+        <div class="voice-name">Big Steele</div>
+        "The game that Derrick just dropped solved so many gaps for me."
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════ -->
+  <!-- ⑤ QUICK HITS                  -->
+  <!-- ══════════════════════════════ -->
+  <div class="section-rule"></div>
+  <div class="section-label">⑤ Quick Hits</div>
+  <div class="tips-grid">
+    <div class="tip-card">
+      <div class="tip-number">01</div>
+      <strong>Whispr Flow Android Users — Unlimited Usage Is Live Right Now</strong>
+      <p>Juanita flagged it mid-week: Whispr Flow on Android currently has unlimited usage. That is a freebie window that will not stay open forever. If you are a voice agent builder or you do heavy transcription work, get in now and get your workflows built around it before the meter starts running.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-number">02</div>
+      <strong>Lovable Just Partnered With Semrush for SEO-Ready Websites</strong>
+      <p>Britt dropped the link Wednesday and it got six reactions for a reason. Lovable and Semrush are now integrated, which means the apps you build in Lovable can come out the other side optimized for search from jump. For anyone building client-facing tools or content sites, this changes the conversation around AIO visibility. Go check the landing page.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-number">03</div>
+      <strong>Claude Cowork Is Coming to Mobile and Web — Officially</strong>
+      <p>Cheryl Tibbs dropped the Anthropic announcement Tuesday and the group reacted immediately. Claude&#x27;s Cowork feature, which lets you collaborate with Claude on longer projects in a shared workspace, is expanding beyond desktop. Britt&#x27;s response was two words: thank God. If you have been waiting to run client sessions through Claude on mobile, that wait is ending.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-number">04</div>
+      <strong>Anthropic Restored Expired Promotional Credits — Check Your Account</strong>
+      <p>Anthony posted late Thursday that Anthropic reached out and restored credits that had expired after 90 days from the April 4th promotional drop. If you got those credits in April and forgot about them, check your Anthropic account. Big Steele said he burned his in three days. Cheryl said she was already out. Either way, free credits are free credits.</p>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- ⑥ MEMBER SPOTLIGHT — delete cards you don't have content for. -->
+  <!-- Section auto-hides if all cards are removed.                  -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <div data-optional-section="members">
+  <div class="section-rule"></div>
+  <div class="section-label">⑥ Member Spotlight</div>
+  <!--
+    CARD GUIDE:
+    New member?         → orange accent bar
+    Building something? → Name the project. Keep it hype.
+    Not building yet?   → Encouraging note. Recognition, not pressure.
+    Mix freely. Delete any cards you don't have real content for.
+  -->
+  <div class="member-grid" data-content-container>
+    <div class="member-card" data-content-item>
+      <div class="member-card-accent "></div>
+      <div class="member-card-body">
+        <div class="member-name">Kre</div>
+        <div class="member-handle">I&#x27;mwhoIsayIam</div>
+        <p>Kre spent the whole week building character sheets, scene sheets, and a custom GPT that handles story boards, cinematic elements, and scripts — and the short film videos coming out of it are described as amazing. Now people are asking how she did it and she is putting her full workflow together. The teacher hat is incoming and she earned it.</p>
+      </div>
+    </div>
+    <div class="member-card" data-content-item>
+      <div class="member-card-accent "></div>
+      <div class="member-card-body">
+        <div class="member-name">Mr Barksdale</div>
+        <div class="member-handle">RichFriendsClub.vip</div>
+        <p>Mr Barksdale shipped RichFriendsClub.vip this week and brought it straight to the group for honest feedback. Althea gave him real notes — clear messaging, user-friendly, asked about pricing transparency. His response to her disability access concern was exactly right: he immediately saw an ambassador opportunity and she signed up. That is how you build a community worth joining.</p>
+      </div>
+    </div>
+  </div>
+  </div><!-- /section-members -->
+
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- ⑦ WINS THIS WEEK — delete wins you don't have content for. -->
+  <!-- Section auto-hides if all wins are removed.               -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <div data-optional-section="wins">
+  <div class="section-rule"></div>
+  <div class="section-label">⑦ Wins This Week</div>
+  <div class="wins-list" data-content-container>
+    <div class="win-item" data-content-item>
+      <div class="win-emoji">🏛️</div>
+      <div>
+        <span class="win-tag client">Government Validation</span>
+        <span class="win-title">Jay — GovCon Accountability Tool, DoD Meeting</span>
+        <p>Jay walked into a Department of Defense Small Business meeting expecting feedback and walked out with validation for two separate products. The government was excited and asked for a demo video. He is already building it.</p>
+      </div>
+    </div>
+    <div class="win-item" data-content-item>
+      <div class="win-emoji">🚀</div>
+      <div>
+        <span class="win-tag launch">Launch Date Set</span>
+        <span class="win-title">Sherry Carter — September 21st Go-Live</span>
+        <p>Sherry set her public launch date on the Thursday night call. September 21st. It is in the chat now, which means it is real.</p>
+      </div>
+    </div>
+    <div class="win-item" data-content-item>
+      <div class="win-emoji">🚀</div>
+      <div>
+        <span class="win-tag launch">Launch Date Set</span>
+        <span class="win-title">Jayla Nicole — Software Launching September 25th</span>
+        <p>Jayla dropped her launch date the same night as Sherry: September 25th, with security next on the build list. She said it out loud. Now we are all watching.</p>
+      </div>
+    </div>
+    <div class="win-item" data-content-item>
+      <div class="win-emoji">🛳️</div>
+      <div>
+        <span class="win-tag build">Shipped</span>
+        <span class="win-title">Mr Barksdale — RichFriendsClub.vip</span>
+        <p>After quietly building, Mr Barksdale shipped his community project this week and brought it to the group for real feedback. The site is live at RichFriendsClub.vip and the concept landed well with the room.</p>
+      </div>
+    </div>
+    <div class="win-item" data-content-item>
+      <div class="win-emoji">💍</div>
+      <div>
+        <span class="win-tag life">Personal Win</span>
+        <span class="win-title">Rodney Williams — She Said Yes</span>
+        <p>Rodney did a thing Friday night and posted the photo to prove it. She said yes. The whole group showed up in that thread. Congratulations Rodney.</p>
+      </div>
+    </div>
+    <div class="win-item" data-content-item>
+      <div class="win-emoji">🎂</div>
+      <div>
+        <span class="win-tag life">Birthday</span>
+        <span class="win-title">Towana Garrett — 64 and Still Here</span>
+        <p>Towana celebrated her 64th birthday Thursday while also supporting her brother through his first radiation treatment for a brain mass. She posted Philippians 3:14 and meant every word. That is faith over fear in the most real sense possible.</p>
+      </div>
+    </div>
+  </div>
+  </div><!-- /section-wins -->
+
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div>
+      <span class="footer-brand">Junk Mail</span>
+      <div class="footer-sub">
+        AI Junkies Weekly · Inner Circle Edition<br/>
+        Curated by Derrick Harper
+      </div>
+    </div>
+    <div class="footer-right">
+      Issue #014 · Jul 5–11, 2026<br/>
+      For AI Junkies members only<br/>
+      Not for public distribution
+    </div>
+  </footer>
+
+</div>
+
+  <script>
+    // Auto-hide optional sections (Member Spotlight + Wins) if they have no content cards
+    document.querySelectorAll('[data-optional-section]').forEach(function(section) {
+      var container = section.querySelector('[data-content-container]');
+      if (!container) return;
+      var items = container.querySelectorAll('[data-content-item]');
+      if (items.length === 0) {
+        section.style.display = 'none';
+      }
+    });
+  </script>
+</body>
+</html>
