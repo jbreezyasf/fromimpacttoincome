@@ -1,0 +1,54 @@
+name: Weekly Newsletter
+
+on:
+  schedule:
+    # Every Sunday at 15:00 UTC (11 AM ET / 8 AM PT). Cron is in UTC.
+    - cron: "0 15 * * 0"
+  workflow_dispatch:
+    inputs:
+      week_start:
+        description: "Monday of the target week (YYYY-MM-DD). Leave blank for current ISO week."
+        required: false
+      issue:
+        description: "Override issue number (optional)"
+        required: false
+      publish:
+        description: "Publish immediately"
+        type: boolean
+        default: false
+      dry_run:
+        description: "Dry run (print JSON, write nothing)"
+        type: boolean
+        default: false
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.4.1
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Generate newsletter
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          VERCEL_DEPLOY_HOOK_URL: ${{ secrets.VERCEL_DEPLOY_HOOK_URL }}
+        run: |
+          ARGS=""
+          if [ -n "${{ inputs.week_start }}" ]; then ARGS="$ARGS --week-start ${{ inputs.week_start }}"; fi
+          if [ -n "${{ inputs.issue }}" ]; then ARGS="$ARGS --issue ${{ inputs.issue }}"; fi
+          if [ "${{ inputs.publish }}" = "true" ]; then ARGS="$ARGS --publish"; fi
+          if [ "${{ inputs.dry_run }}" = "true" ]; then ARGS="$ARGS --dry-run"; fi
+          pnpm generate:newsletter $ARGS
