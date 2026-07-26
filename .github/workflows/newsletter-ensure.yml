@@ -147,11 +147,35 @@ jobs:
         run: |
           set -euo pipefail
 
-          if [ -z "${SUPABASE_ACCESS_TOKEN:-}" ]; then
-            echo "::warning::No Supabase Management API token found — cannot unpause automatically."
-            echo "::warning::Checked secrets SUPABASE_ACCESS_TOKEN and IMPACT_NEWSLETTER; both were empty."
+          # Ask the project itself whether it is awake, using the service key we
+          # already need for everything downstream. A paused project's REST
+          # endpoint refuses connections, so a 200 here settles it without ever
+          # touching the account-level Management API. That keeps the privileged
+          # token on the rare path — restoring — rather than the every-week one.
+          ping=$(curl -s -o /dev/null -w '%{http_code}' --max-time 20 \
+            -H "apikey: $SUPABASE_SERVICE_KEY" \
+            -H "Authorization: Bearer $SUPABASE_SERVICE_KEY" \
+            "$SUPABASE_URL/rest/v1/newsletter_config?select=id&limit=1") || ping="000"
+
+          if [ "$ping" = "200" ]; then
+            echo "REST ping returned 200 — project is awake, no unpause needed."
             exit 0
           fi
+          echo "REST ping returned $ping — project may be paused. Falling back to the Management API."
+
+          if [ -z "${SUPABASE_ACCESS_TOKEN:-}" ]; then
+            echo "::error::The project looks unreachable and no Management API token is available to restore it."
+            echo "::error::Checked secrets SUPABASE_ACCESS_TOKEN and IMPACT_NEWSLETTER; both were empty."
+            exit 1
+          fi
+
+          # Management API tokens are personal access tokens and always start
+          # with sbp_. A project API key (service_role/anon) will 401 here — it
+          # authenticates to <ref>.supabase.co, not to the account-level API.
+          case "$SUPABASE_ACCESS_TOKEN" in
+            sbp_*) ;;
+            *) echo "::warning::The Management token does not start with 'sbp_'. If the call below returns 401, the secret likely holds a project API key rather than a personal access token." ;;
+          esac
 
           # Precedence: explicit secret → derived from SUPABASE_URL → known default.
           # sed -n/p leaves $ref empty when SUPABASE_URL isn't a standard
@@ -169,7 +193,27 @@ jobs:
           api="https://api.supabase.com/v1/projects/$ref"
           auth="Authorization: Bearer $SUPABASE_ACCESS_TOKEN"
 
-          status=$(curl -fsS -H "$auth" "$api" | jq -r '.status // "UNKNOWN"')
+          # -f would swallow the API's own error body, which is the only thing
+          # that explains a 401. Capture code and body separately instead.
+          resp=$(curl -sS -w $'\n%{http_code}' -H "$auth" "$api") || resp=$'\n000'
+          http=$(printf '%s' "$resp" | tail -n1)
+          body=$(printf '%s' "$resp" | sed '$d')
+
+          if [ "$http" = "401" ] || [ "$http" = "403" ]; then
+            echo "::error::Management API returned $http for project $ref."
+            echo "::error::The token is not accepted at api.supabase.com. Create a personal access token"
+            echo "::error::at https://supabase.com/dashboard/account/tokens (it will start with 'sbp_')"
+            echo "::error::and store it as SUPABASE_ACCESS_TOKEN. Project API keys do not work here."
+            echo "API response: $body"
+            exit 1
+          fi
+          if [ "$http" != "200" ]; then
+            echo "::error::Management API returned HTTP $http for project $ref."
+            echo "API response: $body"
+            exit 1
+          fi
+
+          status=$(printf '%s' "$body" | jq -r '.status // "UNKNOWN"')
           echo "Current status: $status"
 
           if [ "$status" = "ACTIVE_HEALTHY" ]; then
