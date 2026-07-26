@@ -305,7 +305,7 @@ jobs:
           echo "have_html=$have_html" >> "$GITHUB_OUTPUT"
 
       # ─── 3. Fallback generation (same pipeline Railway runs) ────────────────
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         if: steps.check_issue.outputs.needs_generate == 'true'
         with:
           python-version: "3.11"
