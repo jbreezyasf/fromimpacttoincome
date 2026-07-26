@@ -22,13 +22,14 @@ jobs:
     steps:
       - name: Ping Supabase
         env:
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          # Public project URL — defaults rather than requiring a secret.
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL || 'https://owtljqjastcewgqqntdu.supabase.co' }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
         run: |
           set -euo pipefail
 
-          if [ -z "${SUPABASE_URL:-}" ] || [ -z "${SUPABASE_SERVICE_KEY:-}" ]; then
-            echo "::error::SUPABASE_URL and SUPABASE_SERVICE_KEY secrets are required."
+          if [ -z "${SUPABASE_SERVICE_KEY:-}" ]; then
+            echo "::error::The SUPABASE_SERVICE_KEY secret is required and is empty."
             exit 1
           fi
 

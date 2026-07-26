@@ -11,10 +11,18 @@ Add these in **GitHub → Repo Settings → Secrets and variables → Actions**:
 
 | Secret | What it is |
 | --- | --- |
-| `SUPABASE_URL` | `https://<project>.supabase.co` |
-| `SUPABASE_SERVICE_KEY` | Service-role key (Supabase → Project Settings → API). Server-side only. |
+| `SUPABASE_SERVICE_KEY` | Service-role key (Supabase → Project Settings → API). Server-side only. **The one genuinely required secret.** |
+| `SUPABASE_URL` | Optional. Defaults to `https://owtljqjastcewgqqntdu.supabase.co`; set it only if the project moves. |
 | `ANTHROPIC_API_KEY` | API key from console.anthropic.com |
 | `VERCEL_DEPLOY_HOOK_URL` | Optional. Vercel → Project → Settings → Git → Deploy Hooks |
+
+> Add these under **Settings → Secrets and variables → Actions**. The
+> *Dependabot* and *Codespaces* tabs on that same page are separate stores that
+> workflows cannot read, and a value saved under *Variables* is `vars.X`, not
+> `secrets.X`. A run whose logs show a secret as blank rather than `***` is
+> almost always one of those, or a name mismatch — the **Preflight — secret
+> visibility** step in `newsletter-ensure.yml` prints a present/absent table so
+> you can tell which without guessing.
 
 This script writes the new issue with `status='generated'` (a human flips it to
 `published`). It does **not** render or commit the static HTML — see the
@@ -47,7 +55,7 @@ exact minute.
 
 | Secret | What it is |
 | --- | --- |
-| `SUPABASE_ACCESS_TOKEN` | Personal access token from **Supabase → Account → Access Tokens**. Lets the workflow call the Management API to unpause a paused project. Without it, the unpause step warns and skips. |
+| `IMPACT_NEWSLETTER` | **Already configured.** The Supabase Management API token, used to unpause a paused project. The workflow reads `SUPABASE_ACCESS_TOKEN` first and falls back to this name, so renaming it to the conventional name later needs no code change. |
 | `SUPABASE_PROJECT_REF` | Rarely needed. The ref is derived from `SUPABASE_URL`, and falls back to the project's known ref (`owtljqjastcewgqqntdu`) if that URL is a custom domain. Set this only if the project ever moves. |
 | `TELEGRAM_API_ID`, `TELEGRAM_API_HASH`, `TELEGRAM_GROUP`, `TELEGRAM_SESSION_STRING` | Optional. Let the fallback re-scrape Telegram when Railway never ran. Without them it generates from whatever `telegram_messages` rows already exist. |
 | `NEWSLETTER_BASE_URL` | Optional. Public base URL for links in notifications. |
