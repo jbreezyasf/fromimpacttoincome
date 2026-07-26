@@ -1,9 +1,14 @@
 name: Weekly Newsletter
 
+# Manual-only. Railway (client/newsletter-cron/railway.toml) is the primary
+# weekly runner and Newsletter Weekly Ensure is the automated safety net, so
+# this workflow no longer runs on a schedule — two schedulers generating the
+# same issue produced duplicate/conflicting output.
+#
+# Kept for targeted backfills: this is the only path that can regenerate the
+# newsletter_issues row for an arbitrary week without touching Telegram or
+# committing HTML.
 on:
-  schedule:
-    # Every Sunday at 15:00 UTC (11 AM ET / 8 AM PT). Cron is in UTC.
-    - cron: "0 15 * * 0"
   workflow_dispatch:
     inputs:
       week_start:
@@ -26,13 +31,14 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
+      # No `version:` here on purpose. package.json already pins pnpm via
+      # "packageManager", and specifying it in both places makes the action
+      # fail with "Multiple versions of pnpm specified".
       - uses: pnpm/action-setup@v4
-        with:
-          version: 10.4.1
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: 22
           cache: pnpm
