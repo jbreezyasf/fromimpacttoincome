@@ -39,6 +39,12 @@ export interface NewsletterContent {
     title: string;
     body: string;
   }[];
+  /**
+   * Base URL a message_id is appended to, e.g. "https://t.me/c/1234567890".
+   * Written by generate_newsletter.py, not by Claude. Absent on issues
+   * generated before backlinks existed.
+   */
+  telegram_link_base?: string;
 }
 
 export interface NewsletterIssueRow {
@@ -51,29 +57,30 @@ export interface NewsletterIssueRow {
   published_at: string | null;
 }
 
-// Base URL a Telegram message id is appended to, e.g. https://t.me/c/1234567890.
-// Mirrors _telegram_link_base() in client/newsletter-cron/generate_newsletter.py.
-// Unset means the site renders no backlinks at all, rather than broken ones.
-const TELEGRAM_LINK_BASE = (
-  (import.meta.env.VITE_TELEGRAM_LINK_BASE as string | undefined) ?? ""
-).replace(/\/+$/, "");
-
-/** Permalink to one Telegram message, or null if we cannot build one. */
-export function messageUrl(id?: number | null): string | null {
-  if (!TELEGRAM_LINK_BASE || id == null || !Number.isFinite(id)) return null;
-  return `${TELEGRAM_LINK_BASE}/${id}`;
+/**
+ * Permalink to one Telegram message, or null if we cannot build one.
+ *
+ * `base` comes from content_json.telegram_link_base, stamped in by
+ * generate_newsletter.py from TELEGRAM_GROUP. Carrying it with the issue means
+ * there is no frontend env var to drift out of sync with the generator, and an
+ * issue written before backlinks existed simply has no base and no links.
+ */
+export function messageUrl(base?: string | null, id?: number | null): string | null {
+  const b = (base ?? "").replace(/\/+$/, "");
+  if (!b || id == null || !Number.isFinite(id)) return null;
+  return `${b}/${id}`;
 }
 
 /**
  * Permalink for a whole section. Points at the earliest cited message so the
  * reader lands where the conversation starts and can scroll forward.
  */
-export function threadUrl(ids?: SourceIds): string | null {
+export function threadUrl(base?: string | null, ids?: SourceIds): string | null {
   const valid = (ids ?? []).filter(
     (n): n is number => typeof n === "number" && Number.isFinite(n),
   );
   if (valid.length === 0) return null;
-  return messageUrl(Math.min(...valid));
+  return messageUrl(base, Math.min(...valid));
 }
 
 export function formatDateRange(start: string, end: string): string {

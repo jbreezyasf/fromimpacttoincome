@@ -99,8 +99,10 @@ How it works:
   `-100123…` → `https://t.me/c/123…`. Override with `TELEGRAM_LINK_BASE` only if
   the group is identified by a plain title, which has no URL form.
 
-The React issue page (`/newsletter/<slug>`) reads the same fields from Supabase
-and needs `VITE_TELEGRAM_LINK_BASE` set in Vercel to render its links.
+The generator also stamps the resolved base into `content_json` as
+`telegram_link_base`. The React issue page (`/newsletter/<slug>`) reads it from
+there, so **no frontend environment variable is needed** — and if the group ever
+changes, the static HTML and the React page move together instead of drifting.
 
 Attribution is best-effort by design: a section with no `source_ids` renders
 with no link rather than a guessed one, and the 16 issues generated before this
