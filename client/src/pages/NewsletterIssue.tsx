@@ -44,8 +44,14 @@ function SectionRule() {
  * from. Renders nothing when the issue predates source attribution or when no
  * link base is configured, so older issues are unaffected.
  */
-function ThreadLink({ sourceIds }: { sourceIds?: SourceIds }) {
-  const href = threadUrl(sourceIds);
+function ThreadLink({
+  base,
+  sourceIds,
+}: {
+  base?: string;
+  sourceIds?: SourceIds;
+}) {
+  const href = threadUrl(base, sourceIds);
   if (!href) return null;
   return (
     <p style={{ marginTop: 18 }}>
@@ -315,7 +321,7 @@ export default function NewsletterIssue() {
                   ))}
                 </ul>
               )}
-              <ThreadLink sourceIds={c.main_story.source_ids} />
+              <ThreadLink base={c.telegram_link_base} sourceIds={c.main_story.source_ids} />
             </div>
             {c.main_story.biz_callout && (
               <div
@@ -372,7 +378,7 @@ export default function NewsletterIssue() {
                   {p}
                 </p>
               ))}
-              <ThreadLink sourceIds={c.second_story.source_ids} />
+              <ThreadLink base={c.telegram_link_base} sourceIds={c.second_story.source_ids} />
             </div>
           </>
         )}
@@ -401,7 +407,7 @@ export default function NewsletterIssue() {
                   {p}
                 </p>
               ))}
-              <ThreadLink sourceIds={c.third_story.source_ids} />
+              <ThreadLink base={c.telegram_link_base} sourceIds={c.third_story.source_ids} />
             </div>
           </>
         )}
@@ -483,9 +489,9 @@ export default function NewsletterIssue() {
                           fontStyle: "normal",
                         }}
                       >
-                        {messageUrl(v.message_id) ? (
+                        {messageUrl(c.telegram_link_base, v.message_id) ? (
                           <a
-                            href={messageUrl(v.message_id)!}
+                            href={messageUrl(c.telegram_link_base, v.message_id)!}
                             target="_blank"
                             rel="noopener noreferrer"
                             style={{
@@ -506,6 +512,7 @@ export default function NewsletterIssue() {
                 </div>
               )}
               <ThreadLink
+                base={c.telegram_link_base}
                 sourceIds={
                   c.hot_topic.source_ids ??
                   (c.hot_topic.voices ?? [])

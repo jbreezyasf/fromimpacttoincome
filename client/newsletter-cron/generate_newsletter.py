@@ -891,6 +891,14 @@ def run(
 
     content = generate_newsletter(messages_text, issue_number, week_start, week_end)
 
+    # Stamp the resolved link base into the payload. The static HTML builds its
+    # backlinks here at render time, but the React issue page reads content_json
+    # straight from Supabase — carrying the base with the issue lets it build the
+    # same links with no separate frontend config to keep in sync with
+    # TELEGRAM_GROUP. If the group ever changes, both sides move together.
+    if TELEGRAM_LINK_BASE:
+        content["telegram_link_base"] = TELEGRAM_LINK_BASE
+
     if dry_run:
         log.info("DRY RUN — printing generated JSON and exiting (no DB writes, no commit, no deploy).")
         print(json.dumps(content, indent=2))
