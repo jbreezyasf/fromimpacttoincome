@@ -82,6 +82,31 @@ SUPABASE_URL=... SUPABASE_SERVICE_KEY=... ANTHROPIC_API_KEY=... \
 
 Drop `--dry-run` to actually write. Add `--publish` to publish immediately.
 
+## Message backlinks
+
+Each story section ends with a **Read the thread →** link into the Telegram
+conversation it was written from, and every quoted member's name in *From the
+Group Chat* links to their exact message. Readers use these to reread the full
+exchange or grab links that were shared in the chat.
+
+How it works:
+
+- Messages are fed to Claude prefixed with their id (`#4821 [2026-07-20 14:03] Marcus`).
+- Claude returns `source_ids` on each story and a `message_id` on each voice.
+- A section links to its **earliest** cited id, so the reader lands where the
+  conversation starts rather than mid-thread.
+- The base URL is derived from `TELEGRAM_GROUP` — `@name` → `https://t.me/name`,
+  `-100123…` → `https://t.me/c/123…`. Override with `TELEGRAM_LINK_BASE` only if
+  the group is identified by a plain title, which has no URL form.
+
+The React issue page (`/newsletter/<slug>`) reads the same fields from Supabase
+and needs `VITE_TELEGRAM_LINK_BASE` set in Vercel to render its links.
+
+Attribution is best-effort by design: a section with no `source_ids` renders
+with no link rather than a guessed one, and the 16 issues generated before this
+existed are unaffected. Private-group (`t.me/c/…`) links open in the Telegram
+app and only work for members.
+
 ## Telegram ingestion
 
 This script does **not** scrape Telegram. It assumes `telegram_messages` is

@@ -8,8 +8,11 @@ import { Link, useParams } from "wouter";
 import { supabase, isSupabaseConfigured } from "@/lib/supabase";
 import {
   formatDateRange,
+  messageUrl,
+  threadUrl,
   type NewsletterContent,
   type NewsletterIssueRow,
+  type SourceIds,
 } from "@/lib/newsletter-types";
 
 const C = {
@@ -34,6 +37,37 @@ const winTagColor: Record<string, string> = {
 
 function SectionRule() {
   return <div style={{ height: 1, background: C.border, margin: "0 32px" }} />;
+}
+
+/**
+ * "Read the thread →" backlink into the Telegram conversation a section came
+ * from. Renders nothing when the issue predates source attribution or when no
+ * link base is configured, so older issues are unaffected.
+ */
+function ThreadLink({ sourceIds }: { sourceIds?: SourceIds }) {
+  const href = threadUrl(sourceIds);
+  if (!href) return null;
+  return (
+    <p style={{ marginTop: 18 }}>
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        style={{
+          fontFamily: "'DM Mono', monospace",
+          fontSize: 10,
+          letterSpacing: "0.08em",
+          textTransform: "uppercase",
+          color: C.orange,
+          textDecoration: "none",
+          borderBottom: `1px solid ${C.orange}59`,
+          paddingBottom: 2,
+        }}
+      >
+        Read the thread →
+      </a>
+    </p>
+  );
 }
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
@@ -281,6 +315,7 @@ export default function NewsletterIssue() {
                   ))}
                 </ul>
               )}
+              <ThreadLink sourceIds={c.main_story.source_ids} />
             </div>
             {c.main_story.biz_callout && (
               <div
@@ -337,6 +372,7 @@ export default function NewsletterIssue() {
                   {p}
                 </p>
               ))}
+              <ThreadLink sourceIds={c.second_story.source_ids} />
             </div>
           </>
         )}
@@ -365,6 +401,7 @@ export default function NewsletterIssue() {
                   {p}
                 </p>
               ))}
+              <ThreadLink sourceIds={c.third_story.source_ids} />
             </div>
           </>
         )}
@@ -446,13 +483,36 @@ export default function NewsletterIssue() {
                           fontStyle: "normal",
                         }}
                       >
-                        {v.name}
+                        {messageUrl(v.message_id) ? (
+                          <a
+                            href={messageUrl(v.message_id)!}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{
+                              color: "inherit",
+                              textDecoration: "none",
+                              borderBottom: `1px dotted ${C.orange}`,
+                            }}
+                          >
+                            {v.name}
+                          </a>
+                        ) : (
+                          v.name
+                        )}
                       </div>
                       {v.quote}
                     </div>
                   ))}
                 </div>
               )}
+              <ThreadLink
+                sourceIds={
+                  c.hot_topic.source_ids ??
+                  (c.hot_topic.voices ?? [])
+                    .map((v) => v.message_id)
+                    .filter((id): id is number => typeof id === "number")
+                }
+              />
             </div>
           </>
         )}
