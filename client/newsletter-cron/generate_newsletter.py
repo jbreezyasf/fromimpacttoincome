@@ -583,8 +583,11 @@ def render_issue_html(
     )
 
     # ── "Read the thread" backlinks ───────────────────────────────────────────
-    # Each story section carries a placeholder. Fill it when the section cites a
-    # source, otherwise strip the whole <p> so no empty element is left behind.
+    # Each story section carries an HTML comment marker. Deliberately a comment
+    # and not visible placeholder text: the template is fetched from the repo at
+    # render time, so a generator older than this code would leave the marker
+    # untouched. A stale comment is invisible to readers; stale placeholder text
+    # would publish "[THREAD LINK — MAIN]" into the newsletter.
     # Issues generated before source_ids existed simply render without links.
     hot_ids = ht.get("source_ids") or [
         v.get("message_id") for v in ht.get("voices", []) if v.get("message_id")
@@ -596,15 +599,11 @@ def render_issue_html(
         ("HOT", hot_ids),
     ):
         anchor = _thread_link_html(source_ids)
-        placeholder = f"[THREAD LINK — {token}]"
+        marker = f"<!-- THREAD LINK — {token} -->"
         if anchor:
-            h = h.replace(placeholder, anchor)
+            h = h.replace(marker, f'<p class="thread-link">{anchor}</p>')
         else:
-            h = re.sub(
-                r'\s*<p class="thread-link">' + re.escape(placeholder) + r"</p>",
-                "",
-                h,
-            )
+            h = re.sub(r"\s*" + re.escape(marker), "", h)
 
     # Quick hits
     tips_html = ""
