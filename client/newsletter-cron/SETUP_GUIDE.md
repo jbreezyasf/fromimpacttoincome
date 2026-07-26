@@ -25,7 +25,7 @@ For maintainers of *this specific* client deployment only:
 | `run_weekly.py`            | Railway cron entrypoint                                              |
 | `requirements.txt`         | Pinned deps                                                          |
 | `railway.toml`             | Cron schedule (`0 14 * * 0`)                                         |
-| `Profile`                  | Procfile fallback                                                    |
+| `Procfile`                 | Fallback process definition for Heroku/Render-style hosts. Railway uses `railway.toml`'s `startCommand`, so this file is inert here. |
 | `.env.example`             | Production env-var template — values match Railway's configured paths |
 | `setup_scraper_schema.sql` | One-time schema additions, already applied                           |
 
