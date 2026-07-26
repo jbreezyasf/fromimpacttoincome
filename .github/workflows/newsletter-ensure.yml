@@ -26,11 +26,11 @@ on:
   workflow_dispatch:
     inputs:
       force_generate:
-        description: "Generate even if this week's issue already exists"
+        description: "force_generate — generate even if this week's issue already exists"
         type: boolean
         default: false
       skip_generate:
-        description: "Only wake Supabase and redeploy; never generate"
+        description: "skip_generate — only wake Supabase and redeploy; never generate"
         type: boolean
         default: false
 
