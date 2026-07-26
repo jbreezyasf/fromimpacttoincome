@@ -109,6 +109,33 @@ with no link rather than a guessed one, and the 16 issues generated before this
 existed are unaffected. Private-group (`t.me/c/…`) links open in the Telegram
 app and only work for members.
 
+### Backfilling an older issue
+
+Issues published before backlinks existed can get them without being rewritten.
+`client/newsletter-cron/backfill_sources.py` runs the generator's logic in
+reverse: it hands Claude the *finished* prose and asks only which messages each
+section describes. The published text is an input, never an output.
+
+Run it from **Actions → Backfill Source Links**, or locally:
+
+```bash
+python backfill_sources.py --issue 16 --dry-run   # print links + HTML diff, write nothing
+python backfill_sources.py --issue 16             # write + commit + deploy
+```
+
+Always dry-run first. Three guards protect the published issue:
+
+- The merged `content_json` is compared field-by-field against the original.
+  Any change to any prose field aborts before anything is written, printing the
+  offending diff.
+- Ids are checked against the message ids that actually exist in that issue's
+  week. Ids Claude invented are dropped rather than linked.
+- `status`, `issue_number`, week dates and `newsletter_config.current_issue` are
+  never touched — a backfill is not a republish.
+
+The workflow needs `ANTHROPIC_API_KEY` in repo secrets, plus `TELEGRAM_GROUP`
+(or `TELEGRAM_LINK_BASE`) so it can build message URLs.
+
 ## Telegram ingestion
 
 This script does **not** scrape Telegram. It assumes `telegram_messages` is

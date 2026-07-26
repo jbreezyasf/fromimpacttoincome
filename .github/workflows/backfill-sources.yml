@@ -1,0 +1,101 @@
+name: Backfill Source Links
+
+# Adds "Read the thread" backlinks to an issue published before source
+# attribution existed, without rewriting its content. Claude is asked only
+# "which messages is this passage describing?" — the published prose is an
+# input, never an output, and the script aborts if the merge would change
+# so much as one character of it.
+#
+# Manual only. This edits a published issue, so it should never fire on a timer.
+#
+# Always run once with dry_run checked first: that prints the chosen links and a
+# diff of the rendered HTML without writing anything.
+
+on:
+  workflow_dispatch:
+    inputs:
+      issue_number:
+        description: "Issue number to backfill, e.g. 16"
+        required: true
+      dry_run:
+        description: "Preview only — print links and HTML diff, write nothing"
+        type: boolean
+        default: true
+      no_commit:
+        description: "Update Supabase but skip the HTML commit and deploy"
+        type: boolean
+        default: false
+
+concurrency:
+  group: newsletter-backfill
+  cancel-in-progress: false
+
+jobs:
+  backfill:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        working-directory: client/newsletter-cron
+        run: pip install -r requirements.txt
+
+      - name: Backfill
+        working-directory: client/newsletter-cron
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL || 'https://owtljqjastcewgqqntdu.supabase.co' }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          TELEGRAM_GROUP: ${{ secrets.TELEGRAM_GROUP }}
+          TELEGRAM_LINK_BASE: ${{ secrets.TELEGRAM_LINK_BASE }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPO: ${{ github.repository }}
+          VERCEL_DEPLOY_HOOK_URL: ${{ secrets.VERCEL_DEPLOY_HOOK_URL }}
+          NEWSLETTER_OUTPUT_DIR: client/public/newsletter
+          NEWSLETTER_TEMPLATE_FILE: junk-mail-TEMPLATE.html
+        run: |
+          set -euo pipefail
+
+          missing=""
+          [ -z "${SUPABASE_SERVICE_KEY:-}" ] && missing="$missing SUPABASE_SERVICE_KEY"
+          [ -z "${ANTHROPIC_API_KEY:-}" ] && missing="$missing ANTHROPIC_API_KEY"
+          if [ -n "$missing" ]; then
+            echo "::error::Missing required secret(s):$missing"
+            echo "::error::Add them under Settings → Secrets and variables → Actions."
+            exit 1
+          fi
+          if [ -z "${TELEGRAM_GROUP:-}" ] && [ -z "${TELEGRAM_LINK_BASE:-}" ]; then
+            echo "::error::Set TELEGRAM_GROUP (e.g. -1001234567890) or TELEGRAM_LINK_BASE."
+            echo "::error::Without one there is no way to build a message URL."
+            exit 1
+          fi
+
+          ARGS="--issue ${{ inputs.issue_number }}"
+          if [ "${{ inputs.dry_run }}" = "true" ]; then ARGS="$ARGS --dry-run"; fi
+          if [ "${{ inputs.no_commit }}" = "true" ]; then ARGS="$ARGS --no-commit"; fi
+
+          echo "python backfill_sources.py $ARGS"
+          python backfill_sources.py $ARGS 2>&1 | tee /tmp/backfill.log
+
+      - name: Summary
+        if: always()
+        run: |
+          {
+            echo "### Backfill — Issue #${{ inputs.issue_number }}"
+            echo ""
+            echo "- dry run: \`${{ inputs.dry_run }}\`"
+            echo "- skip commit: \`${{ inputs.no_commit }}\`"
+            echo ""
+            if [ -f /tmp/backfill.log ]; then
+              echo '```'
+              sed -n '1,80p' /tmp/backfill.log
+              echo '```'
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
