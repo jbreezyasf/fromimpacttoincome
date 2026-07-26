@@ -98,6 +98,9 @@ jobs:
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
           SUPABASE_PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}
+          # Not a secret — this ref already ships publicly in the client bundle
+          # via VITE_SUPABASE_URL. Used only if the two above yield nothing.
+          DEFAULT_PROJECT_REF: owtljqjastcewgqqntdu
         run: |
           set -euo pipefail
 
@@ -107,14 +110,16 @@ jobs:
             exit 0
           fi
 
+          # Precedence: explicit secret → derived from SUPABASE_URL → known default.
+          # sed -n/p leaves $ref empty when SUPABASE_URL isn't a standard
+          # supabase.co URL, rather than echoing the whole URL back.
           ref="${SUPABASE_PROJECT_REF:-}"
           if [ -z "$ref" ]; then
-            # Derive the project ref from https://<ref>.supabase.co
-            ref=$(printf '%s' "${SUPABASE_URL:-}" | sed -E 's#^https?://([^.]+)\.supabase\.(co|in)/?$#\1#')
+            ref=$(printf '%s' "${SUPABASE_URL:-}" | sed -nE 's#^https?://([^.]+)\.supabase\.(co|in)/?$#\1#p')
           fi
-          if [ -z "$ref" ] || [ "$ref" = "${SUPABASE_URL:-}" ]; then
-            echo "::error::Could not determine the Supabase project ref. Set the SUPABASE_PROJECT_REF secret."
-            exit 1
+          if [ -z "$ref" ]; then
+            ref="$DEFAULT_PROJECT_REF"
+            echo "::warning::SUPABASE_URL is not a standard supabase.co URL — using the default project ref."
           fi
           echo "Project ref: $ref"
 

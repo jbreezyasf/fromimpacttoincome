@@ -48,7 +48,7 @@ exact minute.
 | Secret | What it is |
 | --- | --- |
 | `SUPABASE_ACCESS_TOKEN` | Personal access token from **Supabase → Account → Access Tokens**. Lets the workflow call the Management API to unpause a paused project. Without it, the unpause step warns and skips. |
-| `SUPABASE_PROJECT_REF` | Optional. Derived from `SUPABASE_URL` automatically; set it only if that URL is a custom domain. |
+| `SUPABASE_PROJECT_REF` | Rarely needed. The ref is derived from `SUPABASE_URL`, and falls back to the project's known ref (`owtljqjastcewgqqntdu`) if that URL is a custom domain. Set this only if the project ever moves. |
 | `TELEGRAM_API_ID`, `TELEGRAM_API_HASH`, `TELEGRAM_GROUP`, `TELEGRAM_SESSION_STRING` | Optional. Let the fallback re-scrape Telegram when Railway never ran. Without them it generates from whatever `telegram_messages` rows already exist. |
 | `NEWSLETTER_BASE_URL` | Optional. Public base URL for links in notifications. |
 | `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`, `SLACK_WEBHOOK_URL`, `OPENCLAW_WEBHOOK_URL` | Optional notification channels. |
