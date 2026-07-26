@@ -16,10 +16,45 @@ Add these in **GitHub → Repo Settings → Secrets and variables → Actions**:
 | `ANTHROPIC_API_KEY` | API key from console.anthropic.com |
 | `VERCEL_DEPLOY_HOOK_URL` | Optional. Vercel → Project → Settings → Git → Deploy Hooks |
 
-The weekly GitHub Action lives at `.github/workflows/weekly-newsletter.yml`
-and runs every **Sunday at 15:00 UTC (11 AM ET)**. It uses the secrets above
-and writes the new issue with `status='generated'` (a human flips it to
-`published`).
+This script writes the new issue with `status='generated'` (a human flips it to
+`published`). It does **not** render or commit the static HTML — see the
+runner map below for which pipeline does what.
+
+## Who runs the newsletter
+
+Three pieces, in order of who does the real work:
+
+| Runner | When | What it does |
+| --- | --- | --- |
+| **Railway cron** (`client/newsletter-cron/`) | Sun 14:00 UTC (9:00 AM CT) | **Primary.** Scrape Telegram → Claude → Supabase row → render + commit HTML → Vercel deploy → notify. |
+| **Newsletter Weekly Ensure** (`.github/workflows/newsletter-ensure.yml`) | Sun 9:30 AM CT | **Safety net.** Unpause Supabase, verify Railway actually shipped, rerun the same Python pipeline if not, redeploy Vercel. |
+| **Supabase Keepalive** (`.github/workflows/supabase-keepalive.yml`) | Daily 13:17 UTC | Reads one row so the free-tier project never idles into a pause. |
+
+`weekly-newsletter.yml` (this TypeScript script) is now **manual-only**. It
+used to run on its own Sunday schedule, which meant two schedulers generating
+the same issue. It is kept for targeted backfills of a `newsletter_issues` row.
+
+### Why 9:30 AM CT takes two cron lines
+
+GitHub cron is UTC and has no DST, so `newsletter-ensure.yml` fires at both
+14:30 and 15:30 UTC and a guard job exits unless the local Chicago hour is
+`09`. 14:30 UTC is 9:30 during CDT, 15:30 UTC during CST — exactly one of the
+two runs proceeds on any given Sunday. GitHub's scheduler also queues runs 5–15
+minutes late under load, which is why the guard checks the hour and not the
+exact minute.
+
+### Extra secrets for the safety net
+
+| Secret | What it is |
+| --- | --- |
+| `SUPABASE_ACCESS_TOKEN` | Personal access token from **Supabase → Account → Access Tokens**. Lets the workflow call the Management API to unpause a paused project. Without it, the unpause step warns and skips. |
+| `SUPABASE_PROJECT_REF` | Optional. Derived from `SUPABASE_URL` automatically; set it only if that URL is a custom domain. |
+| `TELEGRAM_API_ID`, `TELEGRAM_API_HASH`, `TELEGRAM_GROUP`, `TELEGRAM_SESSION_STRING` | Optional. Let the fallback re-scrape Telegram when Railway never ran. Without them it generates from whatever `telegram_messages` rows already exist. |
+| `NEWSLETTER_BASE_URL` | Optional. Public base URL for links in notifications. |
+| `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`, `SLACK_WEBHOOK_URL`, `OPENCLAW_WEBHOOK_URL` | Optional notification channels. |
+
+The fallback commits HTML with the built-in `GITHUB_TOKEN` (the job requests
+`contents: write`), so no personal access token is needed for that part.
 
 ## Manual run from GitHub UI
 

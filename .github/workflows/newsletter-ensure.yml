@@ -1,0 +1,297 @@
+name: Newsletter Weekly Ensure
+
+# Safety net for the weekly Junk Mail issue.
+#
+# Railway (client/newsletter-cron/railway.toml) is the primary runner and fires
+# at 14:00 UTC / 9:00 AM CT every Sunday. This workflow runs 30 minutes later,
+# at 9:30 AM CT, and does three things:
+#
+#   1. Wakes the Supabase project if it has auto-paused (free-tier projects
+#      pause after ~7 days idle), waiting until it reports ACTIVE_HEALTHY.
+#   2. Checks whether Railway actually produced this week's issue — both the
+#      newsletter_issues row AND the committed static HTML. If either is
+#      missing, it reruns the same Python pipeline Railway uses.
+#   3. Pings the Vercel deploy hook so the site rebuilds regardless.
+#
+# It is deliberately idempotent: when Railway succeeded, this run wakes the DB,
+# confirms the issue, redeploys, and exits without generating anything.
+
+on:
+  schedule:
+    # 9:30 AM America/Chicago year-round. Cron is UTC and has no DST, so we fire
+    # at both candidate times and the guard job below exits unless the local
+    # Chicago hour is 09 — 14:30 UTC lands during CDT, 15:30 UTC during CST.
+    - cron: "30 14 * * 0"
+    - cron: "30 15 * * 0"
+  workflow_dispatch:
+    inputs:
+      force_generate:
+        description: "Generate even if this week's issue already exists"
+        type: boolean
+        default: false
+      skip_generate:
+        description: "Only wake Supabase and redeploy; never generate"
+        type: boolean
+        default: false
+
+concurrency:
+  group: newsletter-weekly
+  cancel-in-progress: false
+
+jobs:
+  # ───────────────────────────────────────────────────────────────────────────
+  # Decides whether this firing is the real 9:30 AM CT one, and computes the
+  # target week using the same Sun→Sat convention as generate_newsletter.py.
+  # ───────────────────────────────────────────────────────────────────────────
+  guard:
+    runs-on: ubuntu-latest
+    outputs:
+      proceed: ${{ steps.check.outputs.proceed }}
+      week_start: ${{ steps.check.outputs.week_start }}
+      week_end: ${{ steps.check.outputs.week_end }}
+    steps:
+      - id: check
+        env:
+          TZ: America/Chicago
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          set -euo pipefail
+
+          hour=$(date +%H)
+          if [ "$EVENT_NAME" = "schedule" ] && [ "$hour" != "09" ]; then
+            echo "Chicago local hour is $hour, not 09 — this is the off-season cron. Exiting."
+            echo "proceed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          # Mirrors get_week_range() in client/newsletter-cron/generate_newsletter.py:
+          # the last full Sunday → Saturday week. `date +%w` (0=Sunday) is the
+          # same value as Python's (weekday() + 1) % 7.
+          dow=$(date +%w)
+          week_start=$(date -d "-$((dow + 7)) days" +%F)
+          week_end=$(date -d "$week_start +6 days" +%F)
+          echo "Target week: $week_start → $week_end"
+
+          echo "week_start=$week_start" >> "$GITHUB_OUTPUT"
+          echo "week_end=$week_end" >> "$GITHUB_OUTPUT"
+          echo "proceed=true" >> "$GITHUB_OUTPUT"
+
+  ensure:
+    needs: guard
+    if: needs.guard.outputs.proceed == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      # generate_newsletter.py commits the rendered issue HTML via the GitHub
+      # contents API using GITHUB_TOKEN.
+      contents: write
+    env:
+      WEEK_START: ${{ needs.guard.outputs.week_start }}
+      WEEK_END: ${{ needs.guard.outputs.week_end }}
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+    steps:
+      - uses: actions/checkout@v5
+
+      # ─── 1. Wake Supabase ───────────────────────────────────────────────────
+      - name: Wake Supabase if paused
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "${SUPABASE_ACCESS_TOKEN:-}" ]; then
+            echo "::warning::SUPABASE_ACCESS_TOKEN is not set — cannot unpause automatically."
+            echo "::warning::Create one at https://supabase.com/dashboard/account/tokens and add it to repo secrets."
+            exit 0
+          fi
+
+          ref="${SUPABASE_PROJECT_REF:-}"
+          if [ -z "$ref" ]; then
+            # Derive the project ref from https://<ref>.supabase.co
+            ref=$(printf '%s' "${SUPABASE_URL:-}" | sed -E 's#^https?://([^.]+)\.supabase\.(co|in)/?$#\1#')
+          fi
+          if [ -z "$ref" ] || [ "$ref" = "${SUPABASE_URL:-}" ]; then
+            echo "::error::Could not determine the Supabase project ref. Set the SUPABASE_PROJECT_REF secret."
+            exit 1
+          fi
+          echo "Project ref: $ref"
+
+          api="https://api.supabase.com/v1/projects/$ref"
+          auth="Authorization: Bearer $SUPABASE_ACCESS_TOKEN"
+
+          status=$(curl -fsS -H "$auth" "$api" | jq -r '.status // "UNKNOWN"')
+          echo "Current status: $status"
+
+          if [ "$status" = "ACTIVE_HEALTHY" ]; then
+            echo "Project is already awake."
+            exit 0
+          fi
+
+          if [ "$status" = "INACTIVE" ]; then
+            echo "Project is paused — issuing restore."
+            curl -fsS -X POST -H "$auth" -H "Content-Type: application/json" \
+              -d '{}' "$api/restore" >/dev/null
+          else
+            echo "Project is in a transitional state ($status) — waiting for it to settle."
+          fi
+
+          # Restores routinely take several minutes.
+          for attempt in $(seq 1 40); do
+            sleep 15
+            status=$(curl -fsS -H "$auth" "$api" | jq -r '.status // "UNKNOWN"')
+            echo "  [$attempt/40] status=$status"
+            if [ "$status" = "ACTIVE_HEALTHY" ]; then
+              echo "Project is awake after $((attempt * 15))s."
+              exit 0
+            fi
+          done
+
+          echo "::error::Supabase project did not reach ACTIVE_HEALTHY within 10 minutes (last status: $status)."
+          exit 1
+
+      # ─── 2. Did Railway already ship this week? ─────────────────────────────
+      - name: Check this week's issue
+        id: check_issue
+        env:
+          FORCE_GENERATE: ${{ inputs.force_generate }}
+          SKIP_GENERATE: ${{ inputs.skip_generate }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "${SUPABASE_URL:-}" ] || [ -z "${SUPABASE_SERVICE_KEY:-}" ]; then
+            echo "::error::SUPABASE_URL and SUPABASE_SERVICE_KEY secrets are required."
+            exit 1
+          fi
+
+          row=$(curl -fsS \
+            -H "apikey: $SUPABASE_SERVICE_KEY" \
+            -H "Authorization: Bearer $SUPABASE_SERVICE_KEY" \
+            "$SUPABASE_URL/rest/v1/newsletter_issues?week_start=eq.$WEEK_START&select=issue_number,slug,status")
+
+          count=$(printf '%s' "$row" | jq 'length')
+          echo "newsletter_issues rows for week_start=$WEEK_START: $count"
+
+          have_row=false
+          have_html=false
+          slug=""
+
+          if [ "$count" -gt 0 ]; then
+            have_row=true
+            slug=$(printf '%s' "$row" | jq -r '.[0].slug')
+            issue_number=$(printf '%s' "$row" | jq -r '.[0].issue_number')
+            status=$(printf '%s' "$row" | jq -r '.[0].status')
+            echo "Found Issue #$issue_number ($slug), status=$status"
+            echo "slug=$slug" >> "$GITHUB_OUTPUT"
+            echo "issue_number=$issue_number" >> "$GITHUB_OUTPUT"
+
+            if [ -f "client/public/newsletter/$slug.html" ]; then
+              have_html=true
+            else
+              echo "::warning::Supabase row exists but client/public/newsletter/$slug.html is missing."
+            fi
+          fi
+
+          needs_generate=false
+          if [ "$have_row" != "true" ] || [ "$have_html" != "true" ]; then
+            needs_generate=true
+          fi
+          if [ "$FORCE_GENERATE" = "true" ]; then
+            echo "force_generate=true — generating regardless."
+            needs_generate=true
+          fi
+          if [ "$SKIP_GENERATE" = "true" ]; then
+            echo "skip_generate=true — suppressing generation."
+            needs_generate=false
+          fi
+
+          echo "needs_generate=$needs_generate" >> "$GITHUB_OUTPUT"
+          echo "have_row=$have_row" >> "$GITHUB_OUTPUT"
+          echo "have_html=$have_html" >> "$GITHUB_OUTPUT"
+
+      # ─── 3. Fallback generation (same pipeline Railway runs) ────────────────
+      - uses: actions/setup-python@v5
+        if: steps.check_issue.outputs.needs_generate == 'true'
+        with:
+          python-version: "3.11"
+
+      - name: Install pipeline dependencies
+        if: steps.check_issue.outputs.needs_generate == 'true'
+        working-directory: client/newsletter-cron
+        run: pip install -r requirements.txt
+
+      - name: Scrape Telegram for the target week
+        if: steps.check_issue.outputs.needs_generate == 'true'
+        working-directory: client/newsletter-cron
+        env:
+          TELEGRAM_API_ID: ${{ secrets.TELEGRAM_API_ID }}
+          TELEGRAM_API_HASH: ${{ secrets.TELEGRAM_API_HASH }}
+          TELEGRAM_GROUP: ${{ secrets.TELEGRAM_GROUP }}
+          TELEGRAM_SESSION_STRING: ${{ secrets.TELEGRAM_SESSION_STRING }}
+        run: |
+          set -euo pipefail
+          if [ -z "${TELEGRAM_SESSION_STRING:-}" ]; then
+            echo "::warning::TELEGRAM_SESSION_STRING not set — skipping scrape."
+            echo "::warning::Generation will use whatever telegram_messages rows already exist."
+            exit 0
+          fi
+          python scrape_telegram.py backfill --start "$WEEK_START" --end "$WEEK_END"
+
+      - name: Generate newsletter
+        if: steps.check_issue.outputs.needs_generate == 'true'
+        working-directory: client/newsletter-cron
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPO: ${{ github.repository }}
+          VERCEL_DEPLOY_HOOK_URL: ${{ secrets.VERCEL_DEPLOY_HOOK_URL }}
+          NEWSLETTER_BASE_URL: ${{ secrets.NEWSLETTER_BASE_URL }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          OPENCLAW_WEBHOOK_URL: ${{ secrets.OPENCLAW_WEBHOOK_URL }}
+          # This repo is a monorepo — the HTML lives under client/, not public/.
+          NEWSLETTER_OUTPUT_DIR: client/public/newsletter
+          NEWSLETTER_TEMPLATE_FILE: junk-mail-TEMPLATE.html
+        run: |
+          set -euo pipefail
+          ARGS="--week-start $WEEK_START --week-end $WEEK_END"
+          # Re-running a week Railway already numbered must not bump the counter.
+          if [ "${{ steps.check_issue.outputs.have_row }}" = "true" ]; then
+            ARGS="$ARGS --issue-number ${{ steps.check_issue.outputs.issue_number }} --no-increment"
+          fi
+          echo "python generate_newsletter.py $ARGS"
+          python generate_newsletter.py $ARGS
+
+      # ─── 4. Redeploy the site ───────────────────────────────────────────────
+      - name: Trigger Vercel deploy
+        env:
+          VERCEL_DEPLOY_HOOK_URL: ${{ secrets.VERCEL_DEPLOY_HOOK_URL }}
+        run: |
+          set -euo pipefail
+          if [ -z "${VERCEL_DEPLOY_HOOK_URL:-}" ]; then
+            echo "::warning::VERCEL_DEPLOY_HOOK_URL not set — skipping redeploy."
+            exit 0
+          fi
+          code=$(curl -s -o /dev/null -w '%{http_code}' -X POST "$VERCEL_DEPLOY_HOOK_URL")
+          echo "Vercel deploy hook responded $code"
+          if [ "$code" -lt 200 ] || [ "$code" -ge 300 ]; then
+            echo "::error::Vercel deploy hook failed with HTTP $code"
+            exit 1
+          fi
+
+      - name: Summary
+        if: always()
+        run: |
+          {
+            echo "### Newsletter weekly ensure"
+            echo ""
+            echo "| Field | Value |"
+            echo "| --- | --- |"
+            echo "| Target week | \`$WEEK_START\` → \`$WEEK_END\` |"
+            echo "| Supabase row found | \`${{ steps.check_issue.outputs.have_row }}\` |"
+            echo "| Static HTML found | \`${{ steps.check_issue.outputs.have_html }}\` |"
+            echo "| Ran fallback generation | \`${{ steps.check_issue.outputs.needs_generate }}\` |"
+            echo "| Issue | \`${{ steps.check_issue.outputs.slug }}\` |"
+          } >> "$GITHUB_STEP_SUMMARY"
