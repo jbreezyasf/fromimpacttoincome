@@ -105,6 +105,70 @@ TEMPLATE_PATH      = f"{NEWSLETTER_OUTPUT_DIR}/{NEWSLETTER_TEMPLATE_FILE}"
 INDEX_PATH         = f"{NEWSLETTER_OUTPUT_DIR}/index.html"
 
 
+def _telegram_link_base() -> str:
+    """
+    Base URL that a message_id can be appended to, or "" if links are impossible.
+
+    Explicit TELEGRAM_LINK_BASE wins. Otherwise it is derived from TELEGRAM_GROUP,
+    which the scraper already needs:
+
+      @aijunkies      -> https://t.me/aijunkies       (public group, works for anyone)
+      -1001234567890  -> https://t.me/c/1234567890    (private supergroup, members only)
+
+    A plain group *title* yields nothing — Telegram has no URL form for it — so
+    backlinks are silently omitted rather than rendered broken.
+    """
+    explicit = os.environ.get("TELEGRAM_LINK_BASE", "").strip().rstrip("/")
+    if explicit:
+        return explicit
+
+    group = os.environ.get("TELEGRAM_GROUP", "").strip()
+    if not group:
+        return ""
+    if group.startswith("@"):
+        return f"https://t.me/{group[1:]}"
+    if re.fullmatch(r"-100\d+", group):
+        return f"https://t.me/c/{group[4:]}"
+    if re.fullmatch(r"\d+", group):
+        return f"https://t.me/c/{group}"
+    return ""
+
+
+TELEGRAM_LINK_BASE = _telegram_link_base()
+
+
+def message_url(message_id) -> str:
+    """Permalink to a single Telegram message, or "" if we cannot build one."""
+    if not TELEGRAM_LINK_BASE or message_id in (None, ""):
+        return ""
+    try:
+        return f"{TELEGRAM_LINK_BASE}/{int(message_id)}"
+    except (TypeError, ValueError):
+        return ""
+
+
+def _thread_link_html(source_ids, label: str = "Read the thread") -> str:
+    """
+    Anchor pointing at the earliest cited message, so the reader lands at the
+    start of the conversation and can scroll forward through it. Returns "" when
+    there is nothing to link — callers strip the surrounding element in that case.
+    """
+    if not source_ids:
+        return ""
+    ids = []
+    for sid in source_ids:
+        try:
+            ids.append(int(sid))
+        except (TypeError, ValueError):
+            continue
+    if not ids:
+        return ""
+    url = message_url(min(ids))
+    if not url:
+        return ""
+    return f'<a href="{_e(url)}" target="_blank" rel="noopener">{_e(label)} →</a>'
+
+
 def issue_href(n: int) -> str:
     """
     Return the href for an issue. Relative by default so deployments don't
@@ -161,11 +225,15 @@ def format_messages_for_claude(messages: list[dict]) -> str:
         text = msg.get("message_text", "").strip()
         reactions = msg.get("reaction_count", 0)
         reply_text = msg.get("reply_to_text")
+        mid = msg.get("message_id")
 
         if not text:
             continue
 
-        line = f"[{ts}] {sender}"
+        # The id prefix is what lets Claude cite sources in source_ids, which
+        # become the "Read the thread" backlinks in the rendered issue.
+        line = f"#{mid} " if mid not in (None, "") else ""
+        line += f"[{ts}] {sender}"
         if reply_text:
             line += f'\n  ↳ replying to: "{reply_text[:100]}"'
         line += f"\n  {text}"
@@ -213,7 +281,8 @@ The JSON must match this exact schema:
       {"title": "Point title", "body": "Short punchy explanation"},
       {"title": "Point title", "body": "Short punchy explanation"}
     ],
-    "biz_callout": "2-3 sentences connecting to a real business use case. Name the scenario. Make it concrete."
+    "biz_callout": "2-3 sentences connecting to a real business use case. Name the scenario. Make it concrete.",
+    "source_ids": [123, 124, 125]
   },
   "second_story": {
     "headline": "Also This Week headline",
@@ -221,24 +290,27 @@ The JSON must match this exact schema:
       "Para 1: what happened or was discussed",
       "Para 2: the insight or takeaway",
       "Para 3: quote from group, example, or edge case (optional — omit if nothing fits)"
-    ]
+    ],
+    "source_ids": [126, 127]
   },
   "third_story": {
     "headline": "Worth Knowing headline",
     "paragraphs": [
       "Para 1: tight, 2-3 paragraphs max",
       "Para 2: practical angle"
-    ]
+    ],
+    "source_ids": [128]
   },
   "hot_topic": {
     "headline": "The debate or question that blew up in the chat",
     "intro": "1-2 sentences on what sparked the conversation",
     "broader_point": "Why this matters beyond just this week",
     "voices": [
-      {"name": "Member Name", "quote": "Their actual quote or close paraphrase"},
-      {"name": "Member Name", "quote": "Their actual quote or close paraphrase"},
-      {"name": "Member Name", "quote": "Their actual quote or close paraphrase"}
-    ]
+      {"name": "Member Name", "quote": "Their actual quote or close paraphrase", "message_id": 129},
+      {"name": "Member Name", "quote": "Their actual quote or close paraphrase", "message_id": 130},
+      {"name": "Member Name", "quote": "Their actual quote or close paraphrase", "message_id": 131}
+    ],
+    "source_ids": [129, 130, 131]
   },
   "quick_hits": [
     {"number": "01", "title": "Tip title", "body": "2-3 sentence actionable tip"},
@@ -273,6 +345,21 @@ Rules:
 - All text fields: no HTML, no markdown, plain text only.
 - Quotes in voices: use actual quotes from the chat when possible.
 - Never invent wins or quotes. Only use what's in the messages.
+
+Source attribution (source_ids and message_id):
+- Every message in the transcript is prefixed with its id, like "#4821 [2026-07-20 14:03] Marcus".
+- source_ids: the ids of the messages a section was actually built from. Readers
+  click through to reread the conversation, so list the messages that carry the
+  discussion — 1-5 ids per section, in chronological order (lowest id first).
+- The FIRST id in source_ids matters most: it is where the reader lands. Choose
+  the message that STARTS the relevant exchange, not a reply deep inside it.
+- voices[].message_id: the id of the exact message that quote came from. Required
+  for every voice — a quote you cannot attribute to a specific id does not belong
+  in voices.
+- Use only ids that appear in the transcript. Never guess, invent, or reuse the
+  example ids in this schema. If a section genuinely has no identifiable source,
+  omit its source_ids rather than inventing one — a missing link is fine, a wrong
+  link sends the reader to an unrelated message.
 """.strip()
 
 
@@ -475,9 +562,16 @@ def render_issue_html(
 
     voices_html = ""
     for v in ht.get("voices", []):
+        # The member's name links straight to the message the quote came from.
+        name_html = _e(v["name"])
+        v_url = message_url(v.get("message_id"))
+        if v_url:
+            name_html = (
+                f'<a href="{_e(v_url)}" target="_blank" rel="noopener">{name_html}</a>'
+            )
         voices_html += (
             f'      <div class="voice-item">\n'
-            f'        <div class="voice-name">{_e(v["name"])}</div>\n'
+            f'        <div class="voice-name">{name_html}</div>\n'
             f'        "{_e(v["quote"])}"\n'
             f"      </div>\n"
         )
@@ -487,6 +581,30 @@ def render_issue_html(
         h,
         flags=re.DOTALL,
     )
+
+    # ── "Read the thread" backlinks ───────────────────────────────────────────
+    # Each story section carries a placeholder. Fill it when the section cites a
+    # source, otherwise strip the whole <p> so no empty element is left behind.
+    # Issues generated before source_ids existed simply render without links.
+    hot_ids = ht.get("source_ids") or [
+        v.get("message_id") for v in ht.get("voices", []) if v.get("message_id")
+    ]
+    for token, source_ids in (
+        ("MAIN", ms.get("source_ids")),
+        ("SECOND", ss.get("source_ids")),
+        ("THIRD", ts.get("source_ids")),
+        ("HOT", hot_ids),
+    ):
+        anchor = _thread_link_html(source_ids)
+        placeholder = f"[THREAD LINK — {token}]"
+        if anchor:
+            h = h.replace(placeholder, anchor)
+        else:
+            h = re.sub(
+                r'\s*<p class="thread-link">' + re.escape(placeholder) + r"</p>",
+                "",
+                h,
+            )
 
     # Quick hits
     tips_html = ""
