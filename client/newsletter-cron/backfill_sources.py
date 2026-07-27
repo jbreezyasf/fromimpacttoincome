@@ -233,9 +233,13 @@ def main() -> None:
     new_html = gen.render_issue_html(merged, args.issue, week_start, week_end)
     issue_path = f"{gen.NEWSLETTER_OUTPUT_DIR}/{slug}.html"
     try:
-        old_html, _ = gen._gh_get_file(issue_path)
+        # Keep the sha. The Contents API REQUIRES the current blob sha to update
+        # an existing file and returns 422 without it. The weekly generator never
+        # hits this because it creates new issue files; a backfill always
+        # rewrites one that already exists.
+        old_html, old_sha = gen._gh_get_file(issue_path)
     except Exception:  # noqa: BLE001
-        old_html = ""
+        old_html, old_sha = "", None
 
     if old_html:
         diff = list(difflib.unified_diff(
@@ -271,8 +275,24 @@ def main() -> None:
         log.info("--no-commit — HTML not committed, no deploy triggered.")
         return
 
-    gen._gh_put_file(issue_path, new_html,
-                     f"Add source backlinks to Junk Mail Issue #{args.issue:03d} (content unchanged)")
+    # Re-read the sha immediately before writing, so a commit that landed while
+    # this run was talking to Claude does not cause a stale-sha rejection.
+    try:
+        _, put_sha = gen._gh_get_file(issue_path)
+    except Exception:  # noqa: BLE001
+        put_sha = old_sha
+
+    try:
+        gen._gh_put_file(
+            issue_path, new_html,
+            f"Add source backlinks to Junk Mail Issue #{args.issue:03d} (content unchanged)",
+            sha=put_sha,
+        )
+    except Exception as exc:  # noqa: BLE001
+        log.error(f"Failed to commit {issue_path}: {exc}")
+        log.error("Supabase WAS updated — content_json now carries the links.")
+        log.error("Re-running is safe: the merge is idempotent and re-verifies content.")
+        raise
     log.info(f"Committed {issue_path}.")
     gen.trigger_vercel_deploy()
     log.info("Done.")
