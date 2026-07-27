@@ -52,6 +52,11 @@ ATTRIBUTION_KEYS = {"source_ids", "message_id", "telegram_link_base"}
 
 STORY_SECTIONS = ("main_story", "second_story", "third_story", "hot_topic")
 
+# A backlink pass adds ~29 lines: the CSS block plus four anchors. Materially
+# more means the rendered page changed for some other reason — almost always the
+# template having moved on since that issue was published.
+EXPECTED_DIFF_CEILING = 60
+
 ATTRIBUTION_PROMPT = """
 You are matching finished newsletter copy back to the group chat messages it was
 written from. You are NOT writing or editing the newsletter. Return ids only.
@@ -368,6 +373,7 @@ def backfill_one(issue: int, dry_run: bool, no_commit: bool, deploy: bool = True
     except Exception:  # noqa: BLE001
         old_html, old_sha = "", None
 
+    diff_note = ""
     if old_html:
         diff = list(difflib.unified_diff(
             old_html.splitlines(), new_html.splitlines(),
@@ -376,7 +382,17 @@ def backfill_one(issue: int, dry_run: bool, no_commit: bool, deploy: bool = True
         ))
         added = sum(1 for d in diff if d.startswith("+") and not d.startswith("+++"))
         removed = sum(1 for d in diff if d.startswith("-") and not d.startswith("---"))
+        diff_note = f" (html +{added}/-{removed})"
         log.info(f"\nHTML diff: +{added} / -{removed} lines")
+        # The content guard covers content_json, not the rendering. A large HTML
+        # diff means the template drifted since this issue was published, so
+        # re-rendering would restyle the page rather than just add links.
+        if added > EXPECTED_DIFF_CEILING:
+            log.warning(
+                f"::warning::Issue #{args.issue}: {added} added lines is well beyond the "
+                f"~30 a backlink pass produces. The template has probably drifted — "
+                f"review this diff before applying."
+            )
         for line in diff[:120]:
             log.info(line)
         if len(diff) > 120:
@@ -390,7 +406,7 @@ def backfill_one(issue: int, dry_run: bool, no_commit: bool, deploy: bool = True
         log.info("Re-run without --dry-run (uncheck `dry_run` in the workflow)")
         log.info("to apply the links shown above.")
         log.info("=" * 70)
-        return "preview"
+        return "preview" + diff_note
 
     # ── 6. Write ──────────────────────────────────────────────────────────────
     gen.supabase.table("newsletter_issues").update(
@@ -424,7 +440,7 @@ def backfill_one(issue: int, dry_run: bool, no_commit: bool, deploy: bool = True
     if args.deploy:
         gen.trigger_vercel_deploy()
     log.info("Done.")
-    return "applied"
+    return "applied" + diff_note
 
 
 def main() -> None:
@@ -479,11 +495,12 @@ def main() -> None:
     for n, outcome in results:
         log.info(f"  #{n:>3}  {outcome}")
 
-    applied = sum(1 for _, o in results if o == "applied")
+    applied = sum(1 for _, o in results if o.startswith("applied"))
     failed = [n for n, o in results if o.startswith("failed")]
     log.info("")
-    log.info(f"applied={applied}  skipped={sum(1 for _, o in results if o == 'skipped')}  "
-             f"preview={sum(1 for _, o in results if o == 'preview')}  failed={len(failed)}")
+    log.info(f"applied={applied}  skipped={sum(1 for _, o in results if o.startswith('skipped'))}  "
+             f"preview={sum(1 for _, o in results if o.startswith('preview'))}  "
+             f"blocked={sum(1 for _, o in results if o.startswith('blocked'))}  failed={len(failed)}")
     if failed:
         log.info(f"Re-run just the failures with: --issue {','.join(map(str, failed))}")
     if applied and not args.dry_run and not args.no_commit:
