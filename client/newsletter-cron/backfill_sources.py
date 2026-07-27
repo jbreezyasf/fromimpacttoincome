@@ -57,6 +57,23 @@ STORY_SECTIONS = ("main_story", "second_story", "third_story", "hot_topic")
 # template having moved on since that issue was published.
 EXPECTED_DIFF_CEILING = 60
 
+# Account-level failures repeat identically for every issue, so a batch that
+# keeps going just burns time and fills the summary with copies of one problem.
+FATAL_MARKERS = (
+    "credit balance",
+    "billing",
+    "authentication_error",
+    "invalid x-api-key",
+    "permission_error",
+    "rate_limit_error",
+)
+
+
+def _is_fatal(err: str) -> bool:
+    """True when an error will hit every remaining issue the same way."""
+    low = err.lower()
+    return any(m in low for m in FATAL_MARKERS)
+
 ATTRIBUTION_PROMPT = """
 You are matching finished newsletter copy back to the group chat messages it was
 written from. You are NOT writing or editing the newsletter. Return ids only.
@@ -482,8 +499,25 @@ def main() -> None:
         except SystemExit:
             raise
         except Exception as exc:  # noqa: BLE001
-            log.error(f"Issue #{n} FAILED: {exc}")
-            outcome = f"failed: {exc}"
+            err = str(exc)
+            log.error(f"Issue #{n} FAILED: {err}")
+            outcome = f"failed: {err}"
+            results.append((n, outcome))
+
+            # Stop on an account-level problem, or on the same error three times
+            # running — the second catches fatal classes not listed above.
+            recent = [o for _, o in results[-3:] if o.startswith("failed")]
+            repeated = len(recent) == 3 and len(set(recent)) == 1
+            if _is_fatal(err) or repeated:
+                reason = "account-level error" if _is_fatal(err) else "same error three times"
+                remaining = [x for x in issues if x > n]
+                log.error("")
+                log.error(f"ABORTING BATCH — {reason}. This will fail identically for")
+                log.error(f"every remaining issue, so {len(remaining)} were not attempted.")
+                if remaining:
+                    log.error(f"After fixing it, run: --issue {','.join(map(str, remaining))}")
+                break
+            continue
         results.append((n, outcome or "unknown"))
 
     if not batch:
@@ -493,7 +527,8 @@ def main() -> None:
     log.info("BATCH SUMMARY")
     log.info("=" * 70)
     for n, outcome in results:
-        log.info(f"  #{n:>3}  {outcome}")
+        short = outcome if len(outcome) <= 110 else outcome[:107] + "..."
+        log.info(f"  #{n:>3}  {short}")
 
     applied = sum(1 for _, o in results if o.startswith("applied"))
     failed = [n for n, o in results if o.startswith("failed")]
