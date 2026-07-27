@@ -15,8 +15,12 @@ on:
   workflow_dispatch:
     inputs:
       issue_number:
-        description: "issue_number — which issue to backfill, e.g. 16"
-        required: true
+        description: "issue_number — one issue (16), a range (1-15), or all. Ignored when survey is checked."
+        required: false
+      survey:
+        description: "survey — just report which issues are linkable. No model calls, no writes."
+        type: boolean
+        default: false
       dry_run:
         description: "dry_run — PREVIEW ONLY, writes nothing. UNCHECK THIS to actually apply the links."
         type: boolean
@@ -33,7 +37,7 @@ concurrency:
 jobs:
   backfill:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 45
     permissions:
       contents: write
     steps:
@@ -77,9 +81,17 @@ jobs:
             exit 1
           fi
 
-          ARGS="--issue ${{ inputs.issue_number }}"
-          if [ "${{ inputs.dry_run }}" = "true" ]; then ARGS="$ARGS --dry-run"; fi
-          if [ "${{ inputs.no_commit }}" = "true" ]; then ARGS="$ARGS --no-commit"; fi
+          if [ "${{ inputs.survey }}" = "true" ]; then
+            ARGS="--survey"
+          else
+            if [ -z "${{ inputs.issue_number }}" ]; then
+              echo "::error::issue_number is required unless survey is checked."
+              exit 1
+            fi
+            ARGS="--issue ${{ inputs.issue_number }}"
+            if [ "${{ inputs.dry_run }}" = "true" ]; then ARGS="$ARGS --dry-run"; fi
+            if [ "${{ inputs.no_commit }}" = "true" ]; then ARGS="$ARGS --no-commit"; fi
+          fi
 
           echo "python backfill_sources.py $ARGS"
           python backfill_sources.py $ARGS 2>&1 | tee /tmp/backfill.log
@@ -93,7 +105,10 @@ jobs:
             # A dry run and a real run both finish green, so the outcome has to
             # be stated outright — a quiet "dry run: true" line is too easy to
             # miss when the run reports success either way.
-            if [ "${{ inputs.dry_run }}" = "true" ]; then
+            if [ "${{ inputs.survey }}" = "true" ]; then
+              echo "> ## 🔎 SURVEY — NOTHING WAS WRITTEN"
+              echo "> Coverage report only. No model calls were made."
+            elif [ "${{ inputs.dry_run }}" = "true" ]; then
               echo "> ## ⚠️ PREVIEW ONLY — NOTHING WAS WRITTEN"
               echo "> The links below were **not** applied. To apply them, run again"
               echo "> with the \`dry_run\` checkbox **unchecked**."
@@ -106,7 +121,7 @@ jobs:
             echo ""
             if [ -f /tmp/backfill.log ]; then
               echo '```'
-              sed -n '1,80p' /tmp/backfill.log
+              tail -n 60 /tmp/backfill.log
               echo '```'
             fi
           } >> "$GITHUB_STEP_SUMMARY"
