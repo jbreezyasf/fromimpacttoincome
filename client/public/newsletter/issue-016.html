@@ -315,6 +315,28 @@
       margin-bottom: 5px;
       font-style: normal;
     }
+    /* A member's name links to the exact message the quote came from. */
+    .voice-name a {
+      color: inherit;
+      text-decoration: none;
+      border-bottom: 1px dotted var(--orange);
+    }
+    .voice-name a:hover { border-bottom-style: solid; }
+    /* "Read the thread" backlink at the end of each story section. */
+    .thread-link {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-top: 18px;
+    }
+    .thread-link a {
+      color: var(--orange);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(255, 122, 0, 0.35);
+      padding-bottom: 2px;
+    }
+    .thread-link a:hover { border-bottom-color: var(--orange); }
 
     /* ── QUICK HITS GRID ── */
     .tips-grid {
@@ -551,6 +573,7 @@
       <li><strong>Consistency is a prompt instruction, not a default:</strong> Explicitly tell the generator to maintain the same character face, clothing, environment, and lighting throughout. If you don&#x27;t say it, it won&#x27;t do it.</li>
       <li><strong>Generate clean audio, add everything in post:</strong> Tell the generator no background voices, no music, no sound effects. It&#x27;s nearly impossible to remove baked-in audio. Add your own music, voiceover, and sound design during editing.</li>
     </ul>
+    <p class="thread-link"><a href="https://t.me/c/3120599051/18086" target="_blank" rel="noopener">Read the thread →</a></p>
   </div>
   <!-- BIZ CALLOUT — periodic, not every issue. Delete block to skip. -->
   <div class="biz-callout">
@@ -569,6 +592,7 @@
     <p>Big Steele dropped checkthegroup.com on Sunday night. The origin story: coordinating schedules with his adult friend group had become impossible, so he built an app to get the logistics out of the group chat. Calendar sync, search, email and SMS notifications — all in one place. Then he figured, why not turn it into a product? Within hours the group was signing up to beta test it.</p>
     <p>The real lesson here isn&#x27;t the app itself — it&#x27;s the process. Big Steele identified a friction point in his own life, built a solution, tested it in a real-world context, and then recognized the commercial opportunity. That&#x27;s the full loop: find a problem, solve it, ship it. He said it himself: &#x27;Everything I have taught over the last 2 months in my class has come full circle to this.&#x27; Nathan beta tested it the same week and called the setup easy and clean. The free plan is live.</p>
     <p>Mr. Barksdale immediately asked if it could be white-labeled, which tells you everything about how this group thinks. The first instinct isn&#x27;t just to use it — it&#x27;s to figure out how to resell it.</p>
+    <p class="thread-link"><a href="https://t.me/c/3120599051/18002" target="_blank" rel="noopener">Read the thread →</a></p>
   </div>
 
 
@@ -581,6 +605,7 @@
     <h3>Claude Voice Mode Got an Upgrade — And It Might Affect Your Stack</h3>
     <p>Anthropic updated Claude&#x27;s voice mode with more capable models this week, and Juanita flagged it Friday night with a sharp question attached: if you&#x27;re still paying for Whisper Flow, you might want to reconsider. The update means Claude is absorbing more of the voice layer directly, which could eliminate the need for third-party voice tools that were previously filling that gap. Juanita also threw out a genuinely interesting edge case — how well does this work with Meta AI glasses?</p>
     <p>If you&#x27;re building voice agents, this is worth tracking closely. The platforms are consolidating. Tools that were necessary six months ago are becoming redundant. Keep an eye on your stack and audit what you&#x27;re actually paying for versus what the base models now handle natively. Separately, Anthony flagged that HeyGen is disabling OAuth-based automation for third-party integrations on July 25 — if you have HeyGen in any workflow, you need to switch to API key authentication now or your automations will break.</p>
+    <p class="thread-link"><a href="https://t.me/c/3120599051/18045" target="_blank" rel="noopener">Read the thread →</a></p>
   </div>
 
 
@@ -596,18 +621,19 @@
     <p>This matters beyond just token budgets. As builders start running more complex workflows across multiple models and tiers, understanding the actual cost structure of what you&#x27;re running — and whether you&#x27;re maximizing what you&#x27;re paying for before it resets — becomes a real business optimization. You can&#x27;t manage costs you don&#x27;t understand.</p>
     <div class="voices">
       <div class="voice-item">
-        <div class="voice-name">Althea Cooper</div>
+        <div class="voice-name"><a href="https://t.me/c/3120599051/18180" target="_blank" rel="noopener">Althea Cooper</a></div>
         "It&#x27;s inefficient because every time you use Fable, it&#x27;s like paying double — out of Fable and your main weekly allowance."
       </div>
       <div class="voice-item">
-        <div class="voice-name">Roberta</div>
+        <div class="voice-name"><a href="https://t.me/c/3120599051/18182" target="_blank" rel="noopener">Roberta</a></div>
         "You&#x27;re not using Fable completely 100% before it resets. So you are actually losing user credits."
       </div>
       <div class="voice-item">
-        <div class="voice-name">Big Steele</div>
+        <div class="voice-name"><a href="https://t.me/c/3120599051/18184" target="_blank" rel="noopener">Big Steele</a></div>
         "To me it&#x27;s inefficient because I didn&#x27;t maximize the availability of the model because I&#x27;m a builder. But like Althea says it&#x27;s also inefficient because it&#x27;s double the cost of what I could have done with just Opus."
       </div>
     </div>
+    <p class="thread-link"><a href="https://t.me/c/3120599051/18179" target="_blank" rel="noopener">Read the thread →</a></p>
   </div>
 
 
