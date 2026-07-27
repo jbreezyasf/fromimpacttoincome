@@ -252,7 +252,13 @@ def main() -> None:
             log.info(f"... {len(diff) - 120} more diff lines")
 
     if args.dry_run:
-        log.info("\nDRY RUN — nothing written.")
+        log.info("")
+        log.info("=" * 70)
+        log.info("DRY RUN — NOTHING WAS WRITTEN.")
+        log.info("Supabase is unchanged and no HTML was committed.")
+        log.info("Re-run without --dry-run (uncheck `dry_run` in the workflow)")
+        log.info("to apply the links shown above.")
+        log.info("=" * 70)
         return
 
     # ── 6. Write ──────────────────────────────────────────────────────────────

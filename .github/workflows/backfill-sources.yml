@@ -15,14 +15,14 @@ on:
   workflow_dispatch:
     inputs:
       issue_number:
-        description: "Issue number to backfill, e.g. 16"
+        description: "issue_number — which issue to backfill, e.g. 16"
         required: true
       dry_run:
-        description: "Preview only — print links and HTML diff, write nothing"
+        description: "dry_run — PREVIEW ONLY, writes nothing. UNCHECK THIS to actually apply the links."
         type: boolean
         default: true
       no_commit:
-        description: "Update Supabase but skip the HTML commit and deploy"
+        description: "no_commit — update Supabase but skip the HTML commit and deploy"
         type: boolean
         default: false
 
@@ -90,8 +90,19 @@ jobs:
           {
             echo "### Backfill — Issue #${{ inputs.issue_number }}"
             echo ""
-            echo "- dry run: \`${{ inputs.dry_run }}\`"
-            echo "- skip commit: \`${{ inputs.no_commit }}\`"
+            # A dry run and a real run both finish green, so the outcome has to
+            # be stated outright — a quiet "dry run: true" line is too easy to
+            # miss when the run reports success either way.
+            if [ "${{ inputs.dry_run }}" = "true" ]; then
+              echo "> ## ⚠️ PREVIEW ONLY — NOTHING WAS WRITTEN"
+              echo "> The links below were **not** applied. To apply them, run again"
+              echo "> with the \`dry_run\` checkbox **unchecked**."
+            elif [ "${{ inputs.no_commit }}" = "true" ]; then
+              echo "> ## ✅ Supabase updated — HTML not committed"
+              echo "> \`no_commit\` was checked, so the rendered issue was not published."
+            else
+              echo "> ## ✅ Applied — Supabase updated and HTML committed"
+            fi
             echo ""
             if [ -f /tmp/backfill.log ]; then
               echo '```'
