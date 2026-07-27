@@ -183,7 +183,17 @@ def survey() -> None:
     log.info(header)
     log.info("-" * len(header))
 
+    # Two issues claiming the same week means at least one row's dates are wrong,
+    # and a backfill would attribute that issue to another week's conversation —
+    # every link on it would point somewhere unrelated. Refuse rather than guess
+    # which row is correct.
+    weeks: dict[tuple[str, str], list[int]] = {}
+    for r in rows:
+        weeks.setdefault((r["week_start"], r["week_end"]), []).append(r["issue_number"])
+    duplicated = {k: v for k, v in weeks.items() if len(v) > 1}
+
     ready = []
+    blocked = []
     for r in rows:
         ws = date.fromisoformat(r["week_start"])
         we = date.fromisoformat(r["week_end"])
@@ -194,11 +204,18 @@ def survey() -> None:
         already = any(
             (content.get(k) or {}).get("source_ids") for k in STORY_SECTIONS
         )
+        shares_with = [
+            n for n in duplicated.get((r["week_start"], r["week_end"]), [])
+            if n != r["issue_number"]
+        ]
 
-        if with_ids == 0:
-            verdict = "SKIP — no message ids for this week"
-        elif already:
+        if already:
             verdict = "done — already has links"
+        elif shares_with:
+            verdict = f"BLOCKED — shares this week with #{', #'.join(map(str, shares_with))}"
+            blocked.append(r["issue_number"])
+        elif with_ids == 0:
+            verdict = "SKIP — no message ids for this week"
         else:
             verdict = "ready"
             ready.append(r["issue_number"])
@@ -209,9 +226,21 @@ def survey() -> None:
         )
 
     log.info("")
+    if blocked:
+        log.warning(f"{len(blocked)} issue(s) BLOCKED on duplicate week dates: {blocked}")
+        log.warning("Two rows claim the same week, so at least one is wrong. Fix")
+        log.warning("newsletter_issues.week_start/week_end against the date printed")
+        log.warning("in the published HTML before backfilling those issues.")
+        log.warning("")
     if ready:
         log.info(f"{len(ready)} issue(s) ready: {ready}")
-        log.info(f"Preview them with:  --issue {min(ready)}-{max(ready)} --dry-run")
+        # Contiguous runs get a range; anything else gets an explicit list, so
+        # the suggested command never silently includes a blocked issue.
+        if ready == list(range(min(ready), max(ready) + 1)):
+            arg = f"{min(ready)}-{max(ready)}"
+        else:
+            arg = ",".join(map(str, ready))
+        log.info(f"Preview them with:  --issue {arg} --dry-run")
     else:
         log.info("No issues are both linkable and unlinked.")
 
@@ -262,6 +291,27 @@ def backfill_one(issue: int, dry_run: bool, no_commit: bool, deploy: bool = True
         log.error("No Telegram link base — set TELEGRAM_GROUP or TELEGRAM_LINK_BASE.")
         sys.exit(1)
     log.info(f"Link base: {gen.TELEGRAM_LINK_BASE}")
+
+    # Refuse if another issue claims the same week. One of the two rows has wrong
+    # dates, and backfilling either would risk attributing an issue to a week it
+    # was not written from — every link on it would point somewhere unrelated.
+    # A hard refusal, not a warning: this is the one error the design exists to
+    # prevent, and there is no safe way to guess which row is correct.
+    clashes = (
+        gen.supabase.table("newsletter_issues")
+        .select("issue_number")
+        .eq("week_start", row["week_start"])
+        .eq("week_end", row["week_end"])
+        .neq("issue_number", args.issue)
+        .execute()
+    ).data or []
+    if clashes:
+        others = ", ".join(f"#{c['issue_number']}" for c in clashes)
+        log.error(f"Issue #{args.issue} claims {week_start} → {week_end}, and so does {others}.")
+        log.error("At least one row has wrong dates. Correct week_start/week_end in")
+        log.error("newsletter_issues against the range printed in the published HTML,")
+        log.error("then re-run. Refusing to guess which is right.")
+        return "blocked — duplicate week dates"
 
     # ── 2. That week's messages ───────────────────────────────────────────────
     messages = gen.fetch_messages(week_start, week_end)
