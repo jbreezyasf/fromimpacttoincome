@@ -18,8 +18,15 @@ Every write is guarded:
     never touched — this is not a republish.
 
 Usage:
+    python backfill_sources.py --survey               # which issues are linkable
     python backfill_sources.py --issue 16 --dry-run   # inspect, write nothing
-    python backfill_sources.py --issue 16             # write + commit + deploy
+    python backfill_sources.py --issue 1-15           # batch: write + commit
+    python backfill_sources.py --issue all            # every issue
+
+--issue accepts one number, an inclusive range, a comma list, or "all". In a
+batch each issue is independent: one failure is reported and the rest continue,
+and the Vercel deploy fires once at the end rather than once per commit.
+Re-running is idempotent, so partial progress is safe to keep.
 
 Requires the same env as generate_newsletter.py: SUPABASE_URL,
 SUPABASE_SERVICE_KEY, ANTHROPIC_API_KEY, plus TELEGRAM_GROUP for the link base
@@ -153,17 +160,87 @@ def _assert_content_unchanged(original: dict, merged: dict) -> None:
         fromfile="published", tofile="merged", lineterm="",
     ):
         log.error(line)
-    sys.exit(1)
+    raise ValueError("merge would alter published content")
 
 
-def main() -> None:
-    p = argparse.ArgumentParser(prog="backfill_sources")
-    p.add_argument("--issue", type=int, required=True, help="Issue number, e.g. 16")
-    p.add_argument("--dry-run", action="store_true",
-                   help="Print the attribution and the HTML diff; write nothing.")
-    p.add_argument("--no-commit", action="store_true",
-                   help="Update Supabase but do not commit HTML or deploy.")
-    args = p.parse_args()
+def survey() -> None:
+    """
+    Report which issues can be backfilled. No Claude calls, no writes.
+
+    Early telegram_messages rows predate the Telethon scraper — setup_scraper_schema.sql
+    adds message_id via ALTER TABLE — so older weeks may hold messages with no ids
+    and nothing to link to. Run this before spending model calls on a batch.
+    """
+    rows = (
+        gen.supabase.table("newsletter_issues")
+        .select("issue_number, slug, week_start, week_end, status, content_json")
+        .order("issue_number")
+        .execute()
+    ).data or []
+
+    log.info(f"{len(rows)} issues. Link base: {gen.TELEGRAM_LINK_BASE or '(none)'}\n")
+    header = f"{'#':>3}  {'week':<23} {'msgs':>5} {'w/ids':>6}  {'linked':<7} {'verdict'}"
+    log.info(header)
+    log.info("-" * len(header))
+
+    ready = []
+    for r in rows:
+        ws = date.fromisoformat(r["week_start"])
+        we = date.fromisoformat(r["week_end"])
+        msgs = gen.fetch_messages(ws, we)
+        with_ids = sum(1 for m in msgs if m.get("message_id") is not None)
+
+        content = r.get("content_json") or {}
+        already = any(
+            (content.get(k) or {}).get("source_ids") for k in STORY_SECTIONS
+        )
+
+        if with_ids == 0:
+            verdict = "SKIP — no message ids for this week"
+        elif already:
+            verdict = "done — already has links"
+        else:
+            verdict = "ready"
+            ready.append(r["issue_number"])
+
+        log.info(
+            f"{r['issue_number']:>3}  {str(ws) + ' → ' + str(we):<23} "
+            f"{len(msgs):>5} {with_ids:>6}  {'yes' if already else 'no':<7} {verdict}"
+        )
+
+    log.info("")
+    if ready:
+        log.info(f"{len(ready)} issue(s) ready: {ready}")
+        log.info(f"Preview them with:  --issue {min(ready)}-{max(ready)} --dry-run")
+    else:
+        log.info("No issues are both linkable and unlinked.")
+
+
+def parse_issue_arg(raw: str) -> list[int]:
+    """Accept '16', '1-15', or 'all'. Returns issue numbers, ascending."""
+    raw = raw.strip().lower()
+    if raw == "all":
+        rows = (
+            gen.supabase.table("newsletter_issues")
+            .select("issue_number").order("issue_number").execute()
+        ).data or []
+        return [r["issue_number"] for r in rows]
+    if "," in raw:
+        return sorted({int(x) for x in raw.split(",") if x.strip()})
+    if "-" in raw:
+        lo, hi = raw.split("-", 1)
+        return list(range(int(lo), int(hi) + 1))
+    return [int(raw)]
+
+
+def backfill_one(issue: int, dry_run: bool, no_commit: bool, deploy: bool = True) -> str:
+    """Backfill a single issue. Returns a one-word outcome for the batch summary."""
+
+    class _Args:
+        pass
+
+    args = _Args()
+    args.issue, args.dry_run, args.no_commit, args.deploy = issue, dry_run, no_commit, deploy
 
     # ── 1. The published issue ────────────────────────────────────────────────
     res = (
@@ -190,8 +267,8 @@ def main() -> None:
     messages = gen.fetch_messages(week_start, week_end)
     valid_ids = {int(m["message_id"]) for m in messages if m.get("message_id") is not None}
     if not valid_ids:
-        log.error("No message_ids for that week — nothing to link to.")
-        sys.exit(1)
+        log.warning(f"Issue #{args.issue}: no message ids for that week — skipping.")
+        return "skipped"
     log.info(f"{len(messages)} messages, {len(valid_ids)} with ids")
 
     # ── 3. Attribution ────────────────────────────────────────────────────────
@@ -263,7 +340,7 @@ def main() -> None:
         log.info("Re-run without --dry-run (uncheck `dry_run` in the workflow)")
         log.info("to apply the links shown above.")
         log.info("=" * 70)
-        return
+        return "preview"
 
     # ── 6. Write ──────────────────────────────────────────────────────────────
     gen.supabase.table("newsletter_issues").update(
@@ -273,7 +350,7 @@ def main() -> None:
 
     if args.no_commit:
         log.info("--no-commit — HTML not committed, no deploy triggered.")
-        return
+        return "supabase-only"
 
     # Re-read the sha immediately before writing, so a commit that landed while
     # this run was talking to Claude does not cause a stale-sha rejection.
@@ -294,8 +371,73 @@ def main() -> None:
         log.error("Re-running is safe: the merge is idempotent and re-verifies content.")
         raise
     log.info(f"Committed {issue_path}.")
-    gen.trigger_vercel_deploy()
+    if args.deploy:
+        gen.trigger_vercel_deploy()
     log.info("Done.")
+    return "applied"
+
+
+def main() -> None:
+    p = argparse.ArgumentParser(prog="backfill_sources")
+    p.add_argument("--issue", type=str,
+                   help="Issue number (16), an inclusive range (1-15), or 'all'.")
+    p.add_argument("--survey", action="store_true",
+                   help="Report which issues are linkable. No model calls, no writes.")
+    p.add_argument("--dry-run", action="store_true",
+                   help="Print the attribution and the HTML diff; write nothing.")
+    p.add_argument("--no-commit", action="store_true",
+                   help="Update Supabase but do not commit HTML or deploy.")
+    args = p.parse_args()
+
+    if not gen.TELEGRAM_LINK_BASE:
+        log.error("No Telegram link base — set TELEGRAM_GROUP or TELEGRAM_LINK_BASE.")
+        sys.exit(1)
+
+    if args.survey:
+        survey()
+        return
+    if not args.issue:
+        p.error("one of --issue or --survey is required")
+
+    issues = parse_issue_arg(args.issue)
+    batch = len(issues) > 1
+    if batch:
+        log.info(f"Backfilling {len(issues)} issues: {issues}\n")
+
+    # One issue failing must not abandon the rest — each is independent, and a
+    # re-run is idempotent, so partial progress is safe to keep.
+    results: list[tuple[int, str]] = []
+    for n in issues:
+        log.info("=" * 70)
+        try:
+            # In a batch the Vercel deploy fires once at the end rather than
+            # once per issue, to avoid a rebuild per commit.
+            outcome = backfill_one(n, args.dry_run, args.no_commit, deploy=not batch)
+        except SystemExit:
+            raise
+        except Exception as exc:  # noqa: BLE001
+            log.error(f"Issue #{n} FAILED: {exc}")
+            outcome = f"failed: {exc}"
+        results.append((n, outcome or "unknown"))
+
+    if not batch:
+        return
+
+    log.info("\n" + "=" * 70)
+    log.info("BATCH SUMMARY")
+    log.info("=" * 70)
+    for n, outcome in results:
+        log.info(f"  #{n:>3}  {outcome}")
+
+    applied = sum(1 for _, o in results if o == "applied")
+    failed = [n for n, o in results if o.startswith("failed")]
+    log.info("")
+    log.info(f"applied={applied}  skipped={sum(1 for _, o in results if o == 'skipped')}  "
+             f"preview={sum(1 for _, o in results if o == 'preview')}  failed={len(failed)}")
+    if failed:
+        log.info(f"Re-run just the failures with: --issue {','.join(map(str, failed))}")
+    if applied and not args.dry_run and not args.no_commit:
+        gen.trigger_vercel_deploy()
 
 
 if __name__ == "__main__":
