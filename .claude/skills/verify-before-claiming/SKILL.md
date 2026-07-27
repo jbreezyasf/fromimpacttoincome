@@ -5,9 +5,8 @@ description: Discipline for agents doing operational work across systems they ca
 
 # Verify Before Claiming
 
-Two failure classes cause most wasted operator time. They need different fixes.
-
----
+Two failure classes cause most wasted operator time, and they need different
+fixes.
 
 ## Class 1 — Asserting about systems you cannot observe
 
@@ -33,17 +32,15 @@ directory this deploys from"), or ask what they see.
 
 ### Rule: prefer evidence the operator can produce
 
-When blocked on an unobservable system, propose checks that return hard data —
-a console usage page, an active-sessions list, a log line, a SQL query — over
-"go look and tell me if it seems right."
+When blocked, propose checks returning hard data — a usage page, an
+active-sessions list, a log line, a query — over "look and tell me if it seems
+right."
 
 ### Rule: one read is not a fact
 
 APIs cache and lag. Before reporting absence ("there is no run", "nothing was
 committed"), confirm from a second angle or state the read's timestamp and
 limits. Absence of evidence is the easiest thing to get wrong.
-
----
 
 ## Class 2 — Building things whose failure looks like success
 
@@ -57,9 +54,9 @@ green check will be missed. **"NOTHING WAS WRITTEN"** will not.
 
 ### Rule: safe defaults need loud labels
 
-A destructive-action guard that defaults to "off" is correct. But if the control
-is labelled only by its description, the operator may never learn its name or
-that it is engaged. Put the parameter name and the consequence in the label.
+A guard defaulting to "off" is correct, but if the control is labelled only by
+its description the operator may never learn its name or that it is engaged.
+Put the parameter name and the consequence in the label.
 
 ### Rule: verify the operator's end of the loop
 
@@ -92,10 +89,7 @@ own reasoning.
 **Does not help: Class 1.** Reviewers share your blind spots. A panel asked "is
 service X deployed from repo Y?" reasons from the same visible evidence and
 reaches the same confident wrong answer. More agents amplify a shared blind
-spot; they do not remove it. Class 1 is fixed by labelling and by asking, not
-by more compute.
-
----
+spot. Class 1 is fixed by labelling and asking, not by more compute.
 
 ## Before saying "done"
 
