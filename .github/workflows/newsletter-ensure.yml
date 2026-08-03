@@ -3,8 +3,8 @@ name: Newsletter Weekly Ensure
 # Safety net for the weekly Junk Mail issue.
 #
 # Railway (client/newsletter-cron/railway.toml) is the primary runner and fires
-# at 14:00 UTC / 9:00 AM CT every Sunday. This workflow runs 30 minutes later,
-# at 9:30 AM CT, and does three things:
+# at 14:00 UTC / 9:00 AM CT every Sunday. This workflow runs after it, three
+# times through the day, and does three things:
 #
 #   1. Wakes the Supabase project if it has auto-paused (free-tier projects
 #      pause after ~7 days idle), waiting until it reports ACTIVE_HEALTHY.
@@ -18,11 +18,19 @@ name: Newsletter Weekly Ensure
 
 on:
   schedule:
-    # 9:30 AM America/Chicago year-round. Cron is UTC and has no DST, so we fire
-    # at both candidate times and the guard job below exits unless the local
-    # Chicago hour is 09 — 14:30 UTC lands during CDT, 15:30 UTC during CST.
-    - cron: "30 14 * * 0"
-    - cron: "30 15 * * 0"
+    # Three attempts through Sunday. There is deliberately no "is it 9:30 yet"
+    # guard: an earlier version exited unless the local Chicago hour was 09, and
+    # on 2026-08-02 GitHub ran the two crons 68 and 58 minutes late, putting both
+    # outside that window. Both runs skipped the work and reported success, so
+    # the week's issue was never produced and nothing said so.
+    #
+    # The job is idempotent — it checks whether the issue already exists and
+    # exits without generating when it does — so firing repeatedly costs a cheap
+    # lookup and buys a free retry when an earlier attempt failed. That is worth
+    # more than firing exactly once at a precise local time.
+    - cron: "30 14 * * 0"   # ~9:30 AM CDT / 8:30 CST
+    - cron: "30 17 * * 0"   # ~12:30 PM CDT — retry
+    - cron: "30 20 * * 0"   # ~3:30 PM CDT  — last chance
   workflow_dispatch:
     inputs:
       force_generate:
@@ -40,29 +48,21 @@ concurrency:
 
 jobs:
   # ───────────────────────────────────────────────────────────────────────────
-  # Decides whether this firing is the real 9:30 AM CT one, and computes the
-  # target week using the same Sun→Sat convention as generate_newsletter.py.
+  # Computes the target week using the same Sun→Sat convention as
+  # generate_newsletter.py. It no longer decides whether to proceed: that check
+  # skipped the only two firings on 2026-08-02 and reported success anyway.
   # ───────────────────────────────────────────────────────────────────────────
   guard:
     runs-on: ubuntu-latest
     outputs:
-      proceed: ${{ steps.check.outputs.proceed }}
       week_start: ${{ steps.check.outputs.week_start }}
       week_end: ${{ steps.check.outputs.week_end }}
     steps:
       - id: check
         env:
           TZ: America/Chicago
-          EVENT_NAME: ${{ github.event_name }}
         run: |
           set -euo pipefail
-
-          hour=$(date +%H)
-          if [ "$EVENT_NAME" = "schedule" ] && [ "$hour" != "09" ]; then
-            echo "Chicago local hour is $hour, not 09 — this is the off-season cron. Exiting."
-            echo "proceed=false" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
 
           # Mirrors get_week_range() in client/newsletter-cron/generate_newsletter.py:
           # the last full Sunday → Saturday week. `date +%w` (0=Sunday) is the
@@ -74,11 +74,9 @@ jobs:
 
           echo "week_start=$week_start" >> "$GITHUB_OUTPUT"
           echo "week_end=$week_end" >> "$GITHUB_OUTPUT"
-          echo "proceed=true" >> "$GITHUB_OUTPUT"
 
   ensure:
     needs: guard
-    if: needs.guard.outputs.proceed == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 30
     permissions:
@@ -375,11 +373,45 @@ jobs:
             exit 1
           fi
 
+      # ─── 5. Did this week actually ship? ────────────────────────────────────
+      # The run is green whether it generated, confirmed, or did nothing at all.
+      # On 2026-08-02 it did nothing and still reported success, so the missing
+      # issue went unnoticed. This step re-reads the row and FAILS the run when
+      # the week's issue is still absent — the only outcome that should ever be
+      # green is one where the issue exists.
+      - name: Verify the issue exists
+        if: always() && inputs.skip_generate != true
+        run: |
+          set -euo pipefail
+
+          row=$(curl -fsS \
+            -H "apikey: $SUPABASE_SERVICE_KEY" \
+            -H "Authorization: Bearer $SUPABASE_SERVICE_KEY" \
+            "$SUPABASE_URL/rest/v1/newsletter_issues?week_start=eq.$WEEK_START&select=issue_number,slug" \
+            ) || row="[]"
+          count=$(printf '%s' "$row" | jq 'length' 2>/dev/null || echo 0)
+
+          if [ "$count" -gt 0 ]; then
+            slug=$(printf '%s' "$row" | jq -r '.[0].slug')
+            echo "OUTCOME: this week's issue exists ($slug)."
+            echo "> ## ✅ Issue present for \`$WEEK_START\` → \`$WEEK_END\` (\`$slug\`)" >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          echo "::error::No issue exists for $WEEK_START → $WEEK_END. The newsletter did not ship."
+          {
+            echo "> ## ❌ NO ISSUE FOR THIS WEEK"
+            echo "> Nothing exists for \`$WEEK_START\` → \`$WEEK_END\`. Neither Railway nor"
+            echo "> this safety net produced it. Check the log above for the cause —"
+            echo "> a missing \`ANTHROPIC_API_KEY\`, an exhausted Anthropic credit"
+            echo "> balance, or an empty \`telegram_messages\` week are the usual ones."
+          } >> "$GITHUB_STEP_SUMMARY"
+          exit 1
+
       - name: Summary
         if: always()
         run: |
           {
-            echo "### Newsletter weekly ensure"
             echo ""
             echo "| Field | Value |"
             echo "| --- | --- |"
