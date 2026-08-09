@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Junk Mail — Issue #018 — Aug 2–8, 2026 | AI Junkies Inner Circle</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,600&family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ── SIGNAL & NOISE TOKENS ── */
+    :root {
+      --cream:        #FAF7F2;
+      --ink:          #1E1B18;
+      --ink-card:     #26231F;
+      --ink-card-2:   #2E2B26;
+      --orange:       #C4622D;
+      --orange-light: #D4824D;
+      --green:        #1C3A2E;
+      --green-light:  #2A5240;
+      --text-body:    #C2BDB7;
+      --text-muted:   #8A857E;
+      --text-dim:     #5E5A54;
+      --border:       rgba(255,255,255,0.08);
+      --border-hover: rgba(196,98,45,0.4);
+    }
+
+    body {
+      background: var(--ink);
+      font-family: 'DM Sans', sans-serif;
+      color: var(--text-body);
+      font-size: 15px;
+      line-height: 1.75;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .wrap {
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    /* ── HEADER ── */
+    .site-header {
+      padding: 20px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(30,27,24,0.95);
+      backdrop-filter: blur(12px);
+    }
+    .site-header a { text-decoration: none; }
+    .header-brand-name {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--cream);
+      display: block;
+      line-height: 1.2;
+    }
+    .header-brand-sub {
+      font-family: 'Fraunces', serif;
+      font-style: italic;
+      font-size: 11px;
+      color: var(--orange);
+      display: block;
+      line-height: 1.2;
+    }
+    .header-lock {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+    .lock-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--text-dim);
+      flex-shrink: 0;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      padding: 64px 32px 48px;
+    }
+    .tag-pill {
+      display: inline-block;
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      background: var(--orange);
+      color: var(--cream);
+      padding: 4px 10px;
+      border-radius: 2px;
+      margin-bottom: 20px;
+    }
+    .issue-eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 6px;
+    }
+    .hero-title {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: clamp(2.2rem, 6vw, 3.4rem);
+      color: var(--cream);
+      letter-spacing: -0.02em;
+      line-height: 1.0;
+      margin-bottom: 16px;
+    }
+    .hero-title em {
+      font-style: italic;
+      color: var(--orange);
+    }
+    .hero-meta {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .hero-issue-num {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: 3.5rem;
+      color: rgba(255,255,255,0.08);
+      line-height: 1;
+    }
+    .hero-divider-v {
+      width: 1px;
+      height: 48px;
+      background: var(--border);
+    }
+    .hero-date {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+    .lede {
+      font-size: 15px;
+      line-height: 1.75;
+      color: var(--text-muted);
+      max-width: 560px;
+    }
+    .lede strong { color: var(--cream); font-weight: 600; }
+
+    /* ── SECTION RULE ── */
+    .section-rule {
+      height: 1px;
+      background: var(--border);
+      margin: 0 32px;
+    }
+
+    /* ── SECTION LABEL ── */
+    .section-label {
+      padding: 32px 32px 0;
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 2px;
+    }
+
+    /* ── STORY CONTENT ── */
+    .content {
+      padding: 14px 32px 32px;
+    }
+    .content h2 {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: clamp(1.5rem, 3.5vw, 2rem);
+      color: var(--cream);
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      margin-bottom: 12px;
+    }
+    .content h3 {
+      font-family: 'Fraunces', serif;
+      font-weight: 600;
+      font-size: 1.25rem;
+      color: var(--cream);
+      letter-spacing: -0.01em;
+      line-height: 1.25;
+      margin-bottom: 10px;
+    }
+    .content .deck {
+      font-family: 'Fraunces', serif;
+      font-style: italic;
+      font-size: 1rem;
+      color: var(--text-muted);
+      margin-bottom: 18px;
+      line-height: 1.6;
+    }
+    .content p {
+      color: var(--text-body);
+      margin-bottom: 14px;
+      font-size: 15px;
+    }
+    .content p:last-child { margin-bottom: 0; }
+    .content ul {
+      padding-left: 20px;
+      margin-bottom: 14px;
+    }
+    .content ul li {
+      margin-bottom: 8px;
+      color: var(--text-body);
+    }
+    .content ul li strong { color: var(--cream); }
+    .content a { color: var(--orange-light); text-decoration: underline; text-underline-offset: 3px; }
+    .content pre {
+      background: #141210;
+      border: 1px solid rgba(255,255,255,0.06);
+      padding: 16px;
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      line-height: 1.7;
+      overflow-x: auto;
+      margin-bottom: 14px;
+      border-radius: 3px;
+      color: #C2BDB7;
+    }
+
+    /* ── BIZ CALLOUT ── */
+    .biz-callout {
+      margin: 0 32px 28px;
+      border-left: 3px solid var(--orange);
+      background: rgba(196,98,45,0.08);
+      padding: 16px 20px;
+      border-radius: 0 3px 3px 0;
+    }
+    .biz-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--orange);
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+    .biz-callout p {
+      font-size: 14px;
+      line-height: 1.7;
+      color: var(--text-body);
+    }
+
+    /* ── HOT TOPIC ── */
+    .hot-topic {
+      margin: 0 32px 32px;
+      background: var(--ink-card);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 24px;
+    }
+    .hot-topic-eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 10px;
+    }
+    .hot-topic h3 {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: 1.4rem;
+      color: var(--cream);
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      margin-bottom: 12px;
+    }
+    .hot-topic p {
+      font-size: 14px;
+      line-height: 1.75;
+      color: var(--text-body);
+      margin-bottom: 12px;
+    }
+    .voices {
+      margin-top: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .voice-item {
+      background: rgba(255,255,255,0.04);
+      border-left: 2px solid var(--orange);
+      padding: 10px 14px;
+      border-radius: 0 2px 2px 0;
+      font-size: 13.5px;
+      line-height: 1.6;
+      color: var(--text-body);
+      font-style: italic;
+    }
+    .voice-name {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 5px;
+      font-style: normal;
+    }
+    /* A member's name links to the exact message the quote came from. */
+    .voice-name a {
+      color: inherit;
+      text-decoration: none;
+      border-bottom: 1px dotted var(--orange);
+    }
+    .voice-name a:hover { border-bottom-style: solid; }
+    /* "Read the thread" backlink at the end of each story section. */
+    .thread-link {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-top: 18px;
+    }
+    .thread-link a {
+      color: var(--orange);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(255, 122, 0, 0.35);
+      padding-bottom: 2px;
+    }
+    .thread-link a:hover { border-bottom-color: var(--orange); }
+
+    /* ── QUICK HITS GRID ── */
+    .tips-grid {
+      padding: 14px 32px 32px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .tip-card {
+      background: var(--ink-card);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 18px;
+      transition: border-color 0.2s;
+    }
+    .tip-card:hover { border-color: var(--border-hover); }
+    .tip-number {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: 2.2rem;
+      color: rgba(255,255,255,0.07);
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    .tip-card strong {
+      display: block;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--cream);
+      margin-bottom: 6px;
+      line-height: 1.3;
+    }
+    .tip-card p {
+      font-size: 13px;
+      line-height: 1.65;
+      color: var(--text-muted);
+    }
+
+    /* ── MEMBER SPOTLIGHT ── */
+    .member-grid {
+      padding: 14px 32px 32px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    .member-card {
+      background: var(--ink-card);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+    .member-card:hover { border-color: var(--border-hover); }
+    .member-card-accent {
+      height: 3px;
+      background: var(--green);
+    }
+    .member-card-accent.orange { background: var(--orange); }
+    .member-card-body { padding: 14px; }
+    .member-name {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--cream);
+      margin-bottom: 2px;
+      line-height: 1.2;
+    }
+    .member-handle {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.08em;
+      color: var(--text-dim);
+      margin-bottom: 8px;
+    }
+    .member-card-body p {
+      font-size: 12.5px;
+      line-height: 1.6;
+      color: var(--text-muted);
+    }
+    .member-card-body em { color: var(--text-body); font-style: italic; }
+
+    /* ── WINS ── */
+    .wins-list {
+      padding: 14px 32px 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .win-item {
+      background: var(--ink-card);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 16px 18px;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 14px;
+      align-items: start;
+      transition: border-color 0.2s;
+    }
+    .win-item:hover { border-color: var(--border-hover); }
+    .win-emoji {
+      font-size: 18px;
+      line-height: 1;
+      margin-top: 2px;
+    }
+    .win-tag {
+      display: inline-block;
+      font-family: 'DM Mono', monospace;
+      font-size: 8.5px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 2px 7px;
+      border-radius: 2px;
+      margin-bottom: 5px;
+      border: 1px solid currentColor;
+    }
+    .win-tag.client   { color: var(--orange-light); }
+    .win-tag.build    { color: var(--green-light); }
+    .win-tag.speaking { color: #6BAE8C; }
+    .win-tag.other    { color: var(--text-dim); }
+    .win-title {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--cream);
+      margin-bottom: 3px;
+      display: block;
+    }
+    .win-item p {
+      font-size: 13px;
+      line-height: 1.65;
+      color: var(--text-muted);
+    }
+    .win-item a { color: var(--orange-light); text-decoration: underline; text-underline-offset: 2px; }
+
+    /* ── FOOTER ── */
+    .site-footer {
+      padding: 32px 32px 40px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .footer-brand {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--cream);
+      display: block;
+      margin-bottom: 4px;
+    }
+    .footer-sub {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      line-height: 1.8;
+    }
+    .footer-right {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      text-align: right;
+      line-height: 1.9;
+    }
+
+    @media (max-width: 520px) {
+      .tips-grid    { grid-template-columns: 1fr; }
+      .member-grid  { grid-template-columns: 1fr 1fr; }
+      .site-footer  { flex-direction: column; }
+      .footer-right { text-align: left; }
+      .hero, .content, .section-label, .biz-callout,
+      .hot-topic, .tips-grid, .member-grid, .wins-list,
+      .section-rule, .site-footer { padding-left: 20px; padding-right: 20px; }
+      .section-rule { margin: 0 20px; }
+      .hot-topic, .biz-callout { margin-left: 20px; margin-right: 20px; }
+      .site-header { padding: 16px 20px; }
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- HEADER -->
+  <header class="site-header">
+    <a href="/">
+      <span class="header-brand-name">From Impact to Income</span>
+      <span class="header-brand-sub">AI Junkies Inner Circle</span>
+    </a>
+    <div class="header-lock">
+      <div class="lock-dot"></div>
+      Members Only
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <span class="tag-pill">AI Junkies Newsletter</span>
+    <div class="hero-meta">
+      <div class="hero-issue-num">018</div>
+      <div class="hero-divider-v"></div>
+      <div>
+        <div class="hero-date">Aug 2–8, 2026</div>
+      </div>
+    </div>
+    <h1 class="hero-title">Junk <em>Mail</em></h1>
+    <p class="lede">
+      <strong>Hey Junkies 👋</strong> — CreditSystem.IO hit 5,700 organic views in 48 hours, J Hackett landed a $2,000 sponsorship without a single human interaction, and Derrick dropped a framework for how to stack $40K-$50K a month managing AI teams for clients.
+    </p>
+    <p class="lede" style="margin-top:12px;">This week was a proof-of-concept week. Not theory. Not planning. Actual systems running, actual money moving, actual people going from zero to shipped. If you needed a sign to stop overthinking and start building, this issue is it.</p>
+    <p class="lede" style="margin-top:12px;">No fluff. Just the real stuff. Let's get into it. 🔥</p>
+  </section>
+
+
+  <!-- ══════════════════════════════ -->
+  <!-- ① MAIN STORY                  -->
+  <!-- ══════════════════════════════ -->
+  <div class="section-rule"></div>
+  <div class="section-label">① Main Story</div>
+  <div class="content">
+    <h2>The Fractional CAIO Play: How to Stack $500K a Year Without Hiring a Soul</h2>
+    <p class="deck">Derrick broke down the exact math on why companies would rather pay $1K a week for someone who manages their AI team than hire staff — and why that&#x27;s your opportunity right now.</p>
+    <p>A Fractional CAIO is a Chief AI Integration Officer — but part-time, across multiple clients. You&#x27;re not an employee. You&#x27;re the person who builds the AI-powered team infrastructure, manages the agents and automations, and keeps the whole system running. Think of it like being a COO for hire, except instead of managing people, you&#x27;re managing AI workflows that do what people used to do.</p>
+    <p>Derrick laid it out Friday night after InvestFest: the people he&#x27;s meeting aren&#x27;t trying to hire full-time staff at $1K a week. They want someone to come in, build the system, and manage it. His math was simple — dedicate 4 hours per week per client, build their portal, manage their AI staff. Run 10 clients, you&#x27;re at 40 to 50 hours a week, but you&#x27;re pulling $4K to $5K per client per month. That&#x27;s $40K to $50K a month. $500K to $600K a year.</p>
+    <p>Here&#x27;s where people get stuck: they think they need to be a deep technical engineer to play this role. You don&#x27;t. The tools exist. The gap is someone who understands how to build the system, manage the outputs, and be the human accountability layer. That&#x27;s exactly what this community has been training to do. The market is waiting. The question is whether you&#x27;re going to position yourself for it.</p>
+    <ul>
+      <li><strong>4 Hours Per Week Per Client:</strong> That&#x27;s the model. Build once, manage ongoing. You&#x27;re not trading time for money — you&#x27;re trading expertise for a monthly retainer.</li>
+      <li><strong>The $1K Stack:</strong> Companies are already budgeting $1K a week for this. They&#x27;d rather pay a Fractional CAIO than deal with hiring, HR, and managing staff. That budget already exists — you just need to be the person they call.</li>
+      <li><strong>10 Clients Is the Ceiling:</strong> 10 clients at $4K-$5K per month each maxes you out at $40K-$50K monthly. That&#x27;s not a fantasy number. That&#x27;s a business model with math that works.</li>
+    </ul>
+    <p class="thread-link"><a href="https://t.me/c/3120599051/18722" target="_blank" rel="noopener">Read the thread →</a></p>
+  </div>
+  <!-- BIZ CALLOUT — periodic, not every issue. Delete block to skip. -->
+  <div class="biz-callout">
+    <div class="biz-label">💼 How does this apply to your business?</div>
+    <p>Think about the mid-size local business owner running a salon, a real estate office, or a logistics company. They don&#x27;t have an IT department. They can&#x27;t afford a full-time AI hire. But they&#x27;re leaving money on the table because they have no system. You walk in, build their AI intake agent, their follow-up automation, their scheduling workflow — and you charge them $4K a month to manage it. They save on staff. You build recurring revenue. That&#x27;s the play.</p>
+  </div>
+
+
+  <!-- ══════════════════════════════ -->
+  <!-- ② SECOND STORY                -->
+  <!-- ══════════════════════════════ -->
+  <div class="section-rule"></div>
+  <div class="section-label">② Also This Week</div>
+  <div class="content">
+    <h3>CreditSystem.IO Goes Live — 5,700 Views. One Facebook Post. No Ad Budget Yet.</h3>
+    <p>Derrick launched CreditSystem.IO to the public this week and the numbers came back fast. 5,700 organic views in 24 to 48 hours off a single Facebook post before the paid ad even kicked in. Then he posted a screenshot of the build timeline: 60 hours from concept to live product. Not months. Sixty hours.</p>
+    <p>The bigger lesson here isn&#x27;t just the launch — it&#x27;s the method. Derrick built in public, documented the process, and then asked the group if they wanted to see the full step-by-step from start to launch in an upcoming class. Twenty-five people reacted immediately. That&#x27;s not a coaching pitch — that&#x27;s a community that watched a product get built and wants to understand every piece of how it happened so they can replicate it.</p>
+    <p>Althea put it best in the chat: &#x27;Your years of hard work and sleepless days and nights have allowed you to create exactly what you wanted: a system that can change countless lives. We&#x27;re all celebrating with you because we&#x27;ve been there from the beginning.&#x27; That&#x27;s the energy. Watch it. Learn it. Build yours.</p>
+    <p class="thread-link"><a href="https://t.me/c/3120599051/18560" target="_blank" rel="noopener">Read the thread →</a></p>
+  </div>
+
+
+  <!-- ══════════════════════════════ -->
+  <!-- ③ THIRD STORY                 -->
+  <!-- ══════════════════════════════ -->
+  <div class="section-rule"></div>
+  <div class="section-label">③ Worth Knowing</div>
+  <div class="content">
+    <h3>Lovable Is About to Train on Your Work — Here&#x27;s What You Need to Know</h3>
+    <p>Starting September 9, 2026, Lovable&#x27;s updated privacy policy allows them to use your prompts, code, project files, and generated outputs from Free and Pro plans to train their AI models. Anthony flagged it first, then Derrick shared the full policy text for the group. The opt-out exists — go to Account Settings then Privacy — and if you opt out before September 9, your data is never used. If you opt out after, it stops going forward. Business and Enterprise plan users are covered under a separate Data Processing Agreement and this change does not affect them.</p>
+    <p>If you&#x27;re building client work or anything proprietary on a Free or Pro Lovable plan, do yourself a favor and opt out before the deadline. Takes 30 seconds. The platform is still excellent — but your intellectual property is yours and you should treat it that way.</p>
+    <p class="thread-link"><a href="https://t.me/c/3120599051/18647" target="_blank" rel="noopener">Read the thread →</a></p>
+  </div>
+
+
+  <!-- ══════════════════════════════ -->
+  <!-- ④ HOT TOPIC                   -->
+  <!-- ══════════════════════════════ -->
+  <div class="section-rule"></div>
+  <div class="section-label">④ Hot Topic</div>
+  <div class="hot-topic">
+    <div class="hot-topic-eyebrow">🔥 From the Group Chat</div>
+    <h3>The AI Street Degree Dropped and the Group Started Self-Auditing</h3>
+    <p>Anthony shared a detailed prompt called the AI Street Degree Assessor — a structured oral exam you run through Claude or ChatGPT that scores you across eight domains and awards you a degree based purely on what you&#x27;ve actually built and shipped, not what you know theoretically.</p>
+    <p>This touched something real. The group isn&#x27;t full of people who just consume AI content — these are builders. But having a framework that forces honest reflection on where you actually are versus where you think you are? That&#x27;s useful. The scores that came back — 23, 26, 28 — weren&#x27;t perfect, but they came with a gap report and a build list. Not a reading list. A build list. That&#x27;s the whole point of this community.</p>
+    <div class="voices">
+      <div class="voice-item">
+        <div class="voice-name"><a href="https://t.me/c/3120599051/18669" target="_blank" rel="noopener">J Hackett</a></div>
+        "I did it. Got a 28. Degree awarded. But it says I need to build a chief of staff and trust it to make decisions for me. Wow."
+      </div>
+      <div class="voice-item">
+        <div class="voice-name"><a href="https://t.me/c/3120599051/18671" target="_blank" rel="noopener">Donna Kendrick Spivey</a></div>
+        "I took the street degree exam. 23/40, better than I expected. I have to finish a project and gain a better understanding of best use of AI in my projects."
+      </div>
+      <div class="voice-item">
+        <div class="voice-name"><a href="https://t.me/c/3120599051/18679" target="_blank" rel="noopener">Althea Cooper</a></div>
+        "23/40. Got a degree but can&#x27;t get too excited yet. This was extremely helpful in understanding where I am currently, and next tasks to fully complete both products."
+      </div>
+    </div>
+    <p class="thread-link"><a href="https://t.me/c/3120599051/18667" target="_blank" rel="noopener">Read the thread →</a></p>
+  </div>
+
+
+  <!-- ══════════════════════════════ -->
+  <!-- ⑤ QUICK HITS                  -->
+  <!-- ══════════════════════════════ -->
+  <div class="section-rule"></div>
+  <div class="section-label">⑤ Quick Hits</div>
+  <div class="tips-grid">
+    <div class="tip-card">
+      <div class="tip-number">01</div>
+      <strong>Sentry + Microsoft Clarity = Your App&#x27;s Early Warning System</strong>
+      <p>Derrick shared two monitoring tools every builder should have set up from day one. Sentry logs issues inside your app with enough detail for an AI agent to diagnose and fix them before users even notice. Microsoft Clarity at clarity.microsoft.com gives you heatmaps and screen recordings of actual users interacting with your app. LaSean already runs Sentry on all his builds. Big Steele confirmed Clarity is the heatmap tool he mentioned during the Junkies Admin Portal walkthrough. Both are free to start.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-number">02</div>
+      <strong>OpenReply: A Free ManyChat Clone for Meta Automation</strong>
+      <p>Big Steele dropped a GitHub repo — github.com/diwenne/openreply — that functions as a ManyChat clone for people who want to run Meta API automation without the monthly subscription. You will need to handle the Meta API review yourself, but if you&#x27;re comfortable with that, this is a solid open-source option to add to your stack.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-number">03</div>
+      <strong>Kre&#x27;s Student and Client Readiness Template Is Available Now</strong>
+      <p>After the co-building session with Tearra on Wednesday, Kre delivered on her promise and published a Student and Client Readiness Qualification Template at student-readiness-assessment.netlify.app. It helps you qualify clients before coaching or build sessions, set expectations upfront, and make sure both parties are actually prepared. She built it to be remixed — take it, rebrand it, and make it yours.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-number">04</div>
+      <strong>J Hackett&#x27;s Sponsor Finder Bot Landed $2,000 — Zero Human Touches</strong>
+      <p>J Hackett built an automation that finds sponsors for events, matches them, constructs a personalized outreach email, and sends it — all without a human in the loop. The electric company responded with a $2,000 sponsorship offer. The system worked exactly as designed on the first real run. Juanita immediately suggested the next move: send them an application for matching donations up to $10K. J is already on it.</p>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- ⑥ MEMBER SPOTLIGHT — delete cards you don't have content for. -->
+  <!-- Section auto-hides if all cards are removed.                  -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <div data-optional-section="members">
+  <div class="section-rule"></div>
+  <div class="section-label">⑥ Member Spotlight</div>
+  <!--
+    CARD GUIDE:
+    New member?         → orange accent bar
+    Building something? → Name the project. Keep it hype.
+    Not building yet?   → Encouraging note. Recognition, not pressure.
+    Mix freely. Delete any cards you don't have real content for.
+  -->
+  <div class="member-grid" data-content-container>
+    <div class="member-card" data-content-item>
+      <div class="member-card-accent "></div>
+      <div class="member-card-body">
+        <div class="member-name">Britt</div>
+        <div class="member-handle">brittyjoi</div>
+        <p>Britt pulled together a spontaneous 3-hour AI Masterclass for her former coworkers, opened it up to the whole group, and walked everyone through real skills — Claude prompting included. Towana called it full of diamonds. Feedback came back glowing. She taught until the adrenaline ran out. That&#x27;s the definition of a go-giver.</p>
+      </div>
+    </div>
+    <div class="member-card" data-content-item>
+      <div class="member-card-accent "></div>
+      <div class="member-card-body">
+        <div class="member-name">Michelle R</div>
+        <div class="member-handle">mnicolerobinsonis</div>
+        <p>Michelle launched the Signature Delivery Suite — a premium client experience portal built for high-ticket 1:1 coaches who want their delivery to match their price point. Live at signature.clairenhaus.com. The framework is niche-agnostic, which means she built something she can sell across coaching verticals. Smart product thinking, clean execution.</p>
+      </div>
+    </div>
+    <div class="member-card" data-content-item>
+      <div class="member-card-accent "></div>
+      <div class="member-card-body">
+        <div class="member-name">Kre</div>
+        <div class="member-handle">mindovamillonairemom</div>
+        <p>Kre is building a full Cinematic Studio OS alongside her Personal Business OS and dropped a sneak preview this week. Multiple children&#x27;s short story series and ongoing film projects in the pipeline. She also turned around a client qualification tool and delivered it to the co-building session within days. Running a marathon and building the whole time.</p>
+      </div>
+    </div>
+  </div>
+  </div><!-- /section-members -->
+
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- ⑦ WINS THIS WEEK — delete wins you don't have content for. -->
+  <!-- Section auto-hides if all wins are removed.               -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <div data-optional-section="wins">
+  <div class="section-rule"></div>
+  <div class="section-label">⑦ Wins This Week</div>
+  <div class="wins-list" data-content-container>
+    <div class="win-item" data-content-item>
+      <div class="win-emoji">💰</div>
+      <div>
+        <span class="win-tag automation">Automation Win</span>
+        <span class="win-title">J Hackett — AI Sponsor Finder Bot</span>
+        <p>Built a fully automated sponsor outreach system that searches, matches, writes, and sends cold emails to potential sponsors with zero human involvement. First run landed a $2,000 sponsorship offer from an electric company. This is what shipping looks like.</p>
+      </div>
+    </div>
+    <div class="win-item" data-content-item>
+      <div class="win-emoji">🚀</div>
+      <div>
+        <span class="win-tag launch">Product Launch</span>
+        <span class="win-title">Derrick Harper — CreditSystem.IO</span>
+        <p>CreditSystem.IO went live to the public and pulled 5,700 organic views in 48 hours off a single Facebook post before the paid campaign even started. 60 hours from build start to public launch. The ad is now live and all visitors are being retargeted.</p>
+      </div>
+    </div>
+    <div class="win-item" data-content-item>
+      <div class="win-emoji">🎉</div>
+      <div>
+        <span class="win-tag launch">Product Launch</span>
+        <span class="win-title">Michelle R — Signature Delivery Suite by Clairen Haus</span>
+        <p>Michelle launched her premium client delivery portal for high-ticket coaches. Live, branded, and ready to sell. A clean product built for a real market with a clear value proposition.</p>
+      </div>
+    </div>
+    <div class="win-item" data-content-item>
+      <div class="win-emoji">🔥</div>
+      <div>
+        <span class="win-tag community">Community Win</span>
+        <span class="win-title">Britt — 3-Hour AI Masterclass</span>
+        <p>Britt hosted a surprise Masterclass, went nearly 3 hours, and sent every attendee home with real Claude skills they can use. The feedback was unanimous. She built community and taught real tools in the same session.</p>
+      </div>
+    </div>
+    <div class="win-item" data-content-item>
+      <div class="win-emoji">🤝</div>
+      <div>
+        <span class="win-tag client">New Client</span>
+        <span class="win-title">Kre — Client Build Inquiry from Rodney</span>
+        <p>Rodney connected Kre with a client who needs a custom AI creation. Scope is being scoped, call is scheduled. The referral network inside this community is working exactly how it should.</p>
+      </div>
+    </div>
+  </div>
+  </div><!-- /section-wins -->
+
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div>
+      <span class="footer-brand">Junk Mail</span>
+      <div class="footer-sub">
+        AI Junkies Weekly · Inner Circle Edition<br/>
+        Curated by Derrick Harper
+      </div>
+    </div>
+    <div class="footer-right">
+      Issue #018 · Aug 2–8, 2026<br/>
+      For AI Junkies members only<br/>
+      Not for public distribution
+    </div>
+  </footer>
+
+</div>
+
+  <script>
+    // Auto-hide optional sections (Member Spotlight + Wins) if they have no content cards
+    document.querySelectorAll('[data-optional-section]').forEach(function(section) {
+      var container = section.querySelector('[data-content-container]');
+      if (!container) return;
+      var items = container.querySelectorAll('[data-content-item]');
+      if (items.length === 0) {
+        section.style.display = 'none';
+      }
+    });
+  </script>
+</body>
+</html>
