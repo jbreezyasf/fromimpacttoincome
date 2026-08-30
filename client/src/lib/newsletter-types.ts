@@ -28,7 +28,13 @@ export interface NewsletterContent {
   member_spotlight?: {
     name: string;
     handle?: string;
-    is_new?: boolean;
+    /**
+     * Named to match what generate_newsletter.py actually writes. This page
+     * read `is_new` for its first 21 issues, which no row has ever carried, so
+     * a new member silently rendered as a regular one while the static HTML —
+     * reading the correct key — showed the badge. Keep the two in step.
+     */
+    is_new_member?: boolean;
     project_name?: string | null;
     body: string;
   }[];
