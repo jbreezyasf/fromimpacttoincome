@@ -86,10 +86,26 @@ the Vercel deploy, and flips the row to `published`. No model call, no cost, and
 the page is exactly the issue that was generated. Every step is idempotent, so
 running it twice is harmless. It also needs no `ANTHROPIC_API_KEY`.
 
-`newsletter-ensure.yml` does this automatically: a week with a row but no page
-republishes rather than regenerates, and its final check now verifies **both**
-the row and the committed page. A row alone used to be enough to call the run
-green, which is how Issue #021 sat unpublished without failing anything.
+`newsletter-ensure.yml` does this automatically. It republishes rather than
+regenerates whenever a row exists but the week has not fully shipped — no page
+committed, or a page committed with the row still `generated`.
+
+"Shipped" means all three, because each one alone leaves readers with nothing:
+
+| | Without it |
+| --- | --- |
+| Supabase row | No content at all. |
+| Committed `issue-NNN.html` | Nothing to open. A reader cannot read a database row. |
+| `status='published'` | `/newsletter` and `/newsletter/<slug>` both filter on it, so the React site cannot show the issue even though the static page exists. |
+
+The final check verifies all three and fails the run otherwise. It used to check
+only the row, which is how Issue #021 sat unpublished without failing anything.
+
+The workflow also runs on any push to `main` that touches it or
+`generate_newsletter.py`. A workflow whose only trigger is a schedule is not
+really tested until the week it is needed — which is how a broken guard survived
+two Sundays. Everything downstream is idempotent, so a run against a week that
+already shipped just confirms it.
 
 ## Manual run from GitHub UI
 
