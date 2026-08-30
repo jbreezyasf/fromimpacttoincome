@@ -64,6 +64,33 @@ exact minute.
 The fallback commits HTML with the built-in `GITHUB_TOKEN` (the job requests
 `contents: write`), so no personal access token is needed for that part.
 
+Railway is the exception: its commit uses a **personal access token** stored as
+`GITHUB_TOKEN` in the Railway service, and it is the only credential in the
+pipeline that is not shared with GitHub Actions. When an issue lands in Supabase
+with `status='generated'` and no page appears, that token is the first thing to
+check — an expired PAT fails exactly this one step and nothing else.
+
+## Recovering an issue that generated but never published
+
+`run()` writes the Supabase row, bumps the counter, and *then* commits the HTML.
+A failure at that last step strands the issue: the prose exists and was paid
+for, but there is no page. Do not rerun generation — it would call Claude again
+and publish text that no longer matches the stored `content_json`.
+
+```bash
+python generate_newsletter.py --republish --issue-number 21
+```
+
+This renders the stored content, commits the issue HTML and the index, triggers
+the Vercel deploy, and flips the row to `published`. No model call, no cost, and
+the page is exactly the issue that was generated. Every step is idempotent, so
+running it twice is harmless. It also needs no `ANTHROPIC_API_KEY`.
+
+`newsletter-ensure.yml` does this automatically: a week with a row but no page
+republishes rather than regenerates, and its final check now verifies **both**
+the row and the committed page. A row alone used to be enough to call the run
+green, which is how Issue #021 sat unpublished without failing anything.
+
 ## Manual run from GitHub UI
 
 GitHub → **Actions** → **Weekly Newsletter** → **Run workflow**. Inputs:

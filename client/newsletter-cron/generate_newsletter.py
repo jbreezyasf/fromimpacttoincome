@@ -87,7 +87,28 @@ supabase: Client = create_client(
     os.environ["SUPABASE_URL"],
     os.environ["SUPABASE_SERVICE_KEY"],
 )
-claude = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
+_claude_client: "anthropic.Anthropic | None" = None
+
+
+def claude_client() -> "anthropic.Anthropic":
+    """
+    Anthropic client, built on first use.
+
+    Built lazily so paths that never call the model — --republish, which renders
+    HTML from content_json already in Supabase — run without ANTHROPIC_API_KEY
+    set. A missing key then fails at generation time with a clear message rather
+    than at import time on every entry point.
+    """
+    global _claude_client
+    if _claude_client is None:
+        key = os.environ.get("ANTHROPIC_API_KEY", "").strip()
+        if not key:
+            raise SystemExit(
+                "ANTHROPIC_API_KEY is not set. It is required to generate a new "
+                "issue; --republish does not need it."
+            )
+        _claude_client = anthropic.Anthropic(api_key=key)
+    return _claude_client
 
 # ── Config ────────────────────────────────────────────────────────────────────
 VERCEL_HOOK        = os.environ.get("VERCEL_DEPLOY_HOOK_URL", "")
@@ -382,7 +403,7 @@ Here are this week's AI Junkies Telegram messages:
 Write the complete Junk Mail newsletter for this week. Return JSON only.
 """.strip()
 
-    response = claude.messages.create(
+    response = claude_client().messages.create(
         model="claude-sonnet-4-6",
         max_tokens=4000,
         system=SYSTEM_PROMPT,
@@ -465,6 +486,21 @@ def _gh_get_file(path: str) -> tuple[str, str]:
     data = resp.json()
     content = base64.b64decode(data["content"]).decode("utf-8")
     return content, data["sha"]
+
+
+def _gh_get_sha(path: str) -> str | None:
+    """
+    Blob sha of a file, or None if it does not exist yet.
+
+    The Contents API rejects an UPDATE without the current sha (422) and rejects
+    a CREATE that carries one, so every write has to know which case it is in.
+    """
+    url = f"{GITHUB_API}/repos/{GITHUB_REPO}/contents/{path}"
+    resp = requests.get(url, headers=_gh_headers(), timeout=15)
+    if resp.status_code == 404:
+        return None
+    resp.raise_for_status()
+    return resp.json()["sha"]
 
 
 def _gh_put_file(path: str, content: str, message: str, sha: str | None = None) -> None:
@@ -681,6 +717,12 @@ def update_index_html(
     index_html, index_sha = _gh_get_file(index_path)
 
     num = f"{issue_number:03d}"
+    marker = f"<!-- ISSUE {num} — newest first -->"
+    if marker in index_html:
+        # A republish re-runs this step against an index that already lists the
+        # issue. Appending again would show it twice, so this is a no-op.
+        log.info(f"index.html already lists Issue #{num} — leaving it alone")
+        return
     date_range = f"{_fmt_short(week_start)}–{_fmt_short_year(week_end)}"
     headline = _e(content.get("main_story", {}).get("headline", ""))
 
@@ -741,14 +783,18 @@ def publish_html_to_github(
     num = f"{issue_number:03d}"
     issue_path = f"{NEWSLETTER_OUTPUT_DIR}/issue-{num}.html"
 
-    # Render and commit the issue HTML
+    # Render and commit the issue HTML. Read the sha immediately before the
+    # write: on a first publish there is none, on a republish it is required.
     issue_html = render_issue_html(content, issue_number, week_start, week_end)
+    existing_sha = _gh_get_sha(issue_path)
+    verb = "Update" if existing_sha else "Add"
     _gh_put_file(
         issue_path,
         issue_html,
-        f"Add Junk Mail Issue #{num} — {_fmt_short(week_start)}–{_fmt_short_year(week_end)}",
+        f"{verb} Junk Mail Issue #{num} — {_fmt_short(week_start)}–{_fmt_short_year(week_end)}",
+        sha=existing_sha,
     )
-    log.info(f"Committed {issue_path} to GitHub")
+    log.info(f"Committed {issue_path} to GitHub ({verb.lower()})")
 
     # Update the index
     update_index_html(issue_number, week_start, week_end, content)
@@ -857,6 +903,70 @@ def send_notifications(issue_number: int, slug: str, content: dict) -> None:
 # MAIN
 # ═════════════════════════════════════════════════════════════════════════════
 
+def republish(issue_number: int | None = None, week_start: date | None = None) -> None:
+    """
+    Ship an issue whose content already exists in Supabase.
+
+    This is the repair path for the pipeline's one non-atomic seam: run() writes
+    the row, bumps the counter, and only then commits HTML. If the GitHub write
+    fails — expired token, API outage — the issue is stranded at
+    status='generated' with no page, and rerunning run() would pay Claude again
+    and produce *different* prose than the row already holds.
+
+    republish() renders the stored content_json instead. No model call, no cost,
+    and the published page is exactly the issue that was generated. Every step is
+    idempotent, so running it twice is harmless.
+
+    Locate the issue by number, or by week_start when the caller only knows which
+    week is missing.
+    """
+    log.info("═" * 60)
+    log.info("JUNK MAIL — Republish from stored content")
+    log.info("═" * 60)
+
+    q = supabase.table("newsletter_issues").select(
+        "issue_number,slug,week_start,week_end,status,content_json"
+    )
+    if issue_number is not None:
+        q = q.eq("issue_number", issue_number)
+    elif week_start is not None:
+        q = q.eq("week_start", week_start.isoformat())
+    else:
+        ws, _ = get_week_range()
+        log.info(f"No issue or week given — using the current week ({ws})")
+        q = q.eq("week_start", ws.isoformat())
+
+    rows = q.execute().data or []
+    if not rows:
+        log.error("No newsletter_issues row matches — nothing to republish.")
+        log.error("Generate the issue first; republish only ships content that exists.")
+        sys.exit(1)
+
+    row = rows[0]
+    content = row.get("content_json")
+    if not content:
+        log.error(f"Issue #{row['issue_number']} has no content_json — nothing to render.")
+        sys.exit(1)
+
+    number = row["issue_number"]
+    ws = date.fromisoformat(row["week_start"])
+    we = date.fromisoformat(row["week_end"])
+    log.info(f"Issue #{number} ({row['slug']}) — {ws} → {we}, status={row['status']}")
+
+    if not GITHUB_TOKEN:
+        log.error("GITHUB_TOKEN is not set — republish exists to do the GitHub write.")
+        sys.exit(1)
+
+    publish_html_to_github(content, number, ws, we)
+    trigger_vercel_deploy()
+    mark_published(number)
+    log.info(f"Issue #{number} marked published")
+
+    log.info("═" * 60)
+    log.info(f"Issue #{number} republished — {NEWSLETTER_BASE}/{row['slug']}")
+    log.info("═" * 60)
+
+
 def run(
     issue_number: int | None = None,
     week_start: date | None = None,
@@ -942,7 +1052,17 @@ def _cli() -> None:
                    help="Skip Telegram/Slack/webhook notifications (use for silent backfills).")
     p.add_argument("--dry-run", action="store_true",
                    help="Generate content and print JSON; skip Supabase writes, GitHub commit, Vercel deploy.")
+    p.add_argument("--republish", action="store_true",
+                   help="Render and ship an issue already stored in Supabase. No Claude call, "
+                        "no new content. Targets --issue-number, else --week-start, else this week.")
     args = p.parse_args()
+
+    if args.republish:
+        republish(
+            issue_number=args.issue_number,
+            week_start=date.fromisoformat(args.week_start) if args.week_start else None,
+        )
+        return
 
     ws = date.fromisoformat(args.week_start) if args.week_start else None
     we = date.fromisoformat(args.week_end) if args.week_end else None
