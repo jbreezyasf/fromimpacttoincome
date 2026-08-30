@@ -292,33 +292,68 @@ jobs:
             fi
           fi
 
+          # A missing row and a missing page are different failures and need
+          # different repairs. No row means nothing was ever written: generate.
+          # A row with no page means Railway generated the issue and then failed
+          # the GitHub commit — the prose already exists and was already paid
+          # for, so re-generating would both cost a second Claude call and
+          # publish text that no longer matches content_json. Render what is
+          # stored instead.
           needs_generate=false
-          if [ "$have_row" != "true" ] || [ "$have_html" != "true" ]; then
+          needs_republish=false
+          if [ "$have_row" != "true" ]; then
             needs_generate=true
+          elif [ "$have_html" != "true" ]; then
+            needs_republish=true
+            echo "Row exists without a page — republishing stored content, not regenerating."
           fi
           if [ "$FORCE_GENERATE" = "true" ]; then
             echo "force_generate=true — generating regardless."
             needs_generate=true
+            needs_republish=false
           fi
           if [ "$SKIP_GENERATE" = "true" ]; then
-            echo "skip_generate=true — suppressing generation."
+            echo "skip_generate=true — suppressing generation and republish."
             needs_generate=false
+            needs_republish=false
           fi
 
           echo "needs_generate=$needs_generate" >> "$GITHUB_OUTPUT"
+          echo "needs_republish=$needs_republish" >> "$GITHUB_OUTPUT"
           echo "have_row=$have_row" >> "$GITHUB_OUTPUT"
           echo "have_html=$have_html" >> "$GITHUB_OUTPUT"
 
       # ─── 3. Fallback generation (same pipeline Railway runs) ────────────────
       - uses: actions/setup-python@v6
-        if: steps.check_issue.outputs.needs_generate == 'true'
+        if: steps.check_issue.outputs.needs_generate == 'true' || steps.check_issue.outputs.needs_republish == 'true'
         with:
           python-version: "3.11"
 
       - name: Install pipeline dependencies
-        if: steps.check_issue.outputs.needs_generate == 'true'
+        if: steps.check_issue.outputs.needs_generate == 'true' || steps.check_issue.outputs.needs_republish == 'true'
         working-directory: client/newsletter-cron
         run: pip install -r requirements.txt
+
+      - name: Republish stored content
+        if: steps.check_issue.outputs.needs_republish == 'true'
+        working-directory: client/newsletter-cron
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPO: ${{ github.repository }}
+          VERCEL_DEPLOY_HOOK_URL: ${{ secrets.VERCEL_DEPLOY_HOOK_URL }}
+          NEWSLETTER_BASE_URL: ${{ secrets.NEWSLETTER_BASE_URL }}
+          TELEGRAM_GROUP: ${{ secrets.TELEGRAM_GROUP }}
+          TELEGRAM_LINK_BASE: ${{ secrets.TELEGRAM_LINK_BASE }}
+          # This repo is a monorepo — the HTML lives under client/, not public/.
+          NEWSLETTER_OUTPUT_DIR: client/public/newsletter
+          NEWSLETTER_TEMPLATE_FILE: junk-mail-TEMPLATE.html
+        run: |
+          set -euo pipefail
+          # No ANTHROPIC_API_KEY here on purpose: this path must never call the
+          # model, and leaving the key out makes that a property of the job
+          # rather than a promise in a comment.
+          python generate_newsletter.py --republish \
+            --issue-number "${{ steps.check_issue.outputs.issue_number }}"
 
       - name: Scrape Telegram for the target week
         if: steps.check_issue.outputs.needs_generate == 'true'
@@ -383,35 +418,69 @@ jobs:
       # ─── 5. Did this week actually ship? ────────────────────────────────────
       # The run is green whether it generated, confirmed, or did nothing at all.
       # On 2026-08-02 it did nothing and still reported success, so the missing
-      # issue went unnoticed. This step re-reads the row and FAILS the run when
-      # the week's issue is still absent — the only outcome that should ever be
-      # green is one where the issue exists.
-      - name: Verify the issue exists
+      # issue went unnoticed. This step re-reads the state and FAILS the run
+      # unless the week actually shipped.
+      #
+      # "Shipped" means BOTH halves, checked separately. Issue #021 had a
+      # Supabase row and no page — Railway generated it and then failed the
+      # GitHub commit — and a row-only check would have called that week green
+      # while nothing was readable. A reader cannot open a database row.
+      - name: Verify the issue shipped
         if: always() && inputs.skip_generate != true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
 
           row=$(curl -fsS \
             -H "apikey: $SUPABASE_SERVICE_KEY" \
             -H "Authorization: Bearer $SUPABASE_SERVICE_KEY" \
-            "$SUPABASE_URL/rest/v1/newsletter_issues?week_start=eq.$WEEK_START&select=issue_number,slug" \
+            "$SUPABASE_URL/rest/v1/newsletter_issues?week_start=eq.$WEEK_START&select=issue_number,slug,status" \
             ) || row="[]"
           count=$(printf '%s' "$row" | jq 'length' 2>/dev/null || echo 0)
 
-          if [ "$count" -gt 0 ]; then
-            slug=$(printf '%s' "$row" | jq -r '.[0].slug')
-            echo "OUTCOME: this week's issue exists ($slug)."
-            echo "> ## ✅ Issue present for \`$WEEK_START\` → \`$WEEK_END\` (\`$slug\`)" >> "$GITHUB_STEP_SUMMARY"
+          if [ "$count" -eq 0 ]; then
+            echo "::error::No issue exists for $WEEK_START → $WEEK_END. The newsletter did not ship."
+            {
+              echo "> ## ❌ NO ISSUE FOR THIS WEEK"
+              echo "> Nothing exists for \`$WEEK_START\` → \`$WEEK_END\`. Neither Railway nor"
+              echo "> this safety net produced it. Check the log above for the cause —"
+              echo "> a missing \`ANTHROPIC_API_KEY\`, an exhausted Anthropic credit"
+              echo "> balance, or an empty \`telegram_messages\` week are the usual ones."
+            } >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+
+          slug=$(printf '%s' "$row" | jq -r '.[0].slug')
+          status=$(printf '%s' "$row" | jq -r '.[0].status')
+          echo "Supabase row: $slug (status=$status)"
+
+          # Ask GitHub, not the local checkout: the page is committed through the
+          # Contents API after this job checked out, so the working tree never
+          # sees it.
+          page="client/public/newsletter/$slug.html"
+          code=$(curl -s -o /dev/null -w '%{http_code}' \
+            -H "Authorization: token $GH_TOKEN" \
+            -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/repos/${{ github.repository }}/contents/$page?ref=${{ github.event.repository.default_branch }}")
+          echo "GET $page → HTTP $code"
+
+          if [ "$code" = "200" ]; then
+            echo "OUTCOME: $slug shipped — row and page both present."
+            echo "> ## ✅ Issue \`$slug\` shipped for \`$WEEK_START\` → \`$WEEK_END\`" >> "$GITHUB_STEP_SUMMARY"
             exit 0
           fi
 
-          echo "::error::No issue exists for $WEEK_START → $WEEK_END. The newsletter did not ship."
+          echo "::error::$slug exists in Supabase but $page is not in the repo. The issue is unreadable."
           {
-            echo "> ## ❌ NO ISSUE FOR THIS WEEK"
-            echo "> Nothing exists for \`$WEEK_START\` → \`$WEEK_END\`. Neither Railway nor"
-            echo "> this safety net produced it. Check the log above for the cause —"
-            echo "> a missing \`ANTHROPIC_API_KEY\`, an exhausted Anthropic credit"
-            echo "> balance, or an empty \`telegram_messages\` week are the usual ones."
+            echo "> ## ❌ ISSUE GENERATED BUT NEVER PUBLISHED"
+            echo "> \`$slug\` exists in Supabase (status \`$status\`) but \`$page\`"
+            echo "> is missing from the repo, so there is no page to read. The content"
+            echo "> is safe — rerun this workflow to publish it from the stored"
+            echo "> \`content_json\`, no regeneration needed. If this keeps happening,"
+            echo "> Railway's \`GITHUB_TOKEN\` is the likely cause: it is a personal"
+            echo "> access token separate from every other credential here, and an"
+            echo "> expired one fails exactly this way and nothing else."
           } >> "$GITHUB_STEP_SUMMARY"
           exit 1
 
@@ -426,5 +495,6 @@ jobs:
             echo "| Supabase row found | \`${{ steps.check_issue.outputs.have_row }}\` |"
             echo "| Static HTML found | \`${{ steps.check_issue.outputs.have_html }}\` |"
             echo "| Ran fallback generation | \`${{ steps.check_issue.outputs.needs_generate }}\` |"
+            echo "| Republished stored content | \`${{ steps.check_issue.outputs.needs_republish }}\` |"
             echo "| Issue | \`${{ steps.check_issue.outputs.slug }}\` |"
           } >> "$GITHUB_STEP_SUMMARY"

@@ -601,7 +601,7 @@ export default function NewsletterIssue() {
                     overflow: "hidden",
                   }}
                 >
-                  <div style={{ height: 3, background: m.is_new ? C.orange : "#1C3A2E" }} />
+                  <div style={{ height: 3, background: m.is_new_member ? C.orange : "#1C3A2E" }} />
                   <div style={{ padding: 14 }}>
                     <div
                       style={{
@@ -624,7 +624,7 @@ export default function NewsletterIssue() {
                         marginBottom: 8,
                       }}
                     >
-                      {m.is_new ? "New Member 🎉" : (m.handle ?? "AI Junkies Member")}
+                      {m.is_new_member ? "New Member 🎉" : (m.handle ?? "AI Junkies Member")}
                     </div>
                     <p style={{ fontSize: 12.5, lineHeight: 1.6, color: C.textMuted }}>{m.body}</p>
                   </div>
