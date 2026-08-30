@@ -38,6 +38,16 @@ on:
     # lookup and exit.
     - cron: "30 14 * * *"
     - cron: "30 20 * * *"
+  # Changing the safety net runs it. A workflow whose only trigger is a
+  # schedule is not really tested until the week it is needed, which is how a
+  # broken guard survived two Sundays. Everything downstream is idempotent, so
+  # a run against a week that already shipped simply confirms it.
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/newsletter-ensure.yml"
+      - "client/newsletter-cron/generate_newsletter.py"
+
   workflow_dispatch:
     inputs:
       force_generate:
@@ -306,6 +316,14 @@ jobs:
           elif [ "$have_html" != "true" ]; then
             needs_republish=true
             echo "Row exists without a page — republishing stored content, not regenerating."
+          elif [ "$status" != "published" ]; then
+            # The page is committed but the row never flipped, so the React site
+            # still cannot show the issue: both /newsletter and
+            # /newsletter/<slug> filter on status='published'. Republish is
+            # idempotent — it rewrites the same HTML, skips the index row it
+            # already added, and flips the row.
+            needs_republish=true
+            echo "Page exists but status=$status — republishing to mark it published."
           fi
           if [ "$FORCE_GENERATE" = "true" ]; then
             echo "force_generate=true — generating regardless."
@@ -465,10 +483,23 @@ jobs:
             "https://api.github.com/repos/${{ github.repository }}/contents/$page?ref=${{ github.event.repository.default_branch }}")
           echo "GET $page → HTTP $code"
 
-          if [ "$code" = "200" ]; then
-            echo "OUTCOME: $slug shipped — row and page both present."
+          if [ "$code" = "200" ] && [ "$status" = "published" ]; then
+            echo "OUTCOME: $slug shipped — row published and page committed."
             echo "> ## ✅ Issue \`$slug\` shipped for \`$WEEK_START\` → \`$WEEK_END\`" >> "$GITHUB_STEP_SUMMARY"
             exit 0
+          fi
+
+          if [ "$code" = "200" ]; then
+            echo "::error::$page is committed but $slug is still status=$status."
+            {
+              echo "> ## ❌ PAGE PUBLISHED, ROW NOT MARKED"
+              echo "> \`$page\` is in the repo but the row is \`$status\`, and both"
+              echo "> \`/newsletter\` and \`/newsletter/$slug\` filter on"
+              echo "> \`status='published'\` — so the React site cannot show the issue"
+              echo "> even though the static page exists. Rerun this workflow; the"
+              echo "> republish path flips the row and is safe to repeat."
+            } >> "$GITHUB_STEP_SUMMARY"
+            exit 1
           fi
 
           echo "::error::$slug exists in Supabase but $page is not in the repo. The issue is unreadable."
