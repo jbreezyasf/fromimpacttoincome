@@ -3,8 +3,8 @@ name: Newsletter Weekly Ensure
 # Safety net for the weekly Junk Mail issue.
 #
 # Railway (client/newsletter-cron/railway.toml) is the primary runner and fires
-# at 14:00 UTC / 9:00 AM CT every Sunday. This workflow runs after it, three
-# times through the day, and does three things:
+# at 14:00 UTC / 9:00 AM CT every Sunday. This workflow runs twice daily and
+# does three things:
 #
 #   1. Wakes the Supabase project if it has auto-paused (free-tier projects
 #      pause after ~7 days idle), waiting until it reports ACTIVE_HEALTHY.
@@ -13,24 +13,31 @@ name: Newsletter Weekly Ensure
 #      missing, it reruns the same Python pipeline Railway uses.
 #   3. Pings the Vercel deploy hook so the site rebuilds regardless.
 #
-# It is deliberately idempotent: when Railway succeeded, this run wakes the DB,
-# confirms the issue, redeploys, and exits without generating anything.
+# It is deliberately idempotent: when the week's issue already exists, the run
+# wakes the DB, confirms the issue, redeploys, and exits without generating.
+# That is what makes a daily schedule cheap and a missed Sunday recoverable.
 
 on:
   schedule:
-    # Three attempts through Sunday. There is deliberately no "is it 9:30 yet"
-    # guard: an earlier version exited unless the local Chicago hour was 09, and
-    # on 2026-08-02 GitHub ran the two crons 68 and 58 minutes late, putting both
-    # outside that window. Both runs skipped the work and reported success, so
-    # the week's issue was never produced and nothing said so.
+    # DAILY, not Sunday-only. Two earlier designs failed here.
     #
-    # The job is idempotent — it checks whether the issue already exists and
-    # exits without generating when it does — so firing repeatedly costs a cheap
-    # lookup and buys a free retry when an earlier attempt failed. That is worth
-    # more than firing exactly once at a precise local time.
-    - cron: "30 14 * * 0"   # ~9:30 AM CDT / 8:30 CST
-    - cron: "30 17 * * 0"   # ~12:30 PM CDT — retry
-    - cron: "30 20 * * 0"   # ~3:30 PM CDT  — last chance
+    # First a guard exited unless the local Chicago hour was 09; GitHub ran the
+    # crons 68 and 58 minutes late and both firings were skipped. That guard was
+    # removed in favour of three attempts across Sunday.
+    #
+    # Then on 2026-08-30 none of those three fired at all. GitHub's scheduler was
+    # running hours behind for this account — the daily keepalive drifted +9h39m
+    # on Aug 27 and +9h43m on Aug 28 — and delayed schedules get dropped. Three
+    # attempts were no help because all three rode the same scheduler on the same
+    # day, so one bad Sunday still lost the week.
+    #
+    # Running daily removes that coupling: a dropped Sunday is picked up on
+    # Monday. The target week is the last full Sun-Sat and does not change until
+    # the next Sunday, so every run from Sunday to Saturday aims at the same
+    # issue. The job is idempotent, so once it exists the remaining runs cost a
+    # lookup and exit.
+    - cron: "30 14 * * *"
+    - cron: "30 20 * * *"
   workflow_dispatch:
     inputs:
       force_generate:
