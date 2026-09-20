@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Junk Mail — Issue #024 — Sep 13–19, 2026 | AI Junkies Inner Circle</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,600&family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ── SIGNAL & NOISE TOKENS ── */
+    :root {
+      --cream:        #FAF7F2;
+      --ink:          #1E1B18;
+      --ink-card:     #26231F;
+      --ink-card-2:   #2E2B26;
+      --orange:       #C4622D;
+      --orange-light: #D4824D;
+      --green:        #1C3A2E;
+      --green-light:  #2A5240;
+      --text-body:    #C2BDB7;
+      --text-muted:   #8A857E;
+      --text-dim:     #5E5A54;
+      --border:       rgba(255,255,255,0.08);
+      --border-hover: rgba(196,98,45,0.4);
+    }
+
+    body {
+      background: var(--ink);
+      font-family: 'DM Sans', sans-serif;
+      color: var(--text-body);
+      font-size: 15px;
+      line-height: 1.75;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .wrap {
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    /* ── HEADER ── */
+    .site-header {
+      padding: 20px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(30,27,24,0.95);
+      backdrop-filter: blur(12px);
+    }
+    .site-header a { text-decoration: none; }
+    .header-brand-name {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--cream);
+      display: block;
+      line-height: 1.2;
+    }
+    .header-brand-sub {
+      font-family: 'Fraunces', serif;
+      font-style: italic;
+      font-size: 11px;
+      color: var(--orange);
+      display: block;
+      line-height: 1.2;
+    }
+    .header-lock {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+    .lock-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--text-dim);
+      flex-shrink: 0;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      padding: 64px 32px 48px;
+    }
+    .tag-pill {
+      display: inline-block;
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      background: var(--orange);
+      color: var(--cream);
+      padding: 4px 10px;
+      border-radius: 2px;
+      margin-bottom: 20px;
+    }
+    .issue-eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 6px;
+    }
+    .hero-title {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: clamp(2.2rem, 6vw, 3.4rem);
+      color: var(--cream);
+      letter-spacing: -0.02em;
+      line-height: 1.0;
+      margin-bottom: 16px;
+    }
+    .hero-title em {
+      font-style: italic;
+      color: var(--orange);
+    }
+    .hero-meta {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .hero-issue-num {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: 3.5rem;
+      color: rgba(255,255,255,0.08);
+      line-height: 1;
+    }
+    .hero-divider-v {
+      width: 1px;
+      height: 48px;
+      background: var(--border);
+    }
+    .hero-date {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+    .lede {
+      font-size: 15px;
+      line-height: 1.75;
+      color: var(--text-muted);
+      max-width: 560px;
+    }
+    .lede strong { color: var(--cream); font-weight: 600; }
+
+    /* ── SECTION RULE ── */
+    .section-rule {
+      height: 1px;
+      background: var(--border);
+      margin: 0 32px;
+    }
+
+    /* ── SECTION LABEL ── */
+    .section-label {
+      padding: 32px 32px 0;
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 2px;
+    }
+
+    /* ── STORY CONTENT ── */
+    .content {
+      padding: 14px 32px 32px;
+    }
+    .content h2 {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: clamp(1.5rem, 3.5vw, 2rem);
+      color: var(--cream);
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      margin-bottom: 12px;
+    }
+    .content h3 {
+      font-family: 'Fraunces', serif;
+      font-weight: 600;
+      font-size: 1.25rem;
+      color: var(--cream);
+      letter-spacing: -0.01em;
+      line-height: 1.25;
+      margin-bottom: 10px;
+    }
+    .content .deck {
+      font-family: 'Fraunces', serif;
+      font-style: italic;
+      font-size: 1rem;
+      color: var(--text-muted);
+      margin-bottom: 18px;
+      line-height: 1.6;
+    }
+    .content p {
+      color: var(--text-body);
+      margin-bottom: 14px;
+      font-size: 15px;
+    }
+    .content p:last-child { margin-bottom: 0; }
+    .content ul {
+      padding-left: 20px;
+      margin-bottom: 14px;
+    }
+    .content ul li {
+      margin-bottom: 8px;
+      color: var(--text-body);
+    }
+    .content ul li strong { color: var(--cream); }
+    .content a { color: var(--orange-light); text-decoration: underline; text-underline-offset: 3px; }
+    .content pre {
+      background: #141210;
+      border: 1px solid rgba(255,255,255,0.06);
+      padding: 16px;
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      line-height: 1.7;
+      overflow-x: auto;
+      margin-bottom: 14px;
+      border-radius: 3px;
+      color: #C2BDB7;
+    }
+
+    /* ── BIZ CALLOUT ── */
+    .biz-callout {
+      margin: 0 32px 28px;
+      border-left: 3px solid var(--orange);
+      background: rgba(196,98,45,0.08);
+      padding: 16px 20px;
+      border-radius: 0 3px 3px 0;
+    }
+    .biz-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--orange);
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+    .biz-callout p {
+      font-size: 14px;
+      line-height: 1.7;
+      color: var(--text-body);
+    }
+
+    /* ── HOT TOPIC ── */
+    .hot-topic {
+      margin: 0 32px 32px;
+      background: var(--ink-card);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 24px;
+    }
+    .hot-topic-eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 10px;
+    }
+    .hot-topic h3 {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: 1.4rem;
+      color: var(--cream);
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      margin-bottom: 12px;
+    }
+    .hot-topic p {
+      font-size: 14px;
+      line-height: 1.75;
+      color: var(--text-body);
+      margin-bottom: 12px;
+    }
+    .voices {
+      margin-top: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .voice-item {
+      background: rgba(255,255,255,0.04);
+      border-left: 2px solid var(--orange);
+      padding: 10px 14px;
+      border-radius: 0 2px 2px 0;
+      font-size: 13.5px;
+      line-height: 1.6;
+      color: var(--text-body);
+      font-style: italic;
+    }
+    .voice-name {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 5px;
+      font-style: normal;
+    }
+    /* A member's name links to the exact message the quote came from. */
+    .voice-name a {
+      color: inherit;
+      text-decoration: none;
+      border-bottom: 1px dotted var(--orange);
+    }
+    .voice-name a:hover { border-bottom-style: solid; }
+    /* "Read the thread" backlink at the end of each story section. */
+    .thread-link {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-top: 18px;
+    }
+    .thread-link a {
+      color: var(--orange);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(255, 122, 0, 0.35);
+      padding-bottom: 2px;
+    }
+    .thread-link a:hover { border-bottom-color: var(--orange); }
+
+    /* ── QUICK HITS GRID ── */
+    .tips-grid {
+      padding: 14px 32px 32px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .tip-card {
+      background: var(--ink-card);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 18px;
+      transition: border-color 0.2s;
+    }
+    .tip-card:hover { border-color: var(--border-hover); }
+    .tip-number {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: 2.2rem;
+      color: rgba(255,255,255,0.07);
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    .tip-card strong {
+      display: block;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--cream);
+      margin-bottom: 6px;
+      line-height: 1.3;
+    }
+    .tip-card p {
+      font-size: 13px;
+      line-height: 1.65;
+      color: var(--text-muted);
+    }
+
+    /* ── MEMBER SPOTLIGHT ── */
+    .member-grid {
+      padding: 14px 32px 32px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    .member-card {
+      background: var(--ink-card);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+    .member-card:hover { border-color: var(--border-hover); }
+    .member-card-accent {
+      height: 3px;
+      background: var(--green);
+    }
+    .member-card-accent.orange { background: var(--orange); }
+    .member-card-body { padding: 14px; }
+    .member-name {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--cream);
+      margin-bottom: 2px;
+      line-height: 1.2;
+    }
+    .member-handle {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.08em;
+      color: var(--text-dim);
+      margin-bottom: 8px;
+    }
+    .member-card-body p {
+      font-size: 12.5px;
+      line-height: 1.6;
+      color: var(--text-muted);
+    }
+    .member-card-body em { color: var(--text-body); font-style: italic; }
+
+    /* ── WINS ── */
+    .wins-list {
+      padding: 14px 32px 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .win-item {
+      background: var(--ink-card);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 16px 18px;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 14px;
+      align-items: start;
+      transition: border-color 0.2s;
+    }
+    .win-item:hover { border-color: var(--border-hover); }
+    .win-emoji {
+      font-size: 18px;
+      line-height: 1;
+      margin-top: 2px;
+    }
+    .win-tag {
+      display: inline-block;
+      font-family: 'DM Mono', monospace;
+      font-size: 8.5px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 2px 7px;
+      border-radius: 2px;
+      margin-bottom: 5px;
+      border: 1px solid currentColor;
+    }
+    .win-tag.client   { color: var(--orange-light); }
+    .win-tag.build    { color: var(--green-light); }
+    .win-tag.speaking { color: #6BAE8C; }
+    .win-tag.other    { color: var(--text-dim); }
+    .win-title {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--cream);
+      margin-bottom: 3px;
+      display: block;
+    }
+    .win-item p {
+      font-size: 13px;
+      line-height: 1.65;
+      color: var(--text-muted);
+    }
+    .win-item a { color: var(--orange-light); text-decoration: underline; text-underline-offset: 2px; }
+
+    /* ── FOOTER ── */
+    .site-footer {
+      padding: 32px 32px 40px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .footer-brand {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--cream);
+      display: block;
+      margin-bottom: 4px;
+    }
+    .footer-sub {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      line-height: 1.8;
+    }
+    .footer-right {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      text-align: right;
+      line-height: 1.9;
+    }
+
+    @media (max-width: 520px) {
+      .tips-grid    { grid-template-columns: 1fr; }
+      .member-grid  { grid-template-columns: 1fr 1fr; }
+      .site-footer  { flex-direction: column; }
+      .footer-right { text-align: left; }
+      .hero, .content, .section-label, .biz-callout,
+      .hot-topic, .tips-grid, .member-grid, .wins-list,
+      .section-rule, .site-footer { padding-left: 20px; padding-right: 20px; }
+      .section-rule { margin: 0 20px; }
+      .hot-topic, .biz-callout { margin-left: 20px; margin-right: 20px; }
+      .site-header { padding: 16px 20px; }
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- HEADER -->
+  <header class="site-header">
+    <a href="/">
+      <span class="header-brand-name">From Impact to Income</span>
+      <span class="header-brand-sub">AI Junkies Inner Circle</span>
+    </a>
+    <div class="header-lock">
+      <div class="lock-dot"></div>
+      Members Only
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <span class="tag-pill">AI Junkies Newsletter</span>
+    <div class="hero-meta">
+      <div class="hero-issue-num">024</div>
+      <div class="hero-divider-v"></div>
+      <div>
+        <div class="hero-date">Sep 13–19, 2026</div>
+      </div>
+    </div>
+    <h1 class="hero-title">Junk <em>Mail</em></h1>
+    <p class="lede">
+      <strong>Hey Junkies 👋</strong> — Rodney Williams retired from the Air Force on Sunday night and by Friday he was an approved vendor integrated into a platform with 41 other companies. That&#x27;s the week in a nutshell.
+    </p>
+    <p class="lede" style="margin-top:12px;">This group does not slow down. Late-night build sessions, Instinct invites flying through DMs, Althea going from a 28 to a 98 on her Wiremap audit, and Kre dropping client videos that people thought were studio-produced. Issue 024 is stacked. Let&#x27;s get into it.</p>
+    <p class="lede" style="margin-top:12px;">No fluff. Just the real stuff. Let's get into it. 🔥</p>
+  </section>
+
+
+  <!-- ══════════════════════════════ -->
+  <!-- ① MAIN STORY                  -->
+  <!-- ══════════════════════════════ -->
+  <div class="section-rule"></div>
+  <div class="section-label">① Main Story</div>
+  <div class="content">
+    <h2>Instinct Hit the Chat Like a Fire Alarm at 1AM — Here&#x27;s What It Actually Does</h2>
+    <p class="deck">A new agentic tool called Instinct went from unknown to every DM in the group inside of 24 hours, and members are already pulling leads, scrubbing personal data, and running GitHub audits with it.</p>
+    <p>Instinct is an AI agent — think of it as a tireless assistant that can browse the web, collect information, take actions on your behalf, and report back. It&#x27;s invite-only right now and still free. You give it a goal, not just a question, and it goes out and tries to accomplish it. That&#x27;s the big difference between this and a regular chatbot. You&#x27;re not prompting it back and forth — you&#x27;re delegating.</p>
+    <p>Cheryl dropped the first invite link on Wednesday night and it spread fast. By Thursday the group was comparing notes. Dom said it had already found him $1,500. Cheryl said she was up $10K. Juanita had it build a referral partner list — complete with usernames and niches — for her apps. Anthony ran a full personal data privacy audit with a prompt so thorough it took two messages to paste. Nathan used it to research his Skool community and draft custom DMs for each member. Cheryl connected her GitHub and had it audit which repos were accidentally public.</p>
+    <p>The misconception to dodge: Instinct is not magic, it&#x27;s leverage. The members getting real results were the ones who came in with a clear outcome — leads for a specific niche, a 30/90/180-day brand roadmap, a privacy sweep. Juanita put it best: she&#x27;s using it hard while the free credits last, but she&#x27;s also rebuilding Hermes locally because she does not want her data sitting on someone else&#x27;s cloud. Nathan flagged the same concern about data ownership. The tool is powerful. Know what you&#x27;re handing it.</p>
+    <ul>
+      <li><strong>Come with an outcome, not a prompt:</strong> Anthony asked Instinct to build an empire around his personal brand site and got a full audit with a 30, 90, and 12-month roadmap. Nathan got a weekly scoreboard. Vague inputs get vague outputs.</li>
+      <li><strong>Use ChatGPT to generate your Instinct prompts:</strong> Cheryl told ChatGPT to give her 5 high-value, revenue-generating instructions for Instinct based on everything Chat already knows about her work. She said the result was jaw-dropping. Borrow that play.</li>
+      <li><strong>Watch your data — local is the long game:</strong> Juanita plans to rebuild her Hermes agent locally this weekend and replace Instinct once it&#x27;s right. If you already set up OpenClaw or Hermes in the early cohort sessions, those skills are suddenly very relevant again.</li>
+    </ul>
+    <p class="thread-link"><a href="https://t.me/c/3120599051/21352" target="_blank" rel="noopener">Read the thread →</a></p>
+  </div>
+  <!-- BIZ CALLOUT — periodic, not every issue. Delete block to skip. -->
+  <div class="biz-callout">
+    <div class="biz-label">💼 How does this apply to your business?</div>
+    <p>If you&#x27;re doing any kind of lead gen — credit repair, coaching, software, services — Instinct can go out and find prospect names, usernames, phone numbers, and email addresses, then drop them in a Google Sheet. Cheryl ran this exact workflow, had a second system verify the contact info, and everything came back legit. That&#x27;s an outbound machine that costs you zero tokens right now.</p>
+  </div>
+
+
+  <!-- ══════════════════════════════ -->
+  <!-- ② SECOND STORY                -->
+  <!-- ══════════════════════════════ -->
+  <div class="section-rule"></div>
+  <div class="section-label">② Also This Week</div>
+  <div class="content">
+    <h3>AI Case Law Is Here — Big Steele Said Start Thinking About Private Infrastructure</h3>
+    <p>Big Steele dropped a link Wednesday afternoon with two words: &#x27;Here comes AI case law.&#x27; A legal ruling tied to AI-generated work product is starting to move through the system, and it&#x27;s the kind of thing that will reshape how businesses think about what they build with AI tools and who owns it.</p>
+    <p>Big&#x27;s take was direct and practical: if you need IP protection, attorney-client privilege, or any kind of legal cover around your work product, the custom route is the only route. That means knowing how to run open-source LLMs on private servers, build custom RAGs, and keep your data off shared cloud infrastructure. Juanita reminded the group that anyone who came through the October-December 2025 cohort already has those skills — Docker, VS Code, Cursor, Ollama — they just need to dust them off.</p>
+    <p>Natasha connected this to something she brought back from a CMS call: NIST is actively working on AI testing and evaluation frameworks. The acronym is TEVV — Testing, Evaluation, Validation, and Verification. Worth knowing the name before it becomes a compliance requirement.</p>
+    <p class="thread-link"><a href="https://t.me/c/3120599051/21330" target="_blank" rel="noopener">Read the thread →</a></p>
+  </div>
+
+
+  <!-- ══════════════════════════════ -->
+  <!-- ③ THIRD STORY                 -->
+  <!-- ══════════════════════════════ -->
+  <div class="section-rule"></div>
+  <div class="section-label">③ Worth Knowing</div>
+  <div class="content">
+    <h3>Claude Cowork Is Gone — Absorbed Into the Main Product</h3>
+    <p>Anthropic merged Claude Cowork into the main Claude product. One login, one interface. If you had a separate Cowork workflow, it now lives inside the standard Claude experience. Anthony called it overdue. Nathan said it makes sense.</p>
+    <p>While that was happening, Anthony also flagged that ChatGPT can now generate walkthrough videos from screen clips and do full video edits — in case you hadn&#x27;t noticed the upgrade. Kre confirmed she&#x27;s been using it for client video edits and VO work, with her ElevenLabs MCP connected to Claude doing the voice. The combo — storyboard in your head, generate scenes, drop in your ElevenLabs voice, export social-ready — is a legitimate production pipeline right now.</p>
+    <p class="thread-link"><a href="https://t.me/c/3120599051/21239" target="_blank" rel="noopener">Read the thread →</a></p>
+  </div>
+
+
+  <!-- ══════════════════════════════ -->
+  <!-- ④ HOT TOPIC                   -->
+  <!-- ══════════════════════════════ -->
+  <div class="section-rule"></div>
+  <div class="section-label">④ Hot Topic</div>
+  <div class="hot-topic">
+    <div class="hot-topic-eyebrow">🔥 From the Group Chat</div>
+    <h3>Instinct vs. Hermes vs. OpenClaw — Where Should Your Agent Actually Live?</h3>
+    <p>Once the Instinct invites spread and people started getting results, a real question surfaced: is this tool better than what we already built, or are we just distracted by something shiny and free?</p>
+    <p>This is the core tension in the group right now. Instinct is fast, capable, and costs nothing today — but your data is on their servers and nobody knows when the billing starts. Hermes and OpenClaw sit on your machine, your rules, your knowledge base. The members who came through the early workshops have the skills to run local agents. The question is whether they use them. This debate is going to matter more as AI regulation tightens and the token cost explosion Derrick predicted gets closer.</p>
+    <div class="voices">
+      <div class="voice-item">
+        <div class="voice-name"><a href="https://t.me/c/3120599051/21490" target="_blank" rel="noopener">Juanita</a></div>
+        "Hermes and Instinct are like sister cousins. If you guys already have your agents, go back, give it the guardrails, give it the brain. This is what Instinct is, what OpenClaw and Hermes are. Hermes just creates its own skills so I don&#x27;t have to go in and create skills for it. If it doesn&#x27;t know something, it&#x27;ll start creating a skill for it — it has its own self-healing loop."
+      </div>
+      <div class="voice-item">
+        <div class="voice-name"><a href="https://t.me/c/3120599051/21396" target="_blank" rel="noopener">Nathan</a></div>
+        "I think they&#x27;re similar, just the difference is where ownership of the data is. The OpenClaw/Hermes is more you have to manage the system, while Instinct has their cloud that can handle it. I do like how Instinct can do and read more of the research better."
+      </div>
+      <div class="voice-item">
+        <div class="voice-name"><a href="https://t.me/c/3120599051/21489" target="_blank" rel="noopener">Cheryl Tibbs</a></div>
+        "Everybody is pushing local setup. I say all this to say: what are your thoughts on Hermes? With what&#x27;s going on with them talking about slowing down AI, and Andrew Yang saying the ChatGPT agent that supposedly hacked into Hugging Face hit some other websites — things are about to get crazy."
+      </div>
+    </div>
+    <p class="thread-link"><a href="https://t.me/c/3120599051/21394" target="_blank" rel="noopener">Read the thread →</a></p>
+  </div>
+
+
+  <!-- ══════════════════════════════ -->
+  <!-- ⑤ QUICK HITS                  -->
+  <!-- ══════════════════════════════ -->
+  <div class="section-rule"></div>
+  <div class="section-label">⑤ Quick Hits</div>
+  <div class="tips-grid">
+    <div class="tip-card">
+      <div class="tip-number">01</div>
+      <strong>The Underscore Prompt for Video Music</strong>
+      <p>Kre dropped the exact language to use when you want background music that doesn&#x27;t drown out your voiceover: &#x27;Subtle cinematic background underscore, low volume, soft and unobtrusive, sitting underneath the dialogue. Dialogue remains crisp and dominant.&#x27; The key word is UNDERSCORE. Sherry used it immediately and the second version of her video passed the group&#x27;s ear test.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-number">02</div>
+      <strong>npx @bigsteele/the-walkthrough</strong>
+      <p>Big Steele dropped this command in the chat for generating help documentation for your software. Run it in your terminal if you need to make user-facing docs. Juanita confirmed it works with ChatGPT when the tool has GitHub access to your project.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-number">03</div>
+      <strong>Meta Muse Is Handling Inboxes — And It Connects to WhatsApp</strong>
+      <p>Derrick flagged Meta&#x27;s Muse agent this week. It auto-responds to your Facebook inbox, sends links, collects emails and phone numbers, builds a follow-up list, and then can reach out to those same people on WhatsApp after grabbing their number from your FB messages. Dr. Regina downloaded it and said it completed what she needed immediately. Worth a session on its own.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-number">04</div>
+      <strong>Karpathy&#x27;s Method: Stop Prompting, Start Speccing</strong>
+      <p>Britt shared a Notion breakdown of Andrej Karpathy&#x27;s method for working with Claude — the short version is that you should be writing a full spec document for your project instead of prompting back and forth. Give the model the full picture once, let it plan, then execute. Several members saved it immediately. Find it at the link Britt dropped on Friday morning.</p>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- ⑥ MEMBER SPOTLIGHT — delete cards you don't have content for. -->
+  <!-- Section auto-hides if all cards are removed.                  -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <div data-optional-section="members">
+  <div class="section-rule"></div>
+  <div class="section-label">⑥ Member Spotlight</div>
+  <!--
+    CARD GUIDE:
+    New member?         → orange accent bar
+    Building something? → Name the project. Keep it hype.
+    Not building yet?   → Encouraging note. Recognition, not pressure.
+    Mix freely. Delete any cards you don't have real content for.
+  -->
+  <div class="member-grid" data-content-container>
+    <div class="member-card" data-content-item>
+      <div class="member-card-accent "></div>
+      <div class="member-card-body">
+        <div class="member-name">Althea</div>
+        <div class="member-handle">AltheaCooper</div>
+        <p>Althea went from a Wiremap score of 28 to 98 in a single week — not by chasing the number but by making the actual improvements the audit flagged. She&#x27;s building an autonomous presentation agent for the Legacy Storyteller Kit on the side. She&#x27;s in the building at 4AM and back at it after a full sleep. This is what locked-in looks like.</p>
+      </div>
+    </div>
+    <div class="member-card" data-content-item>
+      <div class="member-card-accent "></div>
+      <div class="member-card-body">
+        <div class="member-name">Kre</div>
+        <div class="member-handle">mindovamillonairemom</div>
+        <p>Kre dropped a client courier company video this week that looked like a full production shoot. It wasn&#x27;t. She&#x27;s been building a storyboard-to-AI-video pipeline using ChatGPT for edits, ElevenLabs for voice, and a reference asset library she adds to daily. She presented her software on the Thursday live call and the reactions said everything — people are ready to pay.</p>
+      </div>
+    </div>
+    <div class="member-card" data-content-item>
+      <div class="member-card-accent "></div>
+      <div class="member-card-body">
+        <div class="member-name">Rodney</div>
+        <div class="member-handle">rockman228</div>
+        <p>Rodney retired from the Air Force after 20 years on Sunday, built a nonprofit event registration funnel mid-week, and closed the week as an approved vendor on a platform with 41 other companies in the home health space. He&#x27;s also the only one on that vendor list who built his own software, which puts him in a class by himself. Welcome to the next chapter, Rodney.</p>
+      </div>
+    </div>
+  </div>
+  </div><!-- /section-members -->
+
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- ⑦ WINS THIS WEEK — delete wins you don't have content for. -->
+  <!-- Section auto-hides if all wins are removed.               -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <div data-optional-section="wins">
+  <div class="section-rule"></div>
+  <div class="section-label">⑦ Wins This Week</div>
+  <div class="wins-list" data-content-container>
+    <div class="win-item" data-content-item>
+      <div class="win-emoji">🏆</div>
+      <div>
+        <span class="win-tag build">Major Milestone</span>
+        <span class="win-title">Rodney Williams — Netsmart Integration Approved</span>
+        <p>The software Rodney built from scratch on Lovable — rebuilt, re-integrated, and pushed through a month-long approval process — is now officially integrated with Netsmart as vendor number 42. He&#x27;s the only vendor on the list who built his own software from the ground up.</p>
+      </div>
+    </div>
+    <div class="win-item" data-content-item>
+      <div class="win-emoji">🎓</div>
+      <div>
+        <span class="win-tag cert">Certification</span>
+        <span class="win-title">Britt — Lovable Certified</span>
+        <p>Britt got officially certified with Lovable this week, with a big assist from Tearra Spencer. She found coach in February, joined in March, and hasn&#x27;t looked back. Certified on her birthday week. That&#x27;s the move.</p>
+      </div>
+    </div>
+    <div class="win-item" data-content-item>
+      <div class="win-emoji">📈</div>
+      <div>
+        <span class="win-tag score">Wiremap A+</span>
+        <span class="win-title">Althea Cooper — Wiremap 98/100, Grade A+, Level 4</span>
+        <p>Althea went from a score of 28 to 98 in one week. Tokens: 23/25. Shared values: 25/25. Capability organization: 25/25. Code readability: 25/25. Passed the gate. She stopped at 98 on the audit&#x27;s recommendation and kept it moving to Phase 4.</p>
+      </div>
+    </div>
+    <div class="win-item" data-content-item>
+      <div class="win-emoji">💰</div>
+      <div>
+        <span class="win-tag revenue">Revenue Found</span>
+        <span class="win-title">Cheryl Tibbs — $10K via Instinct</span>
+        <p>Cheryl was one of the first in the group to get Instinct running and reported being up $10K by the time she shared invites. She&#x27;s using it for lead gen, prospecting, GitHub audits, and has a second system verifying the contact data before any outreach goes out.</p>
+      </div>
+    </div>
+    <div class="win-item" data-content-item>
+      <div class="win-emoji">🚀</div>
+      <div>
+        <span class="win-tag launch">Site Shipped</span>
+        <span class="win-title">Rodney Williams — Nonprofit Event Funnel Live</span>
+        <p>Mid-retirement week, Rodney built and shipped a registration funnel for his nonprofit&#x27;s upcoming Atlanta event. Clean motion, clear message. The group called it out immediately.</p>
+      </div>
+    </div>
+    <div class="win-item" data-content-item>
+      <div class="win-emoji">🎬</div>
+      <div>
+        <span class="win-tag client">Client Deliverable</span>
+        <span class="win-title">Kre — Courier Company Video Delivered</span>
+        <p>Kre delivered a cinematic promotional video for a client&#x27;s courier company that members thought was a full production. It was built with her AI video pipeline. The client got her courier system a few weeks ago and came back for the video — that&#x27;s a repeat client relationship, which is the goal.</p>
+      </div>
+    </div>
+  </div>
+  </div><!-- /section-wins -->
+
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div>
+      <span class="footer-brand">Junk Mail</span>
+      <div class="footer-sub">
+        AI Junkies Weekly · Inner Circle Edition<br/>
+        Curated by Derrick Harper
+      </div>
+    </div>
+    <div class="footer-right">
+      Issue #024 · Sep 13–19, 2026<br/>
+      For AI Junkies members only<br/>
+      Not for public distribution
+    </div>
+  </footer>
+
+</div>
+
+  <script>
+    // Auto-hide optional sections (Member Spotlight + Wins) if they have no content cards
+    document.querySelectorAll('[data-optional-section]').forEach(function(section) {
+      var container = section.querySelector('[data-content-container]');
+      if (!container) return;
+      var items = container.querySelectorAll('[data-content-item]');
+      if (items.length === 0) {
+        section.style.display = 'none';
+      }
+    });
+  </script>
+</body>
+</html>
