@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Junk Mail — Issue #025 — Sep 20–26, 2026 | AI Junkies Inner Circle</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,600&family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ── SIGNAL & NOISE TOKENS ── */
+    :root {
+      --cream:        #FAF7F2;
+      --ink:          #1E1B18;
+      --ink-card:     #26231F;
+      --ink-card-2:   #2E2B26;
+      --orange:       #C4622D;
+      --orange-light: #D4824D;
+      --green:        #1C3A2E;
+      --green-light:  #2A5240;
+      --text-body:    #C2BDB7;
+      --text-muted:   #8A857E;
+      --text-dim:     #5E5A54;
+      --border:       rgba(255,255,255,0.08);
+      --border-hover: rgba(196,98,45,0.4);
+    }
+
+    body {
+      background: var(--ink);
+      font-family: 'DM Sans', sans-serif;
+      color: var(--text-body);
+      font-size: 15px;
+      line-height: 1.75;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .wrap {
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    /* ── HEADER ── */
+    .site-header {
+      padding: 20px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(30,27,24,0.95);
+      backdrop-filter: blur(12px);
+    }
+    .site-header a { text-decoration: none; }
+    .header-brand-name {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--cream);
+      display: block;
+      line-height: 1.2;
+    }
+    .header-brand-sub {
+      font-family: 'Fraunces', serif;
+      font-style: italic;
+      font-size: 11px;
+      color: var(--orange);
+      display: block;
+      line-height: 1.2;
+    }
+    .header-lock {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+    .lock-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--text-dim);
+      flex-shrink: 0;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      padding: 64px 32px 48px;
+    }
+    .tag-pill {
+      display: inline-block;
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      background: var(--orange);
+      color: var(--cream);
+      padding: 4px 10px;
+      border-radius: 2px;
+      margin-bottom: 20px;
+    }
+    .issue-eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 6px;
+    }
+    .hero-title {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: clamp(2.2rem, 6vw, 3.4rem);
+      color: var(--cream);
+      letter-spacing: -0.02em;
+      line-height: 1.0;
+      margin-bottom: 16px;
+    }
+    .hero-title em {
+      font-style: italic;
+      color: var(--orange);
+    }
+    .hero-meta {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .hero-issue-num {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: 3.5rem;
+      color: rgba(255,255,255,0.08);
+      line-height: 1;
+    }
+    .hero-divider-v {
+      width: 1px;
+      height: 48px;
+      background: var(--border);
+    }
+    .hero-date {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+    .lede {
+      font-size: 15px;
+      line-height: 1.75;
+      color: var(--text-muted);
+      max-width: 560px;
+    }
+    .lede strong { color: var(--cream); font-weight: 600; }
+
+    /* ── SECTION RULE ── */
+    .section-rule {
+      height: 1px;
+      background: var(--border);
+      margin: 0 32px;
+    }
+
+    /* ── SECTION LABEL ── */
+    .section-label {
+      padding: 32px 32px 0;
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 2px;
+    }
+
+    /* ── STORY CONTENT ── */
+    .content {
+      padding: 14px 32px 32px;
+    }
+    .content h2 {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: clamp(1.5rem, 3.5vw, 2rem);
+      color: var(--cream);
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      margin-bottom: 12px;
+    }
+    .content h3 {
+      font-family: 'Fraunces', serif;
+      font-weight: 600;
+      font-size: 1.25rem;
+      color: var(--cream);
+      letter-spacing: -0.01em;
+      line-height: 1.25;
+      margin-bottom: 10px;
+    }
+    .content .deck {
+      font-family: 'Fraunces', serif;
+      font-style: italic;
+      font-size: 1rem;
+      color: var(--text-muted);
+      margin-bottom: 18px;
+      line-height: 1.6;
+    }
+    .content p {
+      color: var(--text-body);
+      margin-bottom: 14px;
+      font-size: 15px;
+    }
+    .content p:last-child { margin-bottom: 0; }
+    .content ul {
+      padding-left: 20px;
+      margin-bottom: 14px;
+    }
+    .content ul li {
+      margin-bottom: 8px;
+      color: var(--text-body);
+    }
+    .content ul li strong { color: var(--cream); }
+    .content a { color: var(--orange-light); text-decoration: underline; text-underline-offset: 3px; }
+    .content pre {
+      background: #141210;
+      border: 1px solid rgba(255,255,255,0.06);
+      padding: 16px;
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      line-height: 1.7;
+      overflow-x: auto;
+      margin-bottom: 14px;
+      border-radius: 3px;
+      color: #C2BDB7;
+    }
+
+    /* ── BIZ CALLOUT ── */
+    .biz-callout {
+      margin: 0 32px 28px;
+      border-left: 3px solid var(--orange);
+      background: rgba(196,98,45,0.08);
+      padding: 16px 20px;
+      border-radius: 0 3px 3px 0;
+    }
+    .biz-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--orange);
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+    .biz-callout p {
+      font-size: 14px;
+      line-height: 1.7;
+      color: var(--text-body);
+    }
+
+    /* ── HOT TOPIC ── */
+    .hot-topic {
+      margin: 0 32px 32px;
+      background: var(--ink-card);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 24px;
+    }
+    .hot-topic-eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 10px;
+    }
+    .hot-topic h3 {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: 1.4rem;
+      color: var(--cream);
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      margin-bottom: 12px;
+    }
+    .hot-topic p {
+      font-size: 14px;
+      line-height: 1.75;
+      color: var(--text-body);
+      margin-bottom: 12px;
+    }
+    .voices {
+      margin-top: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .voice-item {
+      background: rgba(255,255,255,0.04);
+      border-left: 2px solid var(--orange);
+      padding: 10px 14px;
+      border-radius: 0 2px 2px 0;
+      font-size: 13.5px;
+      line-height: 1.6;
+      color: var(--text-body);
+      font-style: italic;
+    }
+    .voice-name {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 5px;
+      font-style: normal;
+    }
+    /* A member's name links to the exact message the quote came from. */
+    .voice-name a {
+      color: inherit;
+      text-decoration: none;
+      border-bottom: 1px dotted var(--orange);
+    }
+    .voice-name a:hover { border-bottom-style: solid; }
+    /* "Read the thread" backlink at the end of each story section. */
+    .thread-link {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-top: 18px;
+    }
+    .thread-link a {
+      color: var(--orange);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(255, 122, 0, 0.35);
+      padding-bottom: 2px;
+    }
+    .thread-link a:hover { border-bottom-color: var(--orange); }
+
+    /* ── QUICK HITS GRID ── */
+    .tips-grid {
+      padding: 14px 32px 32px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .tip-card {
+      background: var(--ink-card);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 18px;
+      transition: border-color 0.2s;
+    }
+    .tip-card:hover { border-color: var(--border-hover); }
+    .tip-number {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: 2.2rem;
+      color: rgba(255,255,255,0.07);
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    .tip-card strong {
+      display: block;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--cream);
+      margin-bottom: 6px;
+      line-height: 1.3;
+    }
+    .tip-card p {
+      font-size: 13px;
+      line-height: 1.65;
+      color: var(--text-muted);
+    }
+
+    /* ── MEMBER SPOTLIGHT ── */
+    .member-grid {
+      padding: 14px 32px 32px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    .member-card {
+      background: var(--ink-card);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+    .member-card:hover { border-color: var(--border-hover); }
+    .member-card-accent {
+      height: 3px;
+      background: var(--green);
+    }
+    .member-card-accent.orange { background: var(--orange); }
+    .member-card-body { padding: 14px; }
+    .member-name {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--cream);
+      margin-bottom: 2px;
+      line-height: 1.2;
+    }
+    .member-handle {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.08em;
+      color: var(--text-dim);
+      margin-bottom: 8px;
+    }
+    .member-card-body p {
+      font-size: 12.5px;
+      line-height: 1.6;
+      color: var(--text-muted);
+    }
+    .member-card-body em { color: var(--text-body); font-style: italic; }
+
+    /* ── WINS ── */
+    .wins-list {
+      padding: 14px 32px 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .win-item {
+      background: var(--ink-card);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 16px 18px;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 14px;
+      align-items: start;
+      transition: border-color 0.2s;
+    }
+    .win-item:hover { border-color: var(--border-hover); }
+    .win-emoji {
+      font-size: 18px;
+      line-height: 1;
+      margin-top: 2px;
+    }
+    .win-tag {
+      display: inline-block;
+      font-family: 'DM Mono', monospace;
+      font-size: 8.5px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 2px 7px;
+      border-radius: 2px;
+      margin-bottom: 5px;
+      border: 1px solid currentColor;
+    }
+    .win-tag.client   { color: var(--orange-light); }
+    .win-tag.build    { color: var(--green-light); }
+    .win-tag.speaking { color: #6BAE8C; }
+    .win-tag.other    { color: var(--text-dim); }
+    .win-title {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--cream);
+      margin-bottom: 3px;
+      display: block;
+    }
+    .win-item p {
+      font-size: 13px;
+      line-height: 1.65;
+      color: var(--text-muted);
+    }
+    .win-item a { color: var(--orange-light); text-decoration: underline; text-underline-offset: 2px; }
+
+    /* ── FOOTER ── */
+    .site-footer {
+      padding: 32px 32px 40px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .footer-brand {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--cream);
+      display: block;
+      margin-bottom: 4px;
+    }
+    .footer-sub {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      line-height: 1.8;
+    }
+    .footer-right {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      text-align: right;
+      line-height: 1.9;
+    }
+
+    @media (max-width: 520px) {
+      .tips-grid    { grid-template-columns: 1fr; }
+      .member-grid  { grid-template-columns: 1fr 1fr; }
+      .site-footer  { flex-direction: column; }
+      .footer-right { text-align: left; }
+      .hero, .content, .section-label, .biz-callout,
+      .hot-topic, .tips-grid, .member-grid, .wins-list,
+      .section-rule, .site-footer { padding-left: 20px; padding-right: 20px; }
+      .section-rule { margin: 0 20px; }
+      .hot-topic, .biz-callout { margin-left: 20px; margin-right: 20px; }
+      .site-header { padding: 16px 20px; }
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- HEADER -->
+  <header class="site-header">
+    <a href="/">
+      <span class="header-brand-name">From Impact to Income</span>
+      <span class="header-brand-sub">AI Junkies Inner Circle</span>
+    </a>
+    <div class="header-lock">
+      <div class="lock-dot"></div>
+      Members Only
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <span class="tag-pill">AI Junkies Newsletter</span>
+    <div class="hero-meta">
+      <div class="hero-issue-num">025</div>
+      <div class="hero-divider-v"></div>
+      <div>
+        <div class="hero-date">Sep 20–26, 2026</div>
+      </div>
+    </div>
+    <h1 class="hero-title">Junk <em>Mail</em></h1>
+    <p class="lede">
+      <strong>Hey Junkies 👋</strong> — Britt was up at 1 AM talking to Claude, Steele was patching CLI extensions to unlock Opus 5.5 in code, and Cheryl dropped a Google Data Center Fellowship pitch in the group chat — and that was just Tuesday.
+    </p>
+    <p class="lede" style="margin-top:12px;">Issue 025 is a big one. New models dropped, new apps launched, a vendor funding lane opened up that nobody was talking about, and the chat had one of its realest conversations about knowing your worth. If you missed the week, you missed a lot.</p>
+    <p class="lede" style="margin-top:12px;">No fluff. Just the real stuff. Let's get into it. 🔥</p>
+  </section>
+
+
+  <!-- ══════════════════════════════ -->
+  <!-- ① MAIN STORY                  -->
+  <!-- ══════════════════════════════ -->
+  <div class="section-rule"></div>
+  <div class="section-label">① Main Story</div>
+  <div class="content">
+    <h2>Cheryl Just Opened a Funding Lane Nobody Else Is Talking About</h2>
+    <p class="deck">A vendor-pairing model for AI builders without business tenure could be the most practical monetization move this group has seen all year.</p>
+    <p>When Cheryl Tibbs dropped a voice note about how to get paid as a software vendor and developer, it kicked off something bigger than a tip. The core idea: lenders and institutions often require a business to have years of operating history before they can be approved as a vendor or receive funding. Most new AI builders and vibe coders don&#x27;t have that yet — but some people in this group do.</p>
+    <p>Cheryl&#x27;s AI company is three years old. Towana&#x27;s has been established four years. Natasha&#x27;s has been registered with the state for five. That tenure matters to lenders. Cheryl floated the idea of building a partner directory — tenured businesses that newer builders can co-vendor under for a percentage, somewhere between 10 and 20 percent. Derrick co-signed it immediately: &#x27;This is dope. I was about to add the funding platform in here for this exact reason.&#x27; Cheryl responded: &#x27;Yes, I&#x27;m working on it to go out this week. We should collab.&#x27;</p>
+    <p>The mistake most new builders make is thinking they have to wait until they&#x27;re &#x27;established&#x27; to access real business funding. That&#x27;s backwards. The infrastructure might already exist inside this group. The gap isn&#x27;t skill — it&#x27;s tenure on paper. And if you can plug into someone who already has that, you skip years of waiting.</p>
+    <ul>
+      <li><strong>Tenure Is the Unlock:</strong> Lenders care how long your business has been open. Three to five years often qualifies you as a vendor or for equipment/software financing. If you don&#x27;t have it, partnering with someone who does is a real move.</li>
+      <li><strong>The Co-Vendor Model:</strong> Cheryl is building a directory of tenured businesses willing to co-sign newer developers as vendors for a percentage fee. This is not theoretical — she said it&#x27;s going out this week and Derrick is collaborating on it.</li>
+      <li><strong>Know Your Business Status:</strong> Dr. Regina confirmed she&#x27;s already set up properly to be funded. Do you know your own status? If your business has been registered for a few years, you may already be sitting on leverage you haven&#x27;t used.</li>
+    </ul>
+    <p class="thread-link"><a href="https://t.me/c/3120599051/21789" target="_blank" rel="noopener">Read the thread →</a></p>
+  </div>
+  <!-- BIZ CALLOUT — periodic, not every issue. Delete block to skip. -->
+  <div class="biz-callout">
+    <div class="biz-label">💼 How does this apply to your business?</div>
+    <p>Say you built a custom AI app for a trucking company but they want to finance it through a vendor program instead of paying out of pocket. If your business is 6 months old, you may not qualify as the vendor. But if you co-vendor under Cheryl&#x27;s tenured company, that deal can close. That&#x27;s real money that would have walked out the door.</p>
+  </div>
+
+
+  <!-- ══════════════════════════════ -->
+  <!-- ② SECOND STORY                -->
+  <!-- ══════════════════════════════ -->
+  <div class="section-rule"></div>
+  <div class="section-label">② Also This Week</div>
+  <div class="content">
+    <h3>Opus 5.5 Dropped Mid-Week and Steele Was Already in the Walls</h3>
+    <p>Cheryl floated the rumor on Tuesday afternoon — GPT-6 Sol and Opus 5.5 both expected to drop that day with credit resets. By evening, Steele confirmed: Opus 5.5 is live, reportedly 40 percent cheaper on token cost than Opus 5, and there was a free reset tied to a new ChatGPT button system. Lovable also updated to include GPT-6 Sol, Luna, Opus 5.5, and Jev in the same week.</p>
+    <p>Here&#x27;s where it got interesting. Opus 5.5 showed up in chat for most users but was grayed out in code mode. Steele didn&#x27;t wait for an official fix: &#x27;Ya I had to patch the CLI and extensions myself to override it. I have it in code now.&#x27; That&#x27;s the gap between people who observe releases and people who extract value from them immediately. The model is apparently being compared to &#x27;fable 5.1&#x27; as a benchmark, though Steele noted they&#x27;d have to wait and see what that actually means in practice.</p>
+    <p>Claude also had a brief outage mid-week that hit Natasha mid-script with a 500 internal server error. Steele&#x27;s read on it: &#x27;I think it&#x27;s telling me to go to bed.&#x27; Natasha switched to content work until it came back up. Claude was back within minutes.</p>
+    <p class="thread-link"><a href="https://t.me/c/3120599051/21845" target="_blank" rel="noopener">Read the thread →</a></p>
+  </div>
+
+
+  <!-- ══════════════════════════════ -->
+  <!-- ③ THIRD STORY                 -->
+  <!-- ══════════════════════════════ -->
+  <div class="section-rule"></div>
+  <div class="section-label">③ Worth Knowing</div>
+  <div class="content">
+    <h3>Steele Taught Claude to Animate — No API</h3>
+    <p>On Sunday evening Steele dropped a single line that got 17 reactions: &#x27;Taught claude how to animate. No api.&#x27; That&#x27;s it. No thread, no tutorial, just the drop. The implications though are worth sitting with — if you can get Claude to produce animation logic or output without wiring up a separate API, that removes a whole layer of complexity from creative and product builds. Britt&#x27;s response said it all: &#x27;how&#x27;s freaking cute.&#x27;</p>
+    <p>This fits into a bigger pattern Steele telegraphed later in the week: &#x27;Man do I have something coming for yall. I&#x27;ve been overhauling admin portals and AI infrastructure to state of the art MCPs. I have infrastructure built where the entire software is run with 1 employee with everything running on AI and agents.&#x27; He explicitly said he&#x27;s not telling anyone outside this group. If you&#x27;re in here, pay attention when Steele drops.</p>
+    <p class="thread-link"><a href="https://t.me/c/3120599051/21753" target="_blank" rel="noopener">Read the thread →</a></p>
+  </div>
+
+
+  <!-- ══════════════════════════════ -->
+  <!-- ④ HOT TOPIC                   -->
+  <!-- ══════════════════════════════ -->
+  <div class="section-rule"></div>
+  <div class="section-label">④ Hot Topic</div>
+  <div class="hot-topic">
+    <div class="hot-topic-eyebrow">🔥 From the Group Chat</div>
+    <h3>Britt&#x27;s Boss Asked Her to Build a Marketing GPT — The Group Said Charge for It</h3>
+    <p>Britt came to the chat Friday night with a real dilemma: her employer asked her to build a custom marketing GPT and migrate existing GPTs to plugins — work that is clearly outside her job description and hourly rate. She asked what everyone would do.</p>
+    <p>This conversation hit differently because it&#x27;s not just Britt&#x27;s situation. It&#x27;s every person in this group who is leveling up their skills while still working a day job. The moment your employer figures out you can do things they&#x27;d otherwise pay consultants tens of thousands of dollars for, scope creep starts. Knowing how to name it — Scope of Work, project rate, out of job description — is as important as knowing how to build it.</p>
+    <div class="voices">
+      <div class="voice-item">
+        <div class="voice-name"><a href="https://t.me/c/3120599051/21992" target="_blank" rel="noopener">LaSean Pickens</a></div>
+        "Baby we&#x27;re not doing anything for free. That&#x27;s out of your job scope. They would&#x27;ve gladly paid someone else top dollar for it so make sure you&#x27;re compensated as well. Don&#x27;t let your skills be used at someone else&#x27;s convenience. You put in the time, effort, and attention to master your craft. You&#x27;re a professional and this is your business, treat it as such. Your work isn&#x27;t a favor."
+      </div>
+      <div class="voice-item">
+        <div class="voice-name"><a href="https://t.me/c/3120599051/22016" target="_blank" rel="noopener">Big Steele</a></div>
+        "This is why SOW (Scope of work) agreements and job descriptions are so important. The conversation is hey I&#x27;d love to help accomplish this, but it&#x27;s out my job description and I need to be compensated for it."
+      </div>
+      <div class="voice-item">
+        <div class="voice-name"><a href="https://t.me/c/3120599051/22000" target="_blank" rel="noopener">Natasha Brown</a></div>
+        "Scratch my first comment...even I&#x27;m getting selfish to my 8-5p and thinking of AI Junkies launches and monetizing initiatives cause these brick and mortar jobs be trying to scope creep to get more bang for what they be paying us for — I&#x27;m sick of it. Our names carry weight and we bigger/greater than that, hands down."
+      </div>
+    </div>
+    <p class="thread-link"><a href="https://t.me/c/3120599051/21989" target="_blank" rel="noopener">Read the thread →</a></p>
+  </div>
+
+
+  <!-- ══════════════════════════════ -->
+  <!-- ⑤ QUICK HITS                  -->
+  <!-- ══════════════════════════════ -->
+  <div class="section-rule"></div>
+  <div class="section-label">⑤ Quick Hits</div>
+  <div class="tips-grid">
+    <div class="tip-card">
+      <div class="tip-number">01</div>
+      <strong>Optimize Your About Page for AI Search Right Now</strong>
+      <p>Britt shared a detailed framework for structuring your About page so AI models cite your brand accurately. The key move: add an HTML table or definition list with your key business facts — company name, founded date, founder, services, competitors, pricing — so it&#x27;s machine-crawlable. This strengthens your E-E-A-T score and teaches AI how to talk about you. Give the full prompt to Claude and have it rewrite your About page this week.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-number">02</div>
+      <strong>Rotate Your API Keys Every Month</strong>
+      <p>Big Steele reminded the group that rotating API keys monthly is standard hygiene, not optional. Juanita said she already set a calendar reminder. If your keys are static and sitting in a codebase for months, you&#x27;re exposed. Set the reminder now, before you forget again.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-number">03</div>
+      <strong>Higgsfield Genjutsu Can Put You Inside Any Video</strong>
+      <p>Kre dropped a full step-by-step workflow for using Higgsfield Genjutsu to replace characters in source videos with your own AI characters. You upload a trimmed clip under 30 seconds, two clean character reference sheets, and use either the simple or detailed replacement prompt. Mon Franks also shared a quick-start version. The real play Kre called out: don&#x27;t just recreate the trend, use it as a reference and build your own version of it.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-number">04</div>
+      <strong>ChatGPT Is Making a Play at Credit Karma</strong>
+      <p>ChatGPT launched a credit score feature mid-week with Capital One as the sponsor, pulling Experian data at 3 cents per API pull. Derrick&#x27;s read was sharp: &#x27;They&#x27;re making a play at Credit Karma.&#x27; Juanita added the real angle — all the credit monitoring data users hand over feeds dynamic pricing and ads. Know what the platform is gaining when you use a free feature.</p>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- ⑥ MEMBER SPOTLIGHT — delete cards you don't have content for. -->
+  <!-- Section auto-hides if all cards are removed.                  -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <div data-optional-section="members">
+  <div class="section-rule"></div>
+  <div class="section-label">⑥ Member Spotlight</div>
+  <!--
+    CARD GUIDE:
+    New member?         → orange accent bar
+    Building something? → Name the project. Keep it hype.
+    Not building yet?   → Encouraging note. Recognition, not pressure.
+    Mix freely. Delete any cards you don't have real content for.
+  -->
+  <div class="member-grid" data-content-container>
+    <div class="member-card" data-content-item>
+      <div class="member-card-accent "></div>
+      <div class="member-card-body">
+        <div class="member-name">Towana</div>
+        <div class="member-handle">Towana Garrett</div>
+        <p>Towana dropped the Phase I demo of her special education app this week at sagelearninghub.com/try-demo and asked the group to bug test it. Teachers can add student details and IEP goals, track their caseload, and stay organized — and bug reports were already coming in within hours. She&#x27;s building something real teachers actually need.</p>
+      </div>
+    </div>
+    <div class="member-card" data-content-item>
+      <div class="member-card-accent "></div>
+      <div class="member-card-body">
+        <div class="member-name">Althea</div>
+        <div class="member-handle">Althea Cooper</div>
+        <p>Althea opened pilot testing this week for the Legacy Storyteller Kit — a 35-minute guided Zoom session with her voice agent, using fictional demo material to help people capture family stories. She also dropped AI-generated videos for her Wisdom Talks channel and Path to Clarity brand. Her why hit the whole group hard: &#x27;Helping others use the software is my why.&#x27;</p>
+      </div>
+    </div>
+    <div class="member-card" data-content-item>
+      <div class="member-card-accent "></div>
+      <div class="member-card-body">
+        <div class="member-name">HotRod P</div>
+        <div class="member-handle">HotRod P</div>
+        <p>HotRod launched permitmile.com this week — a compliance tool for truckers that walks them through getting their operating authority step by step, connects to ELD systems to pull mileage for quarterly IFTA fuel tax reporting, and tracks FMCSA and CVSA blitz weeks. Cheryl immediately flagged it for her trucker financing clients. This is a niche product solving a real pain point.</p>
+      </div>
+    </div>
+  </div>
+  </div><!-- /section-members -->
+
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- ⑦ WINS THIS WEEK — delete wins you don't have content for. -->
+  <!-- Section auto-hides if all wins are removed.               -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <div data-optional-section="wins">
+  <div class="section-rule"></div>
+  <div class="section-label">⑦ Wins This Week</div>
+  <div class="wins-list" data-content-container>
+    <div class="win-item" data-content-item>
+      <div class="win-emoji">🚀</div>
+      <div>
+        <span class="win-tag launch">App Launch</span>
+        <span class="win-title">Towana Garrett — Sage Learning Hub Phase I</span>
+        <p>Towana dropped the live demo of her IEP caseload management app and had the group bug testing within hours. Bug reports came in, she received them, and the feedback loop is running. Phase I is in the world.</p>
+      </div>
+    </div>
+    <div class="win-item" data-content-item>
+      <div class="win-emoji">🔥</div>
+      <div>
+        <span class="win-tag launch">App Launch</span>
+        <span class="win-title">HotRod P — PermitMile</span>
+        <p>HotRod launched permitmile.com, a compliance and authority platform for truckers. It&#x27;s live, it&#x27;s working, and it already has a potential distribution partner in Cheryl who finances truckers and wants to add it to her follow-up emails.</p>
+      </div>
+    </div>
+    <div class="win-item" data-content-item>
+      <div class="win-emoji">🎙️</div>
+      <div>
+        <span class="win-tag milestone">Milestone</span>
+        <span class="win-title">Britt — Podcast Episode 1 Live</span>
+        <p>Britt pulled an all-nighter with Claude and Polsia, got a reset at the gym Friday, and by Sunday had Episode 1 of her podcast clipped and dropped on Facebook with three shorts in the pipeline. Episode 2 was already in production by Monday.</p>
+      </div>
+    </div>
+    <div class="win-item" data-content-item>
+      <div class="win-emoji">🏆</div>
+      <div>
+        <span class="win-tag milestone">Fellowship</span>
+        <span class="win-title">Cheryl Tibbs — Google Data Center Fellowship</span>
+        <p>Cheryl is pitching her nonprofit AI literacy firm — AI Alliance Access of Georgia — through the Google Data Center Fellowship. AAAG focuses on AI literacy for K-5 students and senior adults. She shared the pitch video with the group for feedback and it landed.</p>
+      </div>
+    </div>
+    <div class="win-item" data-content-item>
+      <div class="win-emoji">🤝</div>
+      <div>
+        <span class="win-tag client">Client Win</span>
+        <span class="win-title">Juanita — Fantasy Sports App Demo Live</span>
+        <p>Juanita dropped a preview video for her fantasy sports app and is already in talks with Cheryl, who runs fantasysniper.app, about comparing notes and collaborating. The graphics got immediate love from the group.</p>
+      </div>
+    </div>
+    <div class="win-item" data-content-item>
+      <div class="win-emoji">💼</div>
+      <div>
+        <span class="win-tag build">Build Win</span>
+        <span class="win-title">Malik Dade — 200+ Marketing Assets Generated via Leek</span>
+        <p>Malik has had Claude and ChatGPT working overtime building out full marketing for MPM Solutions through Coach Derrick&#x27;s creditsystem.io, using his AI twin Leek. Over 200 assets created and more generating.</p>
+      </div>
+    </div>
+  </div>
+  </div><!-- /section-wins -->
+
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div>
+      <span class="footer-brand">Junk Mail</span>
+      <div class="footer-sub">
+        AI Junkies Weekly · Inner Circle Edition<br/>
+        Curated by Derrick Harper
+      </div>
+    </div>
+    <div class="footer-right">
+      Issue #025 · Sep 20–26, 2026<br/>
+      For AI Junkies members only<br/>
+      Not for public distribution
+    </div>
+  </footer>
+
+</div>
+
+  <script>
+    // Auto-hide optional sections (Member Spotlight + Wins) if they have no content cards
+    document.querySelectorAll('[data-optional-section]').forEach(function(section) {
+      var container = section.querySelector('[data-content-container]');
+      if (!container) return;
+      var items = container.querySelectorAll('[data-content-item]');
+      if (items.length === 0) {
+        section.style.display = 'none';
+      }
+    });
+  </script>
+</body>
+</html>
