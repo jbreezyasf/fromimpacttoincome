@@ -18,11 +18,6 @@ export default function Podcast() {
           <span className="font-mono-label" style={{ color: '#f8cf56' }}>THE PODCAST WITH JUANITA BRAZZIEL</span>
           <h1 className="font-display text-4xl md:text-6xl font-semibold mt-5 max-w-xl">The story behind what you built.</h1>
           <p className="text-lg max-w-xl mt-6 leading-relaxed" style={{ color: '#f4eee3' }}>Honest conversations with creators about the apps, products, and services changing communities—and the real ways they make that work sustainable.</p>
-          <div className="mt-10 max-w-md">
-            <label className="block text-sm font-semibold mb-3" htmlFor="podcast-intro">Listen to the show intro · 18 seconds</label>
-            <audio id="podcast-intro" controls preload="none" className="w-full" src="/from-impact-to-income-intro.mp3">Your browser does not support audio playback. <a href="/from-impact-to-income-intro.mp3">Download the intro</a>.</audio>
-            <details className="text-sm mt-3" style={{ color: '#e9e1d5' }}><summary className="cursor-pointer">Read intro lyrics</summary><p className="mt-2">From impact to income. Turn what you know into what you own. Build it. Brand it. Make it grow. Your story has value, now let it show. FromImpactToIncome.com. Turn your impact into income.</p></details>
-          </div>
         </div>
         <img src="/from-impact-to-income-logo.png" alt="From Impact to Income Podcast" width="1254" height="1254" className="w-full max-w-[480px] mx-auto" />
       </div>
