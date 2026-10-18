@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Junk Mail — Issue #028 — Oct 11–17, 2026 | AI Junkies Inner Circle</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,600&family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ── SIGNAL & NOISE TOKENS ── */
+    :root {
+      --cream:        #FAF7F2;
+      --ink:          #1E1B18;
+      --ink-card:     #26231F;
+      --ink-card-2:   #2E2B26;
+      --orange:       #C4622D;
+      --orange-light: #D4824D;
+      --green:        #1C3A2E;
+      --green-light:  #2A5240;
+      --text-body:    #C2BDB7;
+      --text-muted:   #8A857E;
+      --text-dim:     #5E5A54;
+      --border:       rgba(255,255,255,0.08);
+      --border-hover: rgba(196,98,45,0.4);
+    }
+
+    body {
+      background: var(--ink);
+      font-family: 'DM Sans', sans-serif;
+      color: var(--text-body);
+      font-size: 15px;
+      line-height: 1.75;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .wrap {
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    /* ── HEADER ── */
+    .site-header {
+      padding: 20px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(30,27,24,0.95);
+      backdrop-filter: blur(12px);
+    }
+    .site-header a { text-decoration: none; }
+    .header-brand-name {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--cream);
+      display: block;
+      line-height: 1.2;
+    }
+    .header-brand-sub {
+      font-family: 'Fraunces', serif;
+      font-style: italic;
+      font-size: 11px;
+      color: var(--orange);
+      display: block;
+      line-height: 1.2;
+    }
+    .header-lock {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+    .lock-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--text-dim);
+      flex-shrink: 0;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      padding: 64px 32px 48px;
+    }
+    .tag-pill {
+      display: inline-block;
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      background: var(--orange);
+      color: var(--cream);
+      padding: 4px 10px;
+      border-radius: 2px;
+      margin-bottom: 20px;
+    }
+    .issue-eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 6px;
+    }
+    .hero-title {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: clamp(2.2rem, 6vw, 3.4rem);
+      color: var(--cream);
+      letter-spacing: -0.02em;
+      line-height: 1.0;
+      margin-bottom: 16px;
+    }
+    .hero-title em {
+      font-style: italic;
+      color: var(--orange);
+    }
+    .hero-meta {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .hero-issue-num {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: 3.5rem;
+      color: rgba(255,255,255,0.08);
+      line-height: 1;
+    }
+    .hero-divider-v {
+      width: 1px;
+      height: 48px;
+      background: var(--border);
+    }
+    .hero-date {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+    .lede {
+      font-size: 15px;
+      line-height: 1.75;
+      color: var(--text-muted);
+      max-width: 560px;
+    }
+    .lede strong { color: var(--cream); font-weight: 600; }
+
+    /* ── SECTION RULE ── */
+    .section-rule {
+      height: 1px;
+      background: var(--border);
+      margin: 0 32px;
+    }
+
+    /* ── SECTION LABEL ── */
+    .section-label {
+      padding: 32px 32px 0;
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 2px;
+    }
+
+    /* ── STORY CONTENT ── */
+    .content {
+      padding: 14px 32px 32px;
+    }
+    .content h2 {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: clamp(1.5rem, 3.5vw, 2rem);
+      color: var(--cream);
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      margin-bottom: 12px;
+    }
+    .content h3 {
+      font-family: 'Fraunces', serif;
+      font-weight: 600;
+      font-size: 1.25rem;
+      color: var(--cream);
+      letter-spacing: -0.01em;
+      line-height: 1.25;
+      margin-bottom: 10px;
+    }
+    .content .deck {
+      font-family: 'Fraunces', serif;
+      font-style: italic;
+      font-size: 1rem;
+      color: var(--text-muted);
+      margin-bottom: 18px;
+      line-height: 1.6;
+    }
+    .content p {
+      color: var(--text-body);
+      margin-bottom: 14px;
+      font-size: 15px;
+    }
+    .content p:last-child { margin-bottom: 0; }
+    .content ul {
+      padding-left: 20px;
+      margin-bottom: 14px;
+    }
+    .content ul li {
+      margin-bottom: 8px;
+      color: var(--text-body);
+    }
+    .content ul li strong { color: var(--cream); }
+    .content a { color: var(--orange-light); text-decoration: underline; text-underline-offset: 3px; }
+    .content pre {
+      background: #141210;
+      border: 1px solid rgba(255,255,255,0.06);
+      padding: 16px;
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      line-height: 1.7;
+      overflow-x: auto;
+      margin-bottom: 14px;
+      border-radius: 3px;
+      color: #C2BDB7;
+    }
+
+    /* ── BIZ CALLOUT ── */
+    .biz-callout {
+      margin: 0 32px 28px;
+      border-left: 3px solid var(--orange);
+      background: rgba(196,98,45,0.08);
+      padding: 16px 20px;
+      border-radius: 0 3px 3px 0;
+    }
+    .biz-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--orange);
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+    .biz-callout p {
+      font-size: 14px;
+      line-height: 1.7;
+      color: var(--text-body);
+    }
+
+    /* ── HOT TOPIC ── */
+    .hot-topic {
+      margin: 0 32px 32px;
+      background: var(--ink-card);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 24px;
+    }
+    .hot-topic-eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 10px;
+    }
+    .hot-topic h3 {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: 1.4rem;
+      color: var(--cream);
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      margin-bottom: 12px;
+    }
+    .hot-topic p {
+      font-size: 14px;
+      line-height: 1.75;
+      color: var(--text-body);
+      margin-bottom: 12px;
+    }
+    .voices {
+      margin-top: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .voice-item {
+      background: rgba(255,255,255,0.04);
+      border-left: 2px solid var(--orange);
+      padding: 10px 14px;
+      border-radius: 0 2px 2px 0;
+      font-size: 13.5px;
+      line-height: 1.6;
+      color: var(--text-body);
+      font-style: italic;
+    }
+    .voice-name {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 5px;
+      font-style: normal;
+    }
+    /* A member's name links to the exact message the quote came from. */
+    .voice-name a {
+      color: inherit;
+      text-decoration: none;
+      border-bottom: 1px dotted var(--orange);
+    }
+    .voice-name a:hover { border-bottom-style: solid; }
+    /* "Read the thread" backlink at the end of each story section. */
+    .thread-link {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-top: 18px;
+    }
+    .thread-link a {
+      color: var(--orange);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(255, 122, 0, 0.35);
+      padding-bottom: 2px;
+    }
+    .thread-link a:hover { border-bottom-color: var(--orange); }
+
+    /* ── QUICK HITS GRID ── */
+    .tips-grid {
+      padding: 14px 32px 32px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .tip-card {
+      background: var(--ink-card);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 18px;
+      transition: border-color 0.2s;
+    }
+    .tip-card:hover { border-color: var(--border-hover); }
+    .tip-number {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: 2.2rem;
+      color: rgba(255,255,255,0.07);
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    .tip-card strong {
+      display: block;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--cream);
+      margin-bottom: 6px;
+      line-height: 1.3;
+    }
+    .tip-card p {
+      font-size: 13px;
+      line-height: 1.65;
+      color: var(--text-muted);
+    }
+
+    /* ── MEMBER SPOTLIGHT ── */
+    .member-grid {
+      padding: 14px 32px 32px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    .member-card {
+      background: var(--ink-card);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+    .member-card:hover { border-color: var(--border-hover); }
+    .member-card-accent {
+      height: 3px;
+      background: var(--green);
+    }
+    .member-card-accent.orange { background: var(--orange); }
+    .member-card-body { padding: 14px; }
+    .member-name {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--cream);
+      margin-bottom: 2px;
+      line-height: 1.2;
+    }
+    .member-handle {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.08em;
+      color: var(--text-dim);
+      margin-bottom: 8px;
+    }
+    .member-card-body p {
+      font-size: 12.5px;
+      line-height: 1.6;
+      color: var(--text-muted);
+    }
+    .member-card-body em { color: var(--text-body); font-style: italic; }
+
+    /* ── WINS ── */
+    .wins-list {
+      padding: 14px 32px 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .win-item {
+      background: var(--ink-card);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 16px 18px;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 14px;
+      align-items: start;
+      transition: border-color 0.2s;
+    }
+    .win-item:hover { border-color: var(--border-hover); }
+    .win-emoji {
+      font-size: 18px;
+      line-height: 1;
+      margin-top: 2px;
+    }
+    .win-tag {
+      display: inline-block;
+      font-family: 'DM Mono', monospace;
+      font-size: 8.5px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 2px 7px;
+      border-radius: 2px;
+      margin-bottom: 5px;
+      border: 1px solid currentColor;
+    }
+    .win-tag.client   { color: var(--orange-light); }
+    .win-tag.build    { color: var(--green-light); }
+    .win-tag.speaking { color: #6BAE8C; }
+    .win-tag.other    { color: var(--text-dim); }
+    .win-title {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--cream);
+      margin-bottom: 3px;
+      display: block;
+    }
+    .win-item p {
+      font-size: 13px;
+      line-height: 1.65;
+      color: var(--text-muted);
+    }
+    .win-item a { color: var(--orange-light); text-decoration: underline; text-underline-offset: 2px; }
+
+    /* ── FOOTER ── */
+    .site-footer {
+      padding: 32px 32px 40px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .footer-brand {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--cream);
+      display: block;
+      margin-bottom: 4px;
+    }
+    .footer-sub {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      line-height: 1.8;
+    }
+    .footer-right {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      text-align: right;
+      line-height: 1.9;
+    }
+
+    @media (max-width: 520px) {
+      .tips-grid    { grid-template-columns: 1fr; }
+      .member-grid  { grid-template-columns: 1fr 1fr; }
+      .site-footer  { flex-direction: column; }
+      .footer-right { text-align: left; }
+      .hero, .content, .section-label, .biz-callout,
+      .hot-topic, .tips-grid, .member-grid, .wins-list,
+      .section-rule, .site-footer { padding-left: 20px; padding-right: 20px; }
+      .section-rule { margin: 0 20px; }
+      .hot-topic, .biz-callout { margin-left: 20px; margin-right: 20px; }
+      .site-header { padding: 16px 20px; }
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- HEADER -->
+  <header class="site-header">
+    <a href="/">
+      <span class="header-brand-name">From Impact to Income</span>
+      <span class="header-brand-sub">AI Junkies Inner Circle</span>
+    </a>
+    <div class="header-lock">
+      <div class="lock-dot"></div>
+      Members Only
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <span class="tag-pill">AI Junkies Newsletter</span>
+    <div class="hero-meta">
+      <div class="hero-issue-num">028</div>
+      <div class="hero-divider-v"></div>
+      <div>
+        <div class="hero-date">Oct 11–17, 2026</div>
+      </div>
+    </div>
+    <h1 class="hero-title">Junk <em>Mail</em></h1>
+    <p class="lede">
+      <strong>Hey Junkies 👋</strong> — Tearra dropped &#x27;Today is the day!!!! Beta Launch is now live!!!!!!&#x27; and the chat went absolutely nuclear.
+    </p>
+    <p class="lede" style="margin-top:12px;">This week had everything — a launch that hit differently, an AI vertical drama empire quietly being built, and Malik pulling back the curtain on a full self-running business engine. Oh, and Big Steele maxed two Claude accounts with three days left in the billing cycle. That&#x27;s not a flex, that&#x27;s a war report.</p>
+    <p class="lede" style="margin-top:12px;">No fluff. Just the real stuff. Let's get into it. 🔥</p>
+  </section>
+
+
+  <!-- ══════════════════════════════ -->
+  <!-- ① MAIN STORY                  -->
+  <!-- ══════════════════════════════ -->
+  <div class="section-rule"></div>
+  <div class="section-label">① Main Story</div>
+  <div class="content">
+    <h2>Malik Built an Engine, Not an App — And It&#x27;s Already Running Without Him</h2>
+    <p class="deck">Buffed.studio is live, and the way Malik architected the back end is a masterclass in building for scale from day one.</p>
+    <p>Malik Dade dropped Buffed.studio on Monday and did something most builders forget to do — he explained not just what it does, but how it runs itself. Buffed is a booking and business platform built specifically for nail techs. The problem it solves is real: nail techs miss calls, lose money to no-shows, book by DM, and their income stops the second they leave the chair. Buffed fixes all of it — deposits, reminders, a client app, a loyalty system, and a shop built into every studio profile.</p>
+    <p>But the part that made the group stop scrolling was the HQ breakdown. Behind every Buffed studio is a founder-only control room with 24 scheduled automation jobs handling reminders, emails, backups, and billing. Every booking page gets tested every 15 minutes. Payments are matched daily. An AI crew — Symone, Simon, and Alan — inspects, fixes, and reports. Customer support runs 24/7 through Alicia on chat and Joshua on the phone. Nightly, AI writes social posts, Malik approves, they publish. He said it plainly: &#x27;The machine runs. I make the calls.&#x27;</p>
+    <p>Here&#x27;s where most builders get this wrong: they build features, not systems. They think about what the product does for the customer. Malik thought about what the business does while he sleeps. The founding member price is $10 a month — intentionally low to get early adopters in — but the real play he named is the engine underneath. Swap the services, the brand, and the AI&#x27;s knowledge base, and you can launch into barbers, lash studios, tattoo shops, or music studios. Same build, new market, fast. That is leverage.</p>
+    <ul>
+      <li><strong>24 Scheduled Jobs = No Manual Ops:</strong> Reminders, emails, backups, billing — all automated. Malik is not waking up to handle any of this. That is what a real back end looks like.</li>
+      <li><strong>The AI Crew Does the Daily Work:</strong> Symone, Simon, and Alan inspect and report. Alicia and Joshua handle support. These are not chatbots stapled on top — they are roles built into the architecture.</li>
+      <li><strong>The Engine Is the Product:</strong> Buffed is not a nail salon app. It is a vertical SaaS engine that can be relaunched in any service industry by swapping the brand layer. That is how you scale without rebuilding from zero.</li>
+    </ul>
+    <p class="thread-link"><a href="https://t.me/c/3120599051/22859" target="_blank" rel="noopener">Read the thread →</a></p>
+  </div>
+  <!-- BIZ CALLOUT — periodic, not every issue. Delete block to skip. -->
+  <div class="biz-callout">
+    <div class="biz-label">💼 How does this apply to your business?</div>
+    <p>If you are building for any service-based small business — barbers, lash techs, trainers, cleaners — this is your template. The booking problem, the no-show problem, the &#x27;my income stops when I stop&#x27; problem: these exist in every trade. Malik proved you can solve all of it with one well-architected build, then duplicate it across industries. Stop building features. Start building engines.</p>
+  </div>
+
+
+  <!-- ══════════════════════════════ -->
+  <!-- ② SECOND STORY                -->
+  <!-- ══════════════════════════════ -->
+  <div class="section-rule"></div>
+  <div class="section-label">② Also This Week</div>
+  <div class="content">
+    <h3>Vertical AI Drama Is a $7.8 Billion Industry — and Kre Is Already In It</h3>
+    <p>Kre dropped a clip of her AI-generated vertical drama series and the reaction was unanimous fire emojis. Then she hit the group with the number that changed the conversation: vertical dramas are a $7.8 billion industry. Not someday. Now. Kre has been mastering live Q&amp;A inside her AI characters, building a SceneFix workflow for when the generators trip, and quietly stacking unreleased episodes. Jay also launched Booked Solid — a fictional animated series set in a North Alabama town where the local HVAC guy, landscaper, locksmith, and pest tech use an AI receptionist named Sable to compete against a big franchise that just rolled in. Episodes dropping Monday, Wednesday, and Friday at 7 PM.</p>
+    <p>Cheryl Tibbs added the business frame that matters: she spends $40 a week on microdramas herself, has already started building her own series in an untapped niche, and told Kre directly — you are giving away a guide for free that other people are charging $277 to $297 for. The lead magnet is smart, but you need a paid offer waiting on the other side when people finish it. That is the move. Kre has the content, the workflow, and an audience that is already hooked. The monetization layer is next.</p>
+    <p>Kre put it perfectly: &#x27;No one cares about the mess ups but you. People are interested in what happens next. They&#x27;re just nosy.&#x27; Tearra cosigned hard — &#x27;Most folks don&#x27;t care about the glitches, they just there for the drama.&#x27; The perfectionism is the only thing standing between your unreleased episodes and your bag.</p>
+    <p class="thread-link"><a href="https://t.me/c/3120599051/22843" target="_blank" rel="noopener">Read the thread →</a></p>
+  </div>
+
+
+  <!-- ══════════════════════════════ -->
+  <!-- ③ THIRD STORY                 -->
+  <!-- ══════════════════════════════ -->
+  <div class="section-rule"></div>
+  <div class="section-label">③ Worth Knowing</div>
+  <div class="content">
+    <h3>Big Steele&#x27;s Playbook 2.0 Just Dropped — 922 Pages, 348 Prompts, 169 Templates</h3>
+    <p>Big Steele quietly dropped something massive at the end of the week: Playbook version 2.0, now live on main. Six repo reports folded in. 122 steps broken down into 53 Beginner, 33 Builder, and 36 Expert. 348 prompts. 169 templates. The full PDF comes in at 922 pages. Earlier in the week he mentioned he had maxed two Claude accounts with three days left before reset — that is the level of output this came from. This is not a rough draft. This is a field manual.</p>
+    <p>If you have been waiting for a structured path through the build process — something that meets you where you are and walks you up — this is it. Beginner, Builder, Expert: you know exactly where to start and where you are going. Go find it in the portal and get into it.</p>
+    <p class="thread-link"><a href="https://t.me/c/3120599051/23005" target="_blank" rel="noopener">Read the thread →</a></p>
+  </div>
+
+
+  <!-- ══════════════════════════════ -->
+  <!-- ④ HOT TOPIC                   -->
+  <!-- ══════════════════════════════ -->
+  <div class="section-rule"></div>
+  <div class="section-label">④ Hot Topic</div>
+  <div class="hot-topic">
+    <div class="hot-topic-eyebrow">🔥 From the Group Chat</div>
+    <h3>You Are Not Behind — Stop Letting the Noise Make You Think You Are</h3>
+    <p>Juanita dropped a late-night message that was not a tip or a tool rec. It was a reality check aimed directly at anyone in this group who has been watching AI content online and feeling like they missed the wave.</p>
+    <p>The anxiety is real. Every week there is a new creator yapping about AI like they invented it, and people who have been building for six months in this group start to wonder if they are still on time. The answer is yes — and the group said so out loud this week. You have proximity to people shipping real products. Use it.</p>
+    <div class="voices">
+      <div class="voice-item">
+        <div class="voice-name"><a href="https://t.me/c/3120599051/23123" target="_blank" rel="noopener">Juanita</a></div>
+        "Watch this video not to learn anything new but to understand that the stuff he&#x27;s talking about are things you&#x27;ve been doing for 6 months or more. Please understand that you&#x27;re not behind. Don&#x27;t let these mofos out here yapping give you anxiety or cause you to give up. You&#x27;re in the right spot, at the right time. Just build."
+      </div>
+      <div class="voice-item">
+        <div class="voice-name"><a href="https://t.me/c/3120599051/23124" target="_blank" rel="noopener">Juanita</a></div>
+        "If you have issues figuring out what to build, record yourself just talking about your life, the things you&#x27;ve done, who you&#x27;d like to help. Hand that over to Claude or ChatGPT and ask it to do deep analysis on you. Tell it your tech level, your goal, your budget. If it&#x27;s zero, boom, welcome to the club. Don&#x27;t let your fears prevent you from doing what God called you to do."
+      </div>
+      <div class="voice-item">
+        <div class="voice-name"><a href="https://t.me/c/3120599051/22899" target="_blank" rel="noopener">Derrick Harper Sr</a></div>
+        "My community is yall community."
+      </div>
+    </div>
+    <p class="thread-link"><a href="https://t.me/c/3120599051/22899" target="_blank" rel="noopener">Read the thread →</a></p>
+  </div>
+
+
+  <!-- ══════════════════════════════ -->
+  <!-- ⑤ QUICK HITS                  -->
+  <!-- ══════════════════════════════ -->
+  <div class="section-rule"></div>
+  <div class="section-label">⑤ Quick Hits</div>
+  <div class="tips-grid">
+    <div class="tip-card">
+      <div class="tip-number">01</div>
+      <strong>Use Mobbin to Steal Like an Artist (Legally)</strong>
+      <p>Britt dropped Mobbin — mobbin.com — as a UI research tool. Find a dashboard or screen flow that is performing well, screenshot it, hand it to Claude or ChatGPT, and ask it to write a prompt based on what it sees. You are not copying. You are learning from what is already working and adding your own spin. That is design thinking, not cheating.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-number">02</div>
+      <strong>Claude Now Gives Monthly API Credits — Track Your Usage</strong>
+      <p>HotRod flagged it mid-week: Claude is now issuing monthly API credits, and you can make API calls from scheduled work inside your projects. HotRod was making calls from inside his CRM to render social media carousels and thought it was free — the cap showed up. Still not bad, but know your limits. Big Steele maxed two accounts in one week. Build accordingly.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-number">03</div>
+      <strong>Motion Design System Unlock: Let Claude Code Find the Repo</strong>
+      <p>Britt shared a workflow worth saving: screenshot your hero section, share it with Claude Code, and prompt it to search GitHub for motion skills repos and give you 10 hero motion options with prompts. Pair it with the awesome-ai-motion repo at github.com/gongnyang/awesome-ai-motion and you have a full motion system without starting from scratch. Juanita also added Awwwards for design inspo to train your AI on what beautiful actually looks like.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-number">04</div>
+      <strong>Free Directory Listing for Finance Apps</strong>
+      <p>Britt dropped personalfinanceapps.guide — a free directory listing for finance-related apps. If you built anything in that space, go get listed. Free visibility is free visibility. Also worth bookmarking: charliehills.ai/profile-builder for your AI profile setup.</p>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- ⑥ MEMBER SPOTLIGHT — delete cards you don't have content for. -->
+  <!-- Section auto-hides if all cards are removed.                  -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <div data-optional-section="members">
+  <div class="section-rule"></div>
+  <div class="section-label">⑥ Member Spotlight</div>
+  <!--
+    CARD GUIDE:
+    New member?         → orange accent bar
+    Building something? → Name the project. Keep it hype.
+    Not building yet?   → Encouraging note. Recognition, not pressure.
+    Mix freely. Delete any cards you don't have real content for.
+  -->
+  <div class="member-grid" data-content-container>
+    <div class="member-card" data-content-item>
+      <div class="member-card-accent "></div>
+      <div class="member-card-body">
+        <div class="member-name">Althea</div>
+        <div class="member-handle">mindovamillonairemom</div>
+        <p>Althea launched Legacy Storyteller Kit this week and shared the most human reason why the date mattered — she chose it to honor both parents she lost, turning grief into a launch day. She did not just ship a product. She made it mean something. That is the kind of founder energy this group is built around.</p>
+      </div>
+    </div>
+    <div class="member-card" data-content-item>
+      <div class="member-card-accent "></div>
+      <div class="member-card-body">
+        <div class="member-name">Tearra</div>
+        <div class="member-handle">Tearra Spencer</div>
+        <p>Tearra hit the group Thursday with &#x27;Today is the day!!!! Beta Launch is now live!!!!!!&#x27; — 21 reactions, the whole room showing up. She has been co-building live with this group for weeks and she took it across the finish line. Enough is enough, she said. She meant it.</p>
+      </div>
+    </div>
+    <div class="member-card" data-content-item>
+      <div class="member-card-accent "></div>
+      <div class="member-card-body">
+        <div class="member-name">Kre</div>
+        <div class="member-handle">I&#x27;mwhoIsayIam</div>
+        <p>Kre has been mastering live Q&amp;A inside AI characters, building a SceneFix prompt workflow, and quietly stacking a vertical drama series that has the whole group hooked on Episode 3 before it drops. She also built a Universal Cinematic Color Grading Contact Sheet prompt that had people flooding her DMs all week. She is in the lab and it shows.</p>
+      </div>
+    </div>
+  </div>
+  </div><!-- /section-members -->
+
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- ⑦ WINS THIS WEEK — delete wins you don't have content for. -->
+  <!-- Section auto-hides if all wins are removed.               -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <div data-optional-section="wins">
+  <div class="section-rule"></div>
+  <div class="section-label">⑦ Wins This Week</div>
+  <div class="wins-list" data-content-container>
+    <div class="win-item" data-content-item>
+      <div class="win-emoji">🚀</div>
+      <div>
+        <span class="win-tag launch">Product Launch</span>
+        <span class="win-title">Tearra Spencer — Beta Launch Live</span>
+        <p>Tearra&#x27;s beta launched Thursday and the group showed up in force with 21 reactions on the announcement alone. She has been building in public with this cohort the whole time. This is what that looks like when it lands.</p>
+      </div>
+    </div>
+    <div class="win-item" data-content-item>
+      <div class="win-emoji">💼</div>
+      <div>
+        <span class="win-tag launch">Product Launch</span>
+        <span class="win-title">Malik Dade — Buffed.studio</span>
+        <p>Malik launched Buffed.studio with founding member pricing at $10/month and a fully automated HQ running 24 scheduled jobs behind every studio. The machine is live and it is running without him. That is the goal.</p>
+      </div>
+    </div>
+    <div class="win-item" data-content-item>
+      <div class="win-emoji">🎬</div>
+      <div>
+        <span class="win-tag content">Series Launch</span>
+        <span class="win-title">Jay — Booked Solid Episode 1 and 2</span>
+        <p>Jay launched Booked Solid, an AI-generated animated series built around small-town service businesses using AI to compete with franchises. Episodes 1 and 2 are live on TikTok. New episodes drop Monday, Wednesday, and Friday at 7 PM.</p>
+      </div>
+    </div>
+    <div class="win-item" data-content-item>
+      <div class="win-emoji">📖</div>
+      <div>
+        <span class="win-tag build">Major Release</span>
+        <span class="win-title">Big Steele — Playbook 2.0</span>
+        <p>922 pages. 348 prompts. 169 templates. 122 steps across Beginner, Builder, and Expert tracks. Big Steele dropped Playbook 2.0 on main after maxing two Claude accounts in a single week. This is the field manual the group has been building toward.</p>
+      </div>
+    </div>
+    <div class="win-item" data-content-item>
+      <div class="win-emoji">❤️</div>
+      <div>
+        <span class="win-tag launch">Product Launch</span>
+        <span class="win-title">Althea Cooper — Legacy Storyteller Kit</span>
+        <p>Althea launched Legacy Storyteller Kit on a date chosen intentionally to honor both parents she has lost. The product is live and she said it herself: this is the last weekend she is not operating at 100 percent of what God called her to do.</p>
+      </div>
+    </div>
+  </div>
+  </div><!-- /section-wins -->
+
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div>
+      <span class="footer-brand">Junk Mail</span>
+      <div class="footer-sub">
+        AI Junkies Weekly · Inner Circle Edition<br/>
+        Curated by Derrick Harper
+      </div>
+    </div>
+    <div class="footer-right">
+      Issue #028 · Oct 11–17, 2026<br/>
+      For AI Junkies members only<br/>
+      Not for public distribution
+    </div>
+  </footer>
+
+</div>
+
+  <script>
+    // Auto-hide optional sections (Member Spotlight + Wins) if they have no content cards
+    document.querySelectorAll('[data-optional-section]').forEach(function(section) {
+      var container = section.querySelector('[data-content-container]');
+      if (!container) return;
+      var items = container.querySelectorAll('[data-content-item]');
+      if (items.length === 0) {
+        section.style.display = 'none';
+      }
+    });
+  </script>
+</body>
+</html>
