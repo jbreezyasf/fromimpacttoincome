@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Junk Mail — Issue #029 — Oct 18–24, 2026 | AI Junkies Inner Circle</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,600&family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ── SIGNAL & NOISE TOKENS ── */
+    :root {
+      --cream:        #FAF7F2;
+      --ink:          #1E1B18;
+      --ink-card:     #26231F;
+      --ink-card-2:   #2E2B26;
+      --orange:       #C4622D;
+      --orange-light: #D4824D;
+      --green:        #1C3A2E;
+      --green-light:  #2A5240;
+      --text-body:    #C2BDB7;
+      --text-muted:   #8A857E;
+      --text-dim:     #5E5A54;
+      --border:       rgba(255,255,255,0.08);
+      --border-hover: rgba(196,98,45,0.4);
+    }
+
+    body {
+      background: var(--ink);
+      font-family: 'DM Sans', sans-serif;
+      color: var(--text-body);
+      font-size: 15px;
+      line-height: 1.75;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .wrap {
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    /* ── HEADER ── */
+    .site-header {
+      padding: 20px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(30,27,24,0.95);
+      backdrop-filter: blur(12px);
+    }
+    .site-header a { text-decoration: none; }
+    .header-brand-name {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--cream);
+      display: block;
+      line-height: 1.2;
+    }
+    .header-brand-sub {
+      font-family: 'Fraunces', serif;
+      font-style: italic;
+      font-size: 11px;
+      color: var(--orange);
+      display: block;
+      line-height: 1.2;
+    }
+    .header-lock {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+    .lock-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--text-dim);
+      flex-shrink: 0;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      padding: 64px 32px 48px;
+    }
+    .tag-pill {
+      display: inline-block;
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      background: var(--orange);
+      color: var(--cream);
+      padding: 4px 10px;
+      border-radius: 2px;
+      margin-bottom: 20px;
+    }
+    .issue-eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 6px;
+    }
+    .hero-title {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: clamp(2.2rem, 6vw, 3.4rem);
+      color: var(--cream);
+      letter-spacing: -0.02em;
+      line-height: 1.0;
+      margin-bottom: 16px;
+    }
+    .hero-title em {
+      font-style: italic;
+      color: var(--orange);
+    }
+    .hero-meta {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .hero-issue-num {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: 3.5rem;
+      color: rgba(255,255,255,0.08);
+      line-height: 1;
+    }
+    .hero-divider-v {
+      width: 1px;
+      height: 48px;
+      background: var(--border);
+    }
+    .hero-date {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+    .lede {
+      font-size: 15px;
+      line-height: 1.75;
+      color: var(--text-muted);
+      max-width: 560px;
+    }
+    .lede strong { color: var(--cream); font-weight: 600; }
+
+    /* ── SECTION RULE ── */
+    .section-rule {
+      height: 1px;
+      background: var(--border);
+      margin: 0 32px;
+    }
+
+    /* ── SECTION LABEL ── */
+    .section-label {
+      padding: 32px 32px 0;
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 2px;
+    }
+
+    /* ── STORY CONTENT ── */
+    .content {
+      padding: 14px 32px 32px;
+    }
+    .content h2 {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: clamp(1.5rem, 3.5vw, 2rem);
+      color: var(--cream);
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      margin-bottom: 12px;
+    }
+    .content h3 {
+      font-family: 'Fraunces', serif;
+      font-weight: 600;
+      font-size: 1.25rem;
+      color: var(--cream);
+      letter-spacing: -0.01em;
+      line-height: 1.25;
+      margin-bottom: 10px;
+    }
+    .content .deck {
+      font-family: 'Fraunces', serif;
+      font-style: italic;
+      font-size: 1rem;
+      color: var(--text-muted);
+      margin-bottom: 18px;
+      line-height: 1.6;
+    }
+    .content p {
+      color: var(--text-body);
+      margin-bottom: 14px;
+      font-size: 15px;
+    }
+    .content p:last-child { margin-bottom: 0; }
+    .content ul {
+      padding-left: 20px;
+      margin-bottom: 14px;
+    }
+    .content ul li {
+      margin-bottom: 8px;
+      color: var(--text-body);
+    }
+    .content ul li strong { color: var(--cream); }
+    .content a { color: var(--orange-light); text-decoration: underline; text-underline-offset: 3px; }
+    .content pre {
+      background: #141210;
+      border: 1px solid rgba(255,255,255,0.06);
+      padding: 16px;
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      line-height: 1.7;
+      overflow-x: auto;
+      margin-bottom: 14px;
+      border-radius: 3px;
+      color: #C2BDB7;
+    }
+
+    /* ── BIZ CALLOUT ── */
+    .biz-callout {
+      margin: 0 32px 28px;
+      border-left: 3px solid var(--orange);
+      background: rgba(196,98,45,0.08);
+      padding: 16px 20px;
+      border-radius: 0 3px 3px 0;
+    }
+    .biz-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--orange);
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+    .biz-callout p {
+      font-size: 14px;
+      line-height: 1.7;
+      color: var(--text-body);
+    }
+
+    /* ── HOT TOPIC ── */
+    .hot-topic {
+      margin: 0 32px 32px;
+      background: var(--ink-card);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 24px;
+    }
+    .hot-topic-eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 10px;
+    }
+    .hot-topic h3 {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: 1.4rem;
+      color: var(--cream);
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      margin-bottom: 12px;
+    }
+    .hot-topic p {
+      font-size: 14px;
+      line-height: 1.75;
+      color: var(--text-body);
+      margin-bottom: 12px;
+    }
+    .voices {
+      margin-top: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .voice-item {
+      background: rgba(255,255,255,0.04);
+      border-left: 2px solid var(--orange);
+      padding: 10px 14px;
+      border-radius: 0 2px 2px 0;
+      font-size: 13.5px;
+      line-height: 1.6;
+      color: var(--text-body);
+      font-style: italic;
+    }
+    .voice-name {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 5px;
+      font-style: normal;
+    }
+    /* A member's name links to the exact message the quote came from. */
+    .voice-name a {
+      color: inherit;
+      text-decoration: none;
+      border-bottom: 1px dotted var(--orange);
+    }
+    .voice-name a:hover { border-bottom-style: solid; }
+    /* "Read the thread" backlink at the end of each story section. */
+    .thread-link {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-top: 18px;
+    }
+    .thread-link a {
+      color: var(--orange);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(255, 122, 0, 0.35);
+      padding-bottom: 2px;
+    }
+    .thread-link a:hover { border-bottom-color: var(--orange); }
+
+    /* ── QUICK HITS GRID ── */
+    .tips-grid {
+      padding: 14px 32px 32px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .tip-card {
+      background: var(--ink-card);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 18px;
+      transition: border-color 0.2s;
+    }
+    .tip-card:hover { border-color: var(--border-hover); }
+    .tip-number {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: 2.2rem;
+      color: rgba(255,255,255,0.07);
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    .tip-card strong {
+      display: block;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--cream);
+      margin-bottom: 6px;
+      line-height: 1.3;
+    }
+    .tip-card p {
+      font-size: 13px;
+      line-height: 1.65;
+      color: var(--text-muted);
+    }
+
+    /* ── MEMBER SPOTLIGHT ── */
+    .member-grid {
+      padding: 14px 32px 32px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    .member-card {
+      background: var(--ink-card);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+    .member-card:hover { border-color: var(--border-hover); }
+    .member-card-accent {
+      height: 3px;
+      background: var(--green);
+    }
+    .member-card-accent.orange { background: var(--orange); }
+    .member-card-body { padding: 14px; }
+    .member-name {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--cream);
+      margin-bottom: 2px;
+      line-height: 1.2;
+    }
+    .member-handle {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.08em;
+      color: var(--text-dim);
+      margin-bottom: 8px;
+    }
+    .member-card-body p {
+      font-size: 12.5px;
+      line-height: 1.6;
+      color: var(--text-muted);
+    }
+    .member-card-body em { color: var(--text-body); font-style: italic; }
+
+    /* ── WINS ── */
+    .wins-list {
+      padding: 14px 32px 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .win-item {
+      background: var(--ink-card);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 16px 18px;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 14px;
+      align-items: start;
+      transition: border-color 0.2s;
+    }
+    .win-item:hover { border-color: var(--border-hover); }
+    .win-emoji {
+      font-size: 18px;
+      line-height: 1;
+      margin-top: 2px;
+    }
+    .win-tag {
+      display: inline-block;
+      font-family: 'DM Mono', monospace;
+      font-size: 8.5px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 2px 7px;
+      border-radius: 2px;
+      margin-bottom: 5px;
+      border: 1px solid currentColor;
+    }
+    .win-tag.client   { color: var(--orange-light); }
+    .win-tag.build    { color: var(--green-light); }
+    .win-tag.speaking { color: #6BAE8C; }
+    .win-tag.other    { color: var(--text-dim); }
+    .win-title {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--cream);
+      margin-bottom: 3px;
+      display: block;
+    }
+    .win-item p {
+      font-size: 13px;
+      line-height: 1.65;
+      color: var(--text-muted);
+    }
+    .win-item a { color: var(--orange-light); text-decoration: underline; text-underline-offset: 2px; }
+
+    /* ── FOOTER ── */
+    .site-footer {
+      padding: 32px 32px 40px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .footer-brand {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--cream);
+      display: block;
+      margin-bottom: 4px;
+    }
+    .footer-sub {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      line-height: 1.8;
+    }
+    .footer-right {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      text-align: right;
+      line-height: 1.9;
+    }
+
+    @media (max-width: 520px) {
+      .tips-grid    { grid-template-columns: 1fr; }
+      .member-grid  { grid-template-columns: 1fr 1fr; }
+      .site-footer  { flex-direction: column; }
+      .footer-right { text-align: left; }
+      .hero, .content, .section-label, .biz-callout,
+      .hot-topic, .tips-grid, .member-grid, .wins-list,
+      .section-rule, .site-footer { padding-left: 20px; padding-right: 20px; }
+      .section-rule { margin: 0 20px; }
+      .hot-topic, .biz-callout { margin-left: 20px; margin-right: 20px; }
+      .site-header { padding: 16px 20px; }
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- HEADER -->
+  <header class="site-header">
+    <a href="/">
+      <span class="header-brand-name">From Impact to Income</span>
+      <span class="header-brand-sub">AI Junkies Inner Circle</span>
+    </a>
+    <div class="header-lock">
+      <div class="lock-dot"></div>
+      Members Only
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <span class="tag-pill">AI Junkies Newsletter</span>
+    <div class="hero-meta">
+      <div class="hero-issue-num">029</div>
+      <div class="hero-divider-v"></div>
+      <div>
+        <div class="hero-date">Oct 18–24, 2026</div>
+      </div>
+    </div>
+    <h1 class="hero-title">Junk <em>Mail</em></h1>
+    <p class="lede">
+      <strong>Hey Junkies 👋</strong> — Anthony dropped CavScope on us Sunday night and the chat lit up with 10 reactions before most people had finished reading the announcement.
+    </p>
+    <p class="lede" style="margin-top:12px;">This was a week where builders got serious — new tools launched, real security warnings dropped, and LaSean Pickens came through with a call that had the group saying &#x27;our community needed that.&#x27; We also had a moment that every first-time builder needs to read: what happened when Tequila almost shared access to her entire codebase.</p>
+    <p class="lede" style="margin-top:12px;">No fluff. Just the real stuff. Let's get into it. 🔥</p>
+  </section>
+
+
+  <!-- ══════════════════════════════ -->
+  <!-- ① MAIN STORY                  -->
+  <!-- ══════════════════════════════ -->
+  <div class="section-rule"></div>
+  <div class="section-label">① Main Story</div>
+  <div class="content">
+    <h2>Tequila Almost Gave Away the Keys to Her House — Here&#x27;s What Saved Her</h2>
+    <p class="deck">A live moment in the chat turned into the most important security lesson of the week: there is a big difference between sharing your app and sharing your project.</p>
+    <p>When you build on a platform like Lovable, you have two very different things: the app itself — the thing users interact with — and the project, which is the codebase, the backend, the blueprints. Sharing a link to your app so someone can test it is totally fine. Granting someone access to your project is handing them the keys. Most new builders do not know the difference until something almost goes wrong.</p>
+    <p>Tequila was trying to get feedback on her pilot — a legit thing to do. She dropped a preview link in the chat and mentioned she was about to grant access to a member who requested it. LaSean Pickens caught it immediately: &#x27;Why are you giving someone access to your project? As in your codebase?&#x27; He followed up fast: &#x27;Oh I just looked, no, don&#x27;t do that.&#x27; Althea Cooper jumped in with the practical fix — she had already set up testers on the backend of her own Lovable project and invited five founding testers that way. Tequila adjusted, created a viewable tour link instead, and protected her work.</p>
+    <p>This is where builders get tripped up all the time. You want feedback, you want eyes on your thing, and the fastest path feels like just sharing a link. But preview links inside Lovable behave differently depending on whether your project is published, and access requests from other Lovable users go straight to your codebase — not just a view of the front end. The right move: build a public-facing demo or tour page, invite beta testers as users inside the app itself, and never approve a codebase access request unless you know exactly who is on the other end and why.</p>
+    <ul>
+      <li><strong>Project Access vs. App Access:</strong> Granting project access in Lovable lets someone see and potentially edit your codebase. Sharing a published or preview link lets them see the app experience. Know which one you are doing before you click confirm.</li>
+      <li><strong>Build a Beta Tester Flow Inside Your App:</strong> Create user accounts on the backend of your app and invite testers through those. Althea had already done this with five founding testers. Ask Lovable to build the admin side if you do not have it yet.</li>
+      <li><strong>Connect to GitHub Before You Share Anything:</strong> Althea asked Tequila if her Lovable project was connected to GitHub. It was not. Connecting early gives you version control and a backup before anyone else gets near your work.</li>
+    </ul>
+    <p class="thread-link"><a href="https://t.me/c/3120599051/23273" target="_blank" rel="noopener">Read the thread →</a></p>
+  </div>
+  <!-- BIZ CALLOUT — periodic, not every issue. Delete block to skip. -->
+  <div class="biz-callout">
+    <div class="biz-label">💼 How does this apply to your business?</div>
+    <p>Say you have built a client portal for a financial services client and you want a trusted advisor to review the UX before launch. Sending a Lovable project invite feels efficient — until you realize you just gave someone access to your entire backend, your API connections, and your client data structure. The move is a sandboxed demo account with dummy data, full stop.</p>
+  </div>
+
+
+  <!-- ══════════════════════════════ -->
+  <!-- ② SECOND STORY                -->
+  <!-- ══════════════════════════════ -->
+  <div class="section-rule"></div>
+  <div class="section-label">② Also This Week</div>
+  <div class="content">
+    <h3>Big Steele Is Building a Free AI Account Switcher — and the Group Is Already Sold</h3>
+    <p>Big Steele announced he has a piece of free software coming for the group that lets you manage usage limits across Claude, Codex, and Grok accounts — and switch between them automatically when you hit a cap. It will also include remote control from your phone via an app. He posted it casually on Wednesday evening and pulled 11 reactions before the thread even got going.</p>
+    <p>The backstory makes it more interesting: by Thursday, Steele was nearly maxed out on three Claude Pro Max accounts in a single week with zero Fable usage. He is building at a volume where account limits are a real operational problem, and he is solving it for himself first — then handing the solution to the group for free. That is the builder&#x27;s mindset right there.</p>
+    <p>Dom Cortez responded: &#x27;You must have something out of this world cooking!&#x27; No further details on what Steele is building at that pace, but the account switcher will be one to watch when it drops.</p>
+    <p class="thread-link"><a href="https://t.me/c/3120599051/23339" target="_blank" rel="noopener">Read the thread →</a></p>
+  </div>
+
+
+  <!-- ══════════════════════════════ -->
+  <!-- ③ THIRD STORY                 -->
+  <!-- ══════════════════════════════ -->
+  <div class="section-rule"></div>
+  <div class="section-label">③ Worth Knowing</div>
+  <div class="content">
+    <h3>If You Are Running PHP, Stop Reading and Go Update Right Now</h3>
+    <p>Big Steele dropped a critical security alert Wednesday morning that applies to anyone hosting their own backend on PHP. Two vulnerabilities — CVE-2026-109618 and CVE-2026-109619 — are rated 9.2 out of 10 on the CVSS v4.0 severity scale. That is as serious as it gets. Both allow unauthenticated remote code execution, meaning someone who has never touched your system could run code on it from anywhere. The fixed versions are PHP 8.2.35+, 8.3.36+, 8.4.27+, and 8.5.12+. If you are on 8.1 or older, you need to upgrade branches entirely.</p>
+    <p>The part most people skip: patching does not clean up a compromise that already happened. After you update, restart your PHP workers, verify the server is running the fixed build, and then actually review your logs and files for web shells, backdoors, or anything that looks off. If you cannot patch right now, restrict access or take the service offline. There is no partial fix here.</p>
+    <p class="thread-link"><a href="https://t.me/c/3120599051/23281" target="_blank" rel="noopener">Read the thread →</a></p>
+  </div>
+
+
+  <!-- ══════════════════════════════ -->
+  <!-- ④ HOT TOPIC                   -->
+  <!-- ══════════════════════════════ -->
+  <div class="section-rule"></div>
+  <div class="section-label">④ Hot Topic</div>
+  <div class="hot-topic">
+    <div class="hot-topic-eyebrow">🔥 From the Group Chat</div>
+    <h3>Wan 3.0 vs. Seedance vs. Kling: Is Everyone Sleeping on the Cheaper Video Model?</h3>
+    <p>Mon Franks brought up Wan 3.0 on Tuesday asking if anyone was using it for video — specifically flagging that the price comparison is significantly cheaper than the tools most people default to.</p>
+    <p>This is a pattern that keeps coming up in the group: builders default to the most talked-about tool and miss equally capable options at a fraction of the cost. Prompting skill matters more than which model you pick, and if you are not testing alternatives you are leaving money on the table — especially when you are producing volume.</p>
+    <div class="voices">
+      <div class="voice-item">
+        <div class="voice-name"><a href="https://t.me/c/3120599051/23248" target="_blank" rel="noopener">Mon Franks</a></div>
+        "Anybody using Wan 3.0 for video? The price comparison super cheaper."
+      </div>
+      <div class="voice-item">
+        <div class="voice-name"><a href="https://t.me/c/3120599051/23250" target="_blank" rel="noopener">Kre I&#x27;mwhoIsayIam</a></div>
+        "Waaay cheaper I was having a debate with someone in a community about this. And as long as you prompt good the quality is there as well."
+      </div>
+      <div class="voice-item">
+        <div class="voice-name"><a href="https://t.me/c/3120599051/23253" target="_blank" rel="noopener">Kre I&#x27;mwhoIsayIam</a></div>
+        "It&#x27;s an image generator. So right now ppl are stuck on Seedance and or Kling there are different models and Wan is one of them."
+      </div>
+    </div>
+    <p class="thread-link"><a href="https://t.me/c/3120599051/23248" target="_blank" rel="noopener">Read the thread →</a></p>
+  </div>
+
+
+  <!-- ══════════════════════════════ -->
+  <!-- ⑤ QUICK HITS                  -->
+  <!-- ══════════════════════════════ -->
+  <div class="section-rule"></div>
+  <div class="section-label">⑤ Quick Hits</div>
+  <div class="tips-grid">
+    <div class="tip-card">
+      <div class="tip-number">01</div>
+      <strong>Rotate Your Railway API Keys — Now</strong>
+      <p>Tearra Spencer dropped this in the chat Wednesday night and Anthony was already on it. If you are using Railway in any of your builds, go rotate your API keys today. Anthony&#x27;s response: &#x27;They about to be out of the rotation completely.&#x27; Take that how you want, but either way — rotate first, decide later.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-number">02</div>
+      <strong>Claude Projects Is Worth Getting Into</strong>
+      <p>Anthony got access to Claude&#x27;s new Projects setup and reported back: &#x27;It helped me tweak some tweaks.&#x27; Natasha is in too and called it &#x27;lit.&#x27; If you have not applied or explored it yet, it is the structured workspace inside Claude that keeps context organized across sessions. Worth testing if you are managing multiple builds.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-number">03</div>
+      <strong>Claude Duet Dropped and the Group Noticed</strong>
+      <p>Anthropic launched Claude Duet this week and Anthony flagged it immediately. Nathan summed up the vibe: &#x27;Hmm Claude version of Instinct/Tab?&#x27; Collaborative AI workflows are clearly where things are heading. Worth reading the announcement at claude.com/resources/articles/claude-duet to see how it fits your stack.</p>
+    </div>
+    <div class="tip-card">
+      <div class="tip-number">04</div>
+      <strong>Britt&#x27;s Rerun Templates Are Worth Bookmarking</strong>
+      <p>Britt shared two Rerun templates this week — a weekly SEO action plan and a viral TikTok slideshow template. She has been quietly dropping resources all week while also producing UGC ads at volume. If you are doing content for clients or your own brand, both links are in the chat and worth pulling into your workflow.</p>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- ⑥ MEMBER SPOTLIGHT — delete cards you don't have content for. -->
+  <!-- Section auto-hides if all cards are removed.                  -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <div data-optional-section="members">
+  <div class="section-rule"></div>
+  <div class="section-label">⑥ Member Spotlight</div>
+  <!--
+    CARD GUIDE:
+    New member?         → orange accent bar
+    Building something? → Name the project. Keep it hype.
+    Not building yet?   → Encouraging note. Recognition, not pressure.
+    Mix freely. Delete any cards you don't have real content for.
+  -->
+  <div class="member-grid" data-content-container>
+    <div class="member-card" data-content-item>
+      <div class="member-card-accent "></div>
+      <div class="member-card-body">
+        <div class="member-name">Tequila</div>
+        <div class="member-handle">Tequila Michelle</div>
+        <p>Tequila has a pilot built and in the hands of testers — that is a milestone that most people talk about and never reach. She took community feedback in real time, adjusted her sharing approach, and kept pushing. The project is alive and moving.</p>
+      </div>
+    </div>
+    <div class="member-card" data-content-item>
+      <div class="member-card-accent "></div>
+      <div class="member-card-body">
+        <div class="member-name">Althea</div>
+        <div class="member-handle">Althea Cooper</div>
+        <p>Althea was everywhere this week — posting short videos, helping Tequila navigate a critical security moment, sharing social links, and showing up on the morning call despite getting kicked off for connection issues. Anthony called her out publicly and she earned every word of it.</p>
+      </div>
+    </div>
+    <div class="member-card" data-content-item>
+      <div class="member-card-accent orange"></div>
+      <div class="member-card-body">
+        <div class="member-name">Lexis</div>
+        <div class="member-handle">Lexis J · New Member 🎉</div>
+        <p>Lexis joined this week and Anthony&#x27;s welcome said it all: &#x27;Another sports person is here! Yay!!!!!&#x27; You landed in the right room — welcome to the family.</p>
+      </div>
+    </div>
+  </div>
+  </div><!-- /section-members -->
+
+
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <!-- ⑦ WINS THIS WEEK — delete wins you don't have content for. -->
+  <!-- Section auto-hides if all wins are removed.               -->
+  <!-- ══════════════════════════════════════════════════════════ -->
+  <div data-optional-section="wins">
+  <div class="section-rule"></div>
+  <div class="section-label">⑦ Wins This Week</div>
+  <div class="wins-list" data-content-container>
+    <div class="win-item" data-content-item>
+      <div class="win-emoji">🚀</div>
+      <div>
+        <span class="win-tag launch">Product Launch</span>
+        <span class="win-title">Anthony — CavScope</span>
+        <p>CavScope is live. Anthony dropped it exclusively in the group Sunday night — a digital reconnaissance tool that scans websites for security, accessibility, compliance, and performance risks. This one has been building for a while and it is finally in the world.</p>
+      </div>
+    </div>
+    <div class="win-item" data-content-item>
+      <div class="win-emoji">📣</div>
+      <div>
+        <span class="win-tag content">Content Win</span>
+        <span class="win-title">Britt — UGC Ads via Tab</span>
+        <p>Britt&#x27;s AI-generated UGC ads are performing across social — one video doing great and Tab pumping out 30 more. The group has been watching and Jay confirmed: &#x27;I&#x27;m loving the ads!&#x27; This is what shipping at volume looks like.</p>
+      </div>
+    </div>
+    <div class="win-item" data-content-item>
+      <div class="win-emoji">🧠</div>
+      <div>
+        <span class="win-tag growth">Mental Unlock</span>
+        <span class="win-title">Big Steele — Week of Breakthroughs</span>
+        <p>Steele put it plainly: &#x27;This week I feel like I unlocked another 10% of my brain.&#x27; Twelve reactions. That is not a small thing — that is the compounding effect of showing up every week doing the work.</p>
+      </div>
+    </div>
+    <div class="win-item" data-content-item>
+      <div class="win-emoji">🌐</div>
+      <div>
+        <span class="win-tag community">Community Building</span>
+        <span class="win-title">Michelle R — Commons by Clairen Haus</span>
+        <p>Michelle surfaced a product she has been sitting on and opened it up for beta testers — a white-label community platform where you own your domain, branding, and tribe without the noise of other feeds. She is ready for builders who are done renting space on someone else&#x27;s platform.</p>
+      </div>
+    </div>
+  </div>
+  </div><!-- /section-wins -->
+
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div>
+      <span class="footer-brand">Junk Mail</span>
+      <div class="footer-sub">
+        AI Junkies Weekly · Inner Circle Edition<br/>
+        Curated by Derrick Harper
+      </div>
+    </div>
+    <div class="footer-right">
+      Issue #029 · Oct 18–24, 2026<br/>
+      For AI Junkies members only<br/>
+      Not for public distribution
+    </div>
+  </footer>
+
+</div>
+
+  <script>
+    // Auto-hide optional sections (Member Spotlight + Wins) if they have no content cards
+    document.querySelectorAll('[data-optional-section]').forEach(function(section) {
+      var container = section.querySelector('[data-content-container]');
+      if (!container) return;
+      var items = container.querySelectorAll('[data-content-item]');
+      if (items.length === 0) {
+        section.style.display = 'none';
+      }
+    });
+  </script>
+</body>
+</html>
