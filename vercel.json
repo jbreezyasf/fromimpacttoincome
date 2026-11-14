@@ -3,7 +3,11 @@
   "outputDirectory": "dist/public",
   "framework": "vite",
   "rewrites": [
-    { "source": "/newsletter/(.*)", "destination": "/newsletter/$1" },
+    { "source": "/sitemap.xml", "destination": "/api/sitemap" },
+    { "source": "/podcast", "destination": "/api/podcast-index" },
+    { "source": "/podcast/admin", "destination": "/index.html" },
+    { "source": "/podcast/guest", "destination": "/index.html" },
+    { "source": "/podcast/:slug", "destination": "/api/episode?slug=:slug" },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
 }

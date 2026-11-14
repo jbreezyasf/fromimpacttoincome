@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /podcast/admin
+Disallow: /podcast/guest
+Sitemap: https://fromimpacttoincome.com/sitemap.xml
